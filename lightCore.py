@@ -8,6 +8,8 @@ from urllib.request import urlretrieve
 
 def debug(string):
     #Normal print function, outputting to the console
+    if string == None:
+        string = "*None*"
     sys.stdout.write(str(string))
     sys.stdout.write("\n")
 
