@@ -25,7 +25,7 @@ def reporthook(blocknum, blocksize, totalsize):
         sys.stderr.write("read %d\n" % (readsofar,))
 
 def download(url, name):
-    #Downloads a file from a URL
+    #Downloads a file from a URL, with a name
     debug("Begin Download")
     urlretrieve(url, name, reporthook)
 
