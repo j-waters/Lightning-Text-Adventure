@@ -5,243 +5,549 @@
 
 #####
 #All Module Imports
-#####
+
 #Core Import All
 from lightCore import * #@UnusedWildImport
 #General Modules
-import time #@UnusedImport
-import random #@UnusedImport
-import Core #@UnusedImport
-import easygui #@UnresolvedImport @UnusedImport
-import sys #@UnusedImport @Reimport
-import atexit #@UnusedImport
-#####
+#import time #@UnusedImport
+#import random #@UnusedImport
+#import easygui #@UnresolvedImport @UnusedImport
+#import sys #@UnusedImport @Reimport
+#import atexit #@UnusedImport
+
 #End Module Imports
 #####
 
-class plr:
-
-    def __init__(self):
-        self.name = ""
-        self.age = 15
-        self.health = 20
-        self.cloak = ""
-        self.shirt = ""
-        self.trouser = ""
-        self.knowledge = []
-        self.karma = 0
-        self.xp = 0
-        self.xpl = 1
-        self.xpn = 10
-
-    def damage(self, attacker, attackType, amount):
-        print(attacker + " " + attackType + " " + self.name + ". " + self.name + " takes " + str(amount) + " damage")
-        self.health -= amount
+#####
+#Setup print and pprint
+#####
+def print(string):  # @DontTrace @ReservedAssignment
+    #easygui print
+    easygui.msgbox(msg=string, title=world_time())
+
+def pprint(pic, string):
+    #easygui picture print
+    easygui.msgbox(image=pic, msg=string, title=world_time())
+
+
+
+#####
+#PLAYER
+#####
+playerName = ""
+playerAge = 15
+playerHealth = 20
+playerCloak = ""
+playerShirt = ""
+playerTrouser = ""
+playerKnowledge = []
+playerKarma = 0
+playerXp = 0
+playerXpl = 1
+playerXpn = 10
+
+def player_damage(self, attacker, attackType, amount):
+    print(attacker + " " + attackType + " " + playerName + ". " + playerName + " takes " + str(amount) + " damage")
+    playerHealth -= amount
 
-        if self.health < 1:
-            self.die()
+    if playerHealth < 1:
+        player_die()
 
-    def die(self):
-        print("You collapse to the ground.")
-        print("The world tumbles around you.")
-        print("Your vision gets brighter and brighter, until...")
-        Core.run(Last_Point)
+def player_die(self):
+    print("You collapse to the ground.")
+    print("The world tumbles around you.")
+    print("Your vision gets brighter and brighter, until...")
+    #run(Last_Point)
 
-    def refresh(self):
-        if self.health < 1:
-            self.die()
+def player_refresh(self):
+    if playerHealth < 1:
+        player_die()
 
-    def xpa(self, xp):
-        self.xp += xp
-        while self.xp > self.xpn:
-            if self.xp > self.xpn:
-                self.xpl += 1
-                self.xp -= self.xpn
-                self.xpn *= 1.2
-                self.xpn = int(self.xpn)
+def playerXpa(self, xp):
+    playerXp += xp
+    while playerXp > playerXpn:
+        if playerXp > playerXpn:
+            playerXpl += 1
+            playerXp -= playerXpn
+            playerXpn *= 1.2
+            playerXpn = int(playerXpn)
 
-    def defence(self):
-        TheOut = 1
-        try:
-            TheOut += int(getmet(self.cloak, 1))
-        except:
-            TheOut += 0
-        try:
-            TheOut += int(getmet(self.shirt, 1))
-        except:
-            TheOut += 0
-        try:
-            TheOut += int(getmet(self.trouser, 1))
-        except:
-            TheOut += 0
+def player_defence(self):
+    TheOut = 1
+    try:
+        TheOut += int(getmet(playerCloak, 1))
+    except:
+        TheOut += 0
+    try:
+        TheOut += int(getmet(playerShirt, 1))
+    except:
+        TheOut += 0
+    try:
+        TheOut += int(getmet(playerTrouser, 1))
+    except:
+        TheOut += 0
 
-        return int(TheOut)
+    return int(TheOut)
 
-    def unEquip(self, item):
-        debug("Un Equip")
+def player_unEquip(self, item):
+    debug("Un Equip")
 
-        if item == "cloak":
-            inventory.add(self.cloak)
-            self.cloak = ""
+    if item == "cloak":
+        inventory_add(playerCloak)
+        playerCloak = ""
 
-        if item == "shirt":
-            inventory.add(self.shirt)
-            self.shirt = ""
+    if item == "shirt":
+        inventory_add(playerShirt)
+        playerShirt = ""
 
-        if item == "trouser":
-            inventory.add(self.trouser)
-            self.trouser = ""
+    if item == "trouser":
+        inventory_add(playerTrouser)
+        playerTrouser = ""
 
-    def equip(self, item):
-        debug("equiping:")
+def player_equip(self, item):
+    debug("equiping:")
 
-        if getmet(item, 0) == "cloak":
-            if self.cloak == "":
-                self.cloak = item
+    if getmet(item, 0) == "cloak":
+        if playerCloak == "":
+            playerCloak = item
 
-                inventory.remove(item)
+            inventory_remove(item)
 
-            else:
-                inventory.remove(item)
-                inventory.add(self.cloak)
-                self.cloak = item
+        else:
+            inventory_remove(item)
+            inventory_add(playerCloak)
+            playerCloak = item
 
 
 
 
-        if getmet(item, 0) == "shirt":
-            if self.shirt == "":
-                self.shirt = item
+    if getmet(item, 0) == "shirt":
+        if playerShirt == "":
+            playerShirt = item
 
-                inventory.remove(item)
+            inventory_remove(item)
 
-            else:
-                inventory.remove(item)
-                inventory.add(self.shirt)
-                self.shirt = item
+        else:
+            inventory_remove(item)
+            inventory_add(playerShirt)
+            playerShirt = item
 
 
 
-        if getmet(item, 0) == "trouser":
-            if self.trouser == "":
-                self.trouser = item
+    if getmet(item, 0) == "trouser":
+        if playerTrouser == "":
+            playerTrouser = item
 
-                inventory.remove(item)
+            inventory_remove(item)
 
-            else:
-                inventory.remove(item)
-                inventory.add(self.trouser)
-                self.trouser = item
+        else:
+            inventory_remove(item)
+            inventory_add(playerTrouser)
+            playerTrouser = item
 
 
 
 
 
-    def attack(self, tgt):
-        debug("ATTACKING")
-        tatt = getmet(tgt, 1)
-        tdef = getmet(tgt, 2)
-        tlife = getmet(tgt, 3)
-        trnk = getmet(tgt, 4)
-        taln = getmet(tgt, 5)
-        target = getnam(tgt)
+def player_attack(self, tgt):
+    debug("ATTACKING")
+    tatt = getmet(tgt, 1)
+    tdef = getmet(tgt, 2)
+    tlife = getmet(tgt, 3)
+    trnk = getmet(tgt, 4)
+    taln = getmet(tgt, 5)
+    target = getnam(tgt)
 
 
-        weapons = []
-        wdamage = []
+    weapons = []
+    wdamage = []
 
-        for i in range(0, len(inventory.contents)):
+    for i in range(0, len(inventoryContents)):
 
-            spl = getmet(inventory.contents[i], 0)
+        spl = getmet(inventoryContents[i], 0)
 
-            if spl == "weapon":
+        if spl == "weapon":
 
-                weapons.append(getnam(inventory.contents[i]))
+            weapons.append(getnam(inventoryContents[i]))
 
-                wdamage.append(getmet(inventory.contents[i], 1))
+            wdamage.append(getmet(inventoryContents[i], 1))
 
-        weapons.append("Your Fists")
-        wdamage.append("2")
+    weapons.append("Your Fists")
+    wdamage.append("2")
 
 
 
 
 
-        #pprint(Fight_Symbol, self.name + " (" + str(self.health) + ", " + str(self.defence()) + ")" + " Attacks " + target + " (" + str(tlife) + ", " + str(tdef) + ")" + "!")
-        pprint(Fight_Symbol, self.name + " (Level " + str(self.xpl) + ")" + " Attacks " + str(target) + " (Level " + str(trnk) + ")" + "!")
-        att_weapon = easygui.choicebox(msg="Chose your weapon", choices=(weapons))
+    #pprint(Fight_Symbol, playerName + " (" + str(playerHealth) + ", " + str(player_defence()) + ")" + " Attacks " + target + " (" + str(tlife) + ", " + str(tdef) + ")" + "!")
+    pprint(Fight_Symbol, playerName + " (Level " + str(playerXpl) + ")" + " Attacks " + str(target) + " (Level " + str(trnk) + ")" + "!")
+    att_weapon = easygui.choicebox(msg="Chose your weapon", choices=(weapons))
 
-        patt = 0
+    patt = 0
 
-        for i in range(0, len(weapons)):
-            if weapons[i] == att_weapon:
-                patt = int(wdamage[i])
+    for i in range(0, len(weapons)):
+        if weapons[i] == att_weapon:
+            patt = int(wdamage[i])
 
 
 
-        while True:
-            ###Choose Attacker###
-            rnd = random.randint(1,2)
+    while True:
+        ###Choose Attacker###
+        rnd = random.randint(1,2)
 
-            PtE = int( patt * (1 + random.random())- int(tdef))
+        PtE = int( patt * (1 + random.random())- int(tdef))
 
-            EtP = int( int (tatt) * (1 + random.random()) - self.defence())
+        EtP = int( int (tatt) * (1 + random.random()) - player_defence())
 
-            tlife = int(tlife)
+        tlife = int(tlife)
 
-            if PtE < 0:
-                Rdmg = 0
+        if PtE < 0:
+            Rdmg = 0
 
-            if EtP < 0:
-                Rdmg2 = 0
+        if EtP < 0:
+            Rdmg2 = 0
 
-            if rnd == 1:
-                ###Player Attacks###
-                print(self.name + " Attacks!")
-                print(self.name + " Deals " + str(PtE) + " Damage To " + target)
-                tlife -= PtE
-                print(target + " Is Now On " + str(tlife) + " Health.")
+        if rnd == 1:
+            ###Player Attacks###
+            print(playerName + " Attacks!")
+            print(playerName + " Deals " + str(PtE) + " Damage To " + target)
+            tlife -= PtE
+            print(target + " Is Now On " + str(tlife) + " Health.")
 
 
-                if tlife < 1:
-                    print("You defeat " + target + ".")
-                    pxp = int((int(trnk) + 1) * (random.randint(1, 3) + random.random()))
-                    print("you gain " + str(pxp) + " XP!")
-                    pka = int(int(trnk) * (random.randint(1, 2) + random.random()))
-                    self.xpa(pka)
-                    if taln == "g":
-                        print(target + " was good." + "You lose" + str(pka) + " karma")
-                        self.karma -= pka
-                    if taln == "e":
-                        print(target + "was evil." + "You gain" + str(pka) + " karma")
-                        self.karma += pka
-                    return "win"
+            if tlife < 1:
+                print("You defeat " + target + ".")
+                pxp = int((int(trnk) + 1) * (random.randint(1, 3) + random.random()))
+                print("you gain " + str(pxp) + " XP!")
+                pka = int(int(trnk) * (random.randint(1, 2) + random.random()))
+                playerXpa(pka)
+                if taln == "g":
+                    print(target + " was good." + "You lose" + str(pka) + " karma")
+                    playerKarma -= pka
+                if taln == "e":
+                    print(target + "was evil." + "You gain" + str(pka) + " karma")
+                    playerKarma += pka
+                return "win"
 
-                print(target + " Deals " + str(EtP) + " Damage To " + self.name)
-                self.health -= EtP
-                print(self.name + " Is Now On " + str(self.health) + " Health.")
+            print(target + " Deals " + str(EtP) + " Damage To " + playerName)
+            playerHealth -= EtP
+            print(playerName + " Is Now On " + str(playerHealth) + " Health.")
 
 
-                if self.health < 1:
+            if playerHealth < 1:
 
-                    self.die()
+                player_die()
 
 
-            if rnd == 2:
-                ###Opponent Attacks###
-                print(target + " Attacks!")
-                print(target + " Deals " + str(EtP) + " Damage To " + self.name)
-                self.health -= EtP
-                print(self.name + " Is Now On " + str(self.health) + " Health.")
+        if rnd == 2:
+            ###Opponent Attacks###
+            print(target + " Attacks!")
+            print(target + " Deals " + str(EtP) + " Damage To " + playerName)
+            playerHealth -= EtP
+            print(playerName + " Is Now On " + str(playerHealth) + " Health.")
 
-                if self.health < 1:
-                    self.die()
+            if playerHealth < 1:
+                player_die()
 
-                print(self.name + " Deals " + str(PtE) + " Damage To " + target)
-                tlife -= PtE
-                print(target + " Is Now On " + str(tlife) + " Health.")
+            print(playerName + " Deals " + str(PtE) + " Damage To " + target)
+            tlife -= PtE
+            print(target + " Is Now On " + str(tlife) + " Health.")
 
 
-                if tlife < 1:
-                    return "win"
+            if tlife < 1:
+                return "win"
+
+
+#####
+#END PLAYER
+#####
+
+#####
+#INVENTORY
+#####
+inventoryContents = []
+inventorySize = 10
+inventoryMoney = 0
+
+def inventory_add(self, item):
+    debug("ADD TO INVENTORY:")
+    if 1 + len(inventoryContents) > inventorySize:
+        spaceleft = inventorySize - len(inventoryContents)
+        things = len(item)
+        pprint(Full_Bag, "You Can't fit " + str(things) + " More item in a bag that can only hold " + str(spaceleft) + " more items!")
+
+        INV_A_DC = easygui.choicebox(msg="What to discard: (cancel to not discard anything)", choices=(inventoryContents))
+        if not INV_A_DC == None:
+            inventory_remove(INV_A_DC)
+        if INV_A_DC == None:
+            return
+
+    else:
+        if type(item) == tuple:
+            inventoryContents.append(item)
+
+        if type(item) == list:
+            for i in range(len(item)):
+
+                inventoryContents.append(item[i])
+
+
+
+
+def inventory_get(self):
+    debug("INVENTORY")
+    debug("CONTENTS:\n" + str(inventoryContents))
+    ##Finding Money##
+
+    for i in range(0, len(inventoryContents)):
+
+
+        spl = getmet(inventoryContents[i], 0)
+
+        if spl == "money":
+            amt = getmet(inventoryContents[i], 1)
+            amti = int(amt)
+            type(amti)
+
+            inventoryMoney += amti
+
+
+            del inventoryContents[i]
+            break
+
+    if inventoryMoney % 10 == 0:
+        inventoryMoney = 0
+
+    ##adding money string to inventory###
+
+    mstring = "You Have: " + str(inventoryMoney) + " Gold"
+    mstringd = "Your small bag of money full of coins that are known as 'gold' by the comoners"
+    mstringm = ""
+    inventoryContents.append((mstring, mstringd, mstringm))
+
+    ##done money##
+
+    ##adding equipped items to inventory##
+
+    estring1 = "You Have Equipped: "
+    try:
+        if not playerCloak == "":
+            estring2 = playerCloak[0]
+            estring2d = playerCloak[1]
+            estring2m = "e|cloak"
+
+        if playerCloak == "":
+            estring2 = "No Cloak"
+            estring2d = "Your not wearing a cloak"
+            estring2m = ""
+    except:
+        estring2 = "No Cloak"
+        estring2d = "Your not wearing a cloak"
+        estring2m = ""
+
+    estring1d = "What You are currently wearing"
+    try:
+        if not playerShirt == "":
+            estring3 = playerShirt[0]
+            estring3d = playerShirt[1]
+            estring3m = "e|shirt"
+
+        if playerShirt == "":
+            estring3 = "No Extra Shirt"
+            estring3d = "Your not wearing any extra shirt"
+            estring3m = ""
+    except:
+        estring3 = "No Extra Shirt"
+        estring3d = "Your not wearing an extra shirt"
+        estring3m = ""
+
+    estring1m = ""
+    try:
+        if not playerTrouser == "":
+            estring4 = playerTrouser[0]
+            estring4d = playerTrouser[1]
+            estring4m = "e|trouser"
+
+        if playerTrouser == "":
+            estring4 = "No Extra Trouser"
+            estring4d = "Your not wearing any over trousers"
+            estring4m = ""
+    except:
+        estring4 = "No Extra Trouser"
+        estring4d = "Your not wearing any over trousers"
+        estring4m = ""
+
+    #inventoryContents.append((estring1,estring1d, estring1m))
+    inventoryContents.append((estring1 + estring2,estring2d, estring2m))
+    inventoryContents.append((estring1 + estring3,estring3d, estring3m))
+    inventoryContents.append((estring1 + estring4,estring4d, estring4m))
+
+    ##adding player stats##
+    pstring = "Your Statistics"
+    pstringd = "Your Stats:\n" + "Health: " + str(playerHealth) + "\nDefence: " + str(player_defence())
+    pstringm = ""
+    inventoryContents.append((pstring, pstringd, pstringm))
+
+    ##showing inventory##
+
+    vop = 0 #@UnusedVariable
+
+    vop = easygui.choicebox(msg = "Your Inventory:", choices=(t(inventoryContents, 0)))
+
+    vop = tup(vop, inventoryContents)
+
+    inventoryContents.remove((mstring, mstringd, mstringm))
+
+    inventoryContents.remove((pstring, pstringd, pstringm))
+
+    #inventoryContents.remove((estring1,estring1d, estring1m))
+    inventoryContents.remove((estring1 + estring2,estring2d, estring2m))
+    inventoryContents.remove((estring1 + estring3,estring3d, estring3m))
+    inventoryContents.remove((estring1 + estring4,estring4d, estring4m))
+
+    debug("\n VOP:")
+    debug(vop)
+
+    if vop == None:
+        return "exit"
+
+    else:
+        c = ""
+
+        if c == "exit":
+            return "exit"
+
+        if type(vop) == list:
+            vop = vop[0]
+
+        if getmet(vop, 0 ) == "":
+            if c == "exit":
+                return "exit"
+            pprint(Full_Bag, getdes(vop))
+
+            c = inventory_get()
+
+
+        if getmet(vop, 0) == "e":
+            if c == "exit":
+                return "exit"
+            IgI = easygui.buttonbox(image=Full_Bag, msg=getdes(vop), choices=("Cancel", "Un Equip", "Discard"))
+
+            if IgI == "Un Equip":
+                player_unEquip(getmet(vop, 1))
+                c = inventory_get()
+
+            if IgI == "Cancel":
+                c = inventory_get()
+
+
+
+
+        if not getmet(vop, 0) == "e" or getmet(vop, 0) == "":
+            verb = "Use"
+
+            if getmet(vop, 0) == "book":
+                verb = "read"
+
+
+
+
+
+            if c == "exit":
+                return "exit"
+
+            IgI = options(Full_Bag, getdes(vop), "Discard", verb, "Equip")
+
+            if IgI == "Discard":
+                inventory_remove(vop)
+
+            if IgI == verb:
+                if getmet(vop, 0) == "book":
+                    read(vop)
+
+                #other items
+                c = inventory_get()
+
+            if IgI == "Equip":
+                player_equip(vop)
+
+            c = inventory_get()
+
+        if c == "exit":
+            return "exit"
+
+
+def inventory_remove(self, item):
+    inventoryContents.remove(item)
+
+#####
+#END INVENTORY
+#####
+
+#####
+#WORLD
+#####
+worldMinute = 0
+worldHour = 0
+worldDay = 0
+worldDayp = 0
+worldMonth = 0
+int(worldDay)
+int(worldMinute)
+int(worldHour)
+worldWeather = "clear"
+
+
+
+def world_time(self):
+    if worldDay % 10 == 1:
+        worldDayp = "st"
+    if worldDay % 10 == 2:
+        worldDayp = "nd"
+    if worldDay % 10 == 3:
+        worldDayp = "rd"
+    if worldDay % 10  == 0:
+        worldDayp = "th"
+    if worldDay % 10 > 3:
+        worldDayp = "th"
+
+    TheOut = str(worldHour) + ":" + str(worldMinute) + "0" + " " + str(worldDay) + str(worldDayp) + " of " + str(worldMonth)
+
+    #str(TheOut)
+    return TheOut
+#####
+#END WORLD
+#####
+
+def getmet(item, metno):
+    #Gets the metadata from a tuple (item)
+    #finds the correct metadata by number (metno)
+    TheOut = None
+
+    if type(item) == tuple:
+        TheOut = item[2].split('|')[metno]
+
+        if metno == "all":
+            TheOut = item[2]
+
+    if type(item) == list:
+        TheOut = item[0][2].split('|')[metno]
+        if metno == "all":
+            TheOut = item[0][2]
+
+    return TheOut
+
+def getdes(item):
+    #Gets the description from a tuple (item)
+    TheOut = item[1]
+    return TheOut
+
+def getnam(item):
+    #Gets the name from a tuple (item)
+    TheOut = item[0]
+    return TheOut
+
+def input(string):
+    TheInput = easygui.enterbox(msg=string, title=world_time())
+    return TheInput
 
