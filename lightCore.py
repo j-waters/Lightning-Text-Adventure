@@ -1,9 +1,22 @@
-import sys
+import sys  # @UnusedImport
 from urllib.request import urlretrieve
 
 #####
 #Light-Core, by Lightning3105
 #Contains Several important functions
+#####
+
+#####
+#All Module Imports
+#####
+#General Modules
+import time #@UnusedImport
+import random #@UnusedImport
+import easygui #@UnresolvedImport @UnusedImport
+import sys #@UnusedImport @Reimport
+import atexit #@UnusedImport
+#####
+#End Module Imports
 #####
 
 def debug(string):
@@ -34,3 +47,18 @@ def download(url, name):
 def run(func):
     #Runs a function by name, 'func'
     globals()[func]()
+
+def t(L, N):
+    # get Nth item in tuple in list of tuples
+    #eg: L = [('a','1'),('b','2'),('c','3')]
+    #    N = 0
+    #    returned ['a','b','c']
+    return [x[N] for x in L]
+
+def print(string, title=None):  # @DontTrace @ReservedAssignment
+    #easygui print
+    easygui.msgbox(msg=string, title=title)
+
+def pprint(pic, string, title=None):
+    #easygui picture print
+    easygui.msgbox(image=pic, msg=string, title=title)
