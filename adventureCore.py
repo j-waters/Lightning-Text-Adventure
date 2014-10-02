@@ -46,24 +46,28 @@ playerXp = 0
 playerXpl = 1
 playerXpn = 10
 
-def player_damage(self, attacker, attackType, amount):
+def player_damage(attacker, attackType, amount):
+    #Deals damage to the player, displaying who did it
     print(attacker + " " + attackType + " " + playerName + ". " + playerName + " takes " + str(amount) + " damage")
     playerHealth -= amount
 
     if playerHealth < 1:
         player_die()
 
-def player_die(self):
+def player_die():
+    #Displays the death message, and then returns you to your previous spot
     print("You collapse to the ground.")
     print("The world tumbles around you.")
     print("Your vision gets brighter and brighter, until...")
     #run(Last_Point)
 
-def player_refresh(self):
+def player_refresh():
+    #Does a check of multiple player variables, checking if they make sense.
     if playerHealth < 1:
         player_die()
 
-def playerXpa(self, xp):
+def player_Xpa(xp):
+    #Adds 'xp' XP to the players xp, checking if the player level can be increased
     playerXp += xp
     while playerXp > playerXpn:
         if playerXp > playerXpn:
@@ -72,7 +76,8 @@ def playerXpa(self, xp):
             playerXpn *= 1.2
             playerXpn = int(playerXpn)
 
-def player_defence(self):
+def player_defence():
+    #Calculates the defence of a player
     TheOut = 1
     try:
         TheOut += int(getmet(playerCloak, 1))
@@ -89,7 +94,8 @@ def player_defence(self):
 
     return int(TheOut)
 
-def player_unEquip(self, item):
+def player_unEquip(item):
+    #Unequips an item from the player
     debug("Un Equip")
 
     if item == "cloak":
@@ -104,7 +110,8 @@ def player_unEquip(self, item):
         inventory_add(playerTrouser)
         playerTrouser = ""
 
-def player_equip(self, item):
+def player_equip(item):
+    #Equips an item to the player
     debug("equiping:")
 
     if getmet(item, 0) == "cloak":
@@ -149,7 +156,8 @@ def player_equip(self, item):
 
 
 
-def player_attack(self, tgt):
+def player_attack(tgt):
+    #Player attacks 'tgt'
     debug("ATTACKING")
     tatt = getmet(tgt, 1)
     tdef = getmet(tgt, 2)
@@ -158,26 +166,17 @@ def player_attack(self, tgt):
     taln = getmet(tgt, 5)
     target = getnam(tgt)
 
-
     weapons = []
     wdamage = []
 
     for i in range(0, len(inventoryContents)):
-
         spl = getmet(inventoryContents[i], 0)
-
         if spl == "weapon":
-
             weapons.append(getnam(inventoryContents[i]))
-
             wdamage.append(getmet(inventoryContents[i], 1))
 
     weapons.append("Your Fists")
     wdamage.append("2")
-
-
-
-
 
     #pprint(Fight_Symbol, playerName + " (" + str(playerHealth) + ", " + str(player_defence()) + ")" + " Attacks " + target + " (" + str(tlife) + ", " + str(tdef) + ")" + "!")
     pprint(Fight_Symbol, playerName + " (Level " + str(playerXpl) + ")" + " Attacks " + str(target) + " (Level " + str(trnk) + ")" + "!")
@@ -189,18 +188,12 @@ def player_attack(self, tgt):
         if weapons[i] == att_weapon:
             patt = int(wdamage[i])
 
-
-
     while True:
         ###Choose Attacker###
         rnd = random.randint(1,2)
-
         PtE = int( patt * (1 + random.random())- int(tdef))
-
         EtP = int( int (tatt) * (1 + random.random()) - player_defence())
-
         tlife = int(tlife)
-
         if PtE < 0:
             Rdmg = 0
 
@@ -269,7 +262,7 @@ inventoryContents = []
 inventorySize = 10
 inventoryMoney = 0
 
-def inventory_add(self, item):
+def inventory_add(item):
     debug("ADD TO INVENTORY:")
     if 1 + len(inventoryContents) > inventorySize:
         spaceleft = inventorySize - len(inventoryContents)
@@ -294,7 +287,7 @@ def inventory_add(self, item):
 
 
 
-def inventory_get(self):
+def inventory_get():
     debug("INVENTORY")
     debug("CONTENTS:\n" + str(inventoryContents))
     ##Finding Money##
@@ -394,7 +387,7 @@ def inventory_get(self):
 
     vop = easygui.choicebox(msg = "Your Inventory:", choices=(t(inventoryContents, 0)))
 
-    vop = tup(vop, inventoryContents)
+    vop = find_tup(vop, inventoryContents)
 
     inventoryContents.remove((mstring, mstringd, mstringm))
 
@@ -477,7 +470,7 @@ def inventory_get(self):
             return "exit"
 
 
-def inventory_remove(self, item):
+def inventory_remove(item):
     inventoryContents.remove(item)
 
 #####
@@ -497,9 +490,7 @@ int(worldMinute)
 int(worldHour)
 worldWeather = "clear"
 
-
-
-def world_time(self):
+def world_time():
     if worldDay % 10 == 1:
         worldDayp = "st"
     if worldDay % 10 == 2:
@@ -515,6 +506,7 @@ def world_time(self):
 
     #str(TheOut)
     return TheOut
+
 #####
 #END WORLD
 #####
@@ -547,7 +539,115 @@ def getnam(item):
     TheOut = item[0]
     return TheOut
 
-def input(string):
+def input(string):  # @ReservedAssignment
+    #Creates an enter box with a string, and the time as the title
     TheInput = easygui.enterbox(msg=string, title=world_time())
     return TheInput
+
+def options(pic, string, op1, op2, op3=None, op4=None):
+    #creates an button box with 2, up to 4 choices
+    if not op4 == None:
+        TheOut = easygui.buttonbox(choices=(op1, op2, op3, op4, "Inventory"), msg=string, image=pic, title=world_time())
+    if op4 == None:
+        TheOut = easygui.buttonbox(choices=(op1, op2, op3, "Inventory"), msg=string, image=pic, title=world_time())
+    if op4 and op3 == None:
+        TheOut = easygui.buttonbox(choices=(op1, op2, "Inventory"), msg=string, image=pic, title=world_time())
+
+    if TheOut == "Inventory":
+        inventory_get()
+        TheOut = options(pic, string, op1, op2, op3, op4)
+
+    return TheOut
+
+def move(choices):
+    #Shows a choicebox with places that the player can move to
+    #returns the selection
+
+    choices = [i for i in choices if not getmet(i, i[2].count('|')) == "i"]
+
+    TheOut = easygui.choicebox(msg="Move To:", choices=(t(choices, 0)))
+
+    TheOut = find_tup(TheOut, choices)
+
+    return TheOut
+
+def find_tup(item, lis):
+    #gets a one or multiple string/s
+    #item = the string/s
+    #lis = the list it has to search through
+    TheOut = []
+
+    if type(item) == list:
+
+        for i in range(0, len(item)):
+
+            for t in range(0, len(lis)):
+
+                if lis[t][0] == item[i]:
+
+                    TheOut.append(lis[t])
+                    break
+        return TheOut
+
+    if type(item) == str:
+
+
+        for t in range(0, len(lis)):
+
+            if lis[t][0] == item:
+
+                TheOut = lis[t]
+
+                return TheOut
+
+def view(items, string=""):
+    #Creates a choicebox from a list
+    #Can use a string, by default shows 'you can see:'
+
+    TheOut = ""
+    str(TheOut)
+
+    if string == "":
+        TheOut = easygui.choicebox(msg="You Can See:", choices=(t(items, 0)), title=world_time())
+
+    else:
+        TheOut = easygui.choicebox(msg=string, choices=(t(items, 0)), title=world_time())
+
+
+    TheOut = find_tup(TheOut, items)
+
+    print(TheOut[1])
+
+
+    return TheOut
+
+def take(string, choices, mmax):
+    #Takes an item and places it into the players inventory
+    #Returns the item
+    debug("TAKING")
+
+    choices = [i for i in choices if getmet(i, i[2].count('|')) == "i"]
+
+    TheOut = easygui.multchoicebox(msg=string, choices=(t(choices, 0)))
+
+    if TheOut == None:
+        return
+
+    if len(TheOut) > mmax:
+        return
+
+    else:
+
+        inventory_add(find_tup(TheOut, choices))
+        return find_tup(TheOut, choices)
+
+def read(item):
+    book = getnam(item)
+    book = book.split(':')[1]
+    book = book.replace(" ", "")
+    importVar(book)
+    print("Knowledge Acquired! " + getmet(item, 1) + "!")
+    playerKnowledge.append(getmet(item, 1))
+
+
 
