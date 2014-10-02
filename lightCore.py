@@ -62,3 +62,7 @@ def print(string, title=None):  # @DontTrace @ReservedAssignment
 def pprint(pic, string, title=None):
     #easygui picture print
     easygui.msgbox(image=pic, msg=string, title=title)
+
+def importVar(m):
+    #Imports a function by name, m
+    m = __import__(m)
