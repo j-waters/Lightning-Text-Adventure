@@ -117,7 +117,6 @@ def player_equip(item):
     if getmet(item, 0) == "cloak":
         if playerCloak == "":
             playerCloak = item
-
             inventory_remove(item)
 
         else:
@@ -131,7 +130,6 @@ def player_equip(item):
     if getmet(item, 0) == "shirt":
         if playerShirt == "":
             playerShirt = item
-
             inventory_remove(item)
 
         else:
@@ -152,7 +150,8 @@ def player_equip(item):
             inventory_add(playerTrouser)
             playerTrouser = item
 
-
+    else:
+        print("Cannot equip a " + item)
 
 
 
@@ -291,20 +290,13 @@ def inventory_get():
     debug("INVENTORY")
     debug("CONTENTS:\n" + str(inventoryContents))
     ##Finding Money##
-
     for i in range(0, len(inventoryContents)):
-
-
         spl = getmet(inventoryContents[i], 0)
-
         if spl == "money":
             amt = getmet(inventoryContents[i], 1)
             amti = int(amt)
             type(amti)
-
             inventoryMoney += amti
-
-
             del inventoryContents[i]
             break
 
@@ -338,7 +330,6 @@ def inventory_get():
         estring2d = "Your not wearing a cloak"
         estring2m = ""
 
-    estring1d = "What You are currently wearing"
     try:
         if not playerShirt == "":
             estring3 = playerShirt[0]
@@ -354,7 +345,6 @@ def inventory_get():
         estring3d = "Your not wearing an extra shirt"
         estring3m = ""
 
-    estring1m = ""
     try:
         if not playerTrouser == "":
             estring4 = playerTrouser[0]
@@ -370,7 +360,6 @@ def inventory_get():
         estring4d = "Your not wearing any over trousers"
         estring4m = ""
 
-    #inventoryContents.append((estring1,estring1d, estring1m))
     inventoryContents.append((estring1 + estring2,estring2d, estring2m))
     inventoryContents.append((estring1 + estring3,estring3d, estring3m))
     inventoryContents.append((estring1 + estring4,estring4d, estring4m))
@@ -383,17 +372,12 @@ def inventory_get():
 
     ##showing inventory##
 
-    vop = 0 #@UnusedVariable
-
-    vop = easygui.choicebox(msg = "Your Inventory:", choices=(t(inventoryContents, 0)))
+    vop = easygui.choicebox(msg = "Your Inventory:", choices=(getnam(inventoryContents)))
 
     vop = find_tup(vop, inventoryContents)
 
     inventoryContents.remove((mstring, mstringd, mstringm))
-
     inventoryContents.remove((pstring, pstringd, pstringm))
-
-    #inventoryContents.remove((estring1,estring1d, estring1m))
     inventoryContents.remove((estring1 + estring2,estring2d, estring2m))
     inventoryContents.remove((estring1 + estring3,estring3d, estring3m))
     inventoryContents.remove((estring1 + estring4,estring4d, estring4m))
@@ -404,71 +388,42 @@ def inventory_get():
     if vop == None:
         return "exit"
 
+    if type(vop) == list:
+        vop = vop[0]
+
+    if getmet(vop, "all") == "i":
+        #Is it an average item?
+        pprint(Full_Bag, getdes(vop))
+
+    if searchmet("e", vop) == "T":
+        #Is it an equipped item?
+        IgI = easygui.buttonbox(image=Full_Bag, msg=getdes(vop), choices=("Back", "Un Equip"))
+        if IgI == "Un Equip":
+            player_unEquip(getmet(vop, 1))
+
+    if searchmet("c", vop) == "T":
+        #Is it an eqipable item?
+        IgI = easygui.buttonbox(image=Full_Bag, msg=getdes(vop), choices=("Back", "Equip"))
+        if IgI == "Equip":
+            player_equip(vop)
+
     else:
-        c = ""
+        verb = "Use"
+        if searchmet("book", vop) == "T":
+            verb = "Read"
 
-        if c == "exit":
-            return "exit"
+        IgI = options(Full_Bag, getdes(vop), "Discard", verb, "Back")
 
-        if type(vop) == list:
-            vop = vop[0]
-
-        if getmet(vop, 0 ) == "":
-            if c == "exit":
-                return "exit"
-            pprint(Full_Bag, getdes(vop))
-
-            c = inventory_get()
-
-
-        if getmet(vop, 0) == "e":
-            if c == "exit":
-                return "exit"
-            IgI = easygui.buttonbox(image=Full_Bag, msg=getdes(vop), choices=("Cancel", "Un Equip", "Discard"))
-
-            if IgI == "Un Equip":
-                player_unEquip(getmet(vop, 1))
-                c = inventory_get()
-
-            if IgI == "Cancel":
-                c = inventory_get()
-
-
-
-
-        if not getmet(vop, 0) == "e" or getmet(vop, 0) == "":
-            verb = "Use"
-
+        if IgI == "Discard":
+            inventory_remove(vop)
+        if IgI == verb:
             if getmet(vop, 0) == "book":
-                verb = "read"
+                read(vop)
+            #other items
 
 
-
-
-
-            if c == "exit":
-                return "exit"
-
-            IgI = options(Full_Bag, getdes(vop), "Discard", verb, "Equip")
-
-            if IgI == "Discard":
-                inventory_remove(vop)
-
-            if IgI == verb:
-                if getmet(vop, 0) == "book":
-                    read(vop)
-
-                #other items
-                c = inventory_get()
-
-            if IgI == "Equip":
-                player_equip(vop)
-
-            c = inventory_get()
-
-        if c == "exit":
-            return "exit"
-
+    inventory_get()
+    return
 
 def inventory_remove(item):
     inventoryContents.remove(item)
@@ -536,8 +491,24 @@ def getdes(item):
 
 def getnam(item):
     #Gets the name from a tuple (item)
-    TheOut = item[0]
-    return TheOut
+    if type(item) == tuple:
+        TheOut = item[0]
+        return TheOut
+    if type(item) == list:
+        TheOut = t(item, 0)
+        return TheOut
+
+def searchmet(string, item):
+    #string = what we want to find
+    #item = tuple/string we want to search
+    if type(item) == tuple:
+        item = getmet(item, "all")
+
+    for i in len(item.split('|')):
+        if item.split('|')[i] == string:
+            return "T"
+
+    return "F"
 
 def input(string):  # @ReservedAssignment
     #Creates an enter box with a string, and the time as the title
@@ -563,7 +534,7 @@ def move(choices):
     #Shows a choicebox with places that the player can move to
     #returns the selection
 
-    choices = [i for i in choices if not getmet(i, i[2].count('|')) == "i"]
+    choices = [i for i in choices if searchmet("building", i == "T"]
 
     TheOut = easygui.choicebox(msg="Move To:", choices=(t(choices, 0)))
 
@@ -626,7 +597,7 @@ def take(string, choices, mmax):
     #Returns the item
     debug("TAKING")
 
-    choices = [i for i in choices if getmet(i, i[2].count('|')) == "i"]
+    choices = [i for i in choices if searchmet("i", i == "T"]
 
     TheOut = easygui.multchoicebox(msg=string, choices=(t(choices, 0)))
 
@@ -648,6 +619,5 @@ def read(item):
     importVar(book)
     print("Knowledge Acquired! " + getmet(item, 1) + "!")
     playerKnowledge.append(getmet(item, 1))
-
 
 
