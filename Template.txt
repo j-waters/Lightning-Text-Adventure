@@ -1,0 +1,22 @@
+NPC META DATA: <name>|<attack>|<defence>|<Health>|<rank>|<G-ood/E-vil>
+
+ITEM META DATA:
+
+    shirt|<defence>|c|i
+    trouser|<defence>|c|i
+    cloak|<defence>|c|i
+    book|<knowledge>|i
+    weapon|<damage>|i
+    money|<amount>|i
+
+    types:
+        i = non-usable item
+        c = clothing/equipable item
+        e = equipped item
+        p = place
+
+PLACE META DATA:
+
+    building|<type>
+
+    <type>: house/herb/inn/armoury/supply
