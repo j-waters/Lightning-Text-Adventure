@@ -15,6 +15,7 @@ import random #@UnusedImport
 import easygui #@UnresolvedImport @UnusedImport
 import sys #@UnusedImport @Reimport
 import atexit #@UnusedImport
+import ast
 #####
 #End Module Imports
 #####
@@ -66,3 +67,11 @@ def pprint(pic, string, title=None):
 def importVar(m):
     #Imports a function by name, m
     m = __import__(m)
+
+def get_save(filename):
+    result = {}
+    with open(filename) as f:
+        for line in f:
+            line = line.split(' = ',1)
+            result[line[0]] = ast.literal_eval(line[1].strip())
+    return result
