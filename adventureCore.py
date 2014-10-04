@@ -34,18 +34,18 @@ def pprint(pic, string):
 #####
 #PLAYER
 #####
-playerName = "Bob"
-playerAge = 15
-playerHealth = 20
+playerName = ""
+playerAge = 0
+playerHealth = 0
 playerCloak = ""
 playerShirt = ""
 playerTrouser = ""
 playerKnowledge = []
 playerKarma = 0
 playerXp = 0
-playerXpl = 1
-playerXpn = 10
-playerPicture = "Pics/YOU1.png"
+playerXpl = 0
+playerXpn = 0
+playerPicture = ""
 
 def player_damage(attacker, attackType, amount):
     #Deals damage to the player, displaying who did it
@@ -259,7 +259,7 @@ def player_attack(tgt):
 #INVENTORY
 #####
 inventoryContents = []
-inventorySize = 10
+inventorySize = 0
 inventoryMoney = 0
 
 def inventory_add(item):
@@ -439,7 +439,7 @@ def inventory_remove(item):
 worldMinute = 0
 worldHour = 0
 worldDay = 0
-worldDayp = 0
+worldDayp = ""
 worldMonth = 0
 int(worldDay)
 int(worldMinute)
@@ -621,10 +621,10 @@ def read(item):
     print("Knowledge Acquired! " + getmet(item, 1) + "!")
     playerKnowledge.append(getmet(item, 1))
 
-def save():
-    f = open('Saves/character.save', 'w')
+def psave():
+    p = open('Saves/Player.save', 'w')
 
-    savedic = {
+    playersave = {
     'playerName':playerName,
     'playerAge':playerAge,
     'playerHealth':playerHealth,
@@ -636,19 +636,52 @@ def save():
     'playerKarma':playerKarma,
     'playerXp':playerXp,
     'playerXpl':playerXpl,
-    'playerXpn':playerXpn
+    'playerXpn':playerXpn,
+    'playerPicture':playerPicture,
+    'inventoryContents':inventoryContents,
+    'inventorySize':inventorySize,
+    'inventoryMoney':inventoryMoney
     }
 
-    for key in savedic.keys():
-        if type(savedic[key]) == str:
-            item = key + " = '" + savedic[key] + "'\n"
+    for key in playersave.keys():
+        if type(playersave[key]) == str:
+            item = key + " = '" + playersave[key] + "'\n"
         else:
-            item = key + " = " + str(savedic[key]) + "\n"
-        f.write(item)
-    f.close
+            item = key + " = " + str(playersave[key]) + "\n"
+        p.write(item)
+    p.close
+
+def wsave():
+    w = open('Saves/World.save', 'w')
+
+    worldsave = {
+    'worldMinute':worldMinute,
+    'worldHour':worldHour,
+    'worldDay':worldDay,
+    'worldDayp':worldDayp,
+    'worldMonth':worldMonth,
+    'worldWeather':worldWeather
+    }
+
+    for key in worldsave.keys():
+        if type(worldsave[key]) == str:
+            item = key + " = '" + worldsave[key] + "'\n"
+        else:
+            item = key + " = " + str(worldsave[key]) + "\n"
+        w.write(item)
+    w.close
 
 def load():
-    globals().update(get_save('Saves/character.save'))
+    if os.path.isfile('Saves/Player.save'):
+        globals().update(get_save('Saves/Player.save'))
+    else:
+        globals().update(get_save('Saves/DEFAULT_Player.save'))
+        psave()
+    if os.path.isfile('Saves/World.save'):
+        globals().update(get_save('Saves/World.save'))
+    else:
+        globals().update(get_save('Saves/DEFAULT_World.save'))
+        wsave()
 
 def player_picture(img1,img2,img3=None,img4=None):
     picno = 1
@@ -706,3 +739,5 @@ def player_picture(img1,img2,img3=None,img4=None):
                 if picno > maxpics:
                     picno = 1
 
+load()
+debug(playerName)
