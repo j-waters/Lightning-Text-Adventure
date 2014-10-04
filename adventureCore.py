@@ -34,7 +34,7 @@ def pprint(pic, string):
 #####
 #PLAYER
 #####
-playerName = ""
+playerName = "Bob"
 playerAge = 15
 playerHealth = 20
 playerCloak = ""
@@ -45,6 +45,7 @@ playerKarma = 0
 playerXp = 0
 playerXpl = 1
 playerXpn = 10
+playerPicture = "Pics/YOU1.png"
 
 def player_damage(attacker, attackType, amount):
     #Deals damage to the player, displaying who did it
@@ -621,4 +622,87 @@ def read(item):
     playerKnowledge.append(getmet(item, 1))
 
 def save():
-    vars().update(get_save('character.save'))
+    f = open('Saves/character.save', 'w')
+
+    savedic = {
+    'playerName':playerName,
+    'playerAge':playerAge,
+    'playerHealth':playerHealth,
+    'playerHealth':playerHealth,
+    'playerCloak':playerCloak,
+    'playerShirt':playerShirt,
+    'playerTrouser':playerTrouser,
+    'playerKnowledge':playerKnowledge,
+    'playerKarma':playerKarma,
+    'playerXp':playerXp,
+    'playerXpl':playerXpl,
+    'playerXpn':playerXpn
+    }
+
+    for key in savedic.keys():
+        if type(savedic[key]) == str:
+            item = key + " = '" + savedic[key] + "'\n"
+        else:
+            item = key + " = " + str(savedic[key]) + "\n"
+        f.write(item)
+    f.close
+
+def load():
+    globals().update(get_save('Saves/character.save'))
+
+def player_picture(img1,img2,img3=None,img4=None):
+    picno = 1
+    maxpics = 2
+    pic1 = img1
+    pic2 = img2
+    if not img3 == None:
+        maxpics = 3
+        pic3 = img3
+    if not img4 == None:
+        maxpics = 4
+        pic4 = img4
+
+    while True:
+        if picno == 1:
+            c = easygui.buttonbox(msg="Select Face:", title="Character Creation", choices=("<---", "SELECT", "--->"), image=pic1)
+            if c == "<---":
+                picno = maxpics
+            if c == "SELECT":
+                playerPicture = pic1
+                return
+            if c == "--->":
+                picno += 1
+        if picno == 2:
+            c = easygui.buttonbox(msg="Select Face:", title="Character Creation", choices=("<---", "SELECT", "--->"), image=pic2)
+            if c == "<---":
+                picno -= 1
+            if c == "SELECT":
+                playerPicture = pic2
+                return
+            if c == "--->":
+                picno += 1
+                if picno > maxpics:
+                    picno = 1
+        if picno == 3:
+            c = easygui.buttonbox(msg="Select Face:", title="Character Creation", choices=("<---", "SELECT", "--->"), image=pic3)
+            if c == "<---":
+                picno -= 1
+            if c == "SELECT":
+                playerPicture = pic3
+                return
+            if c == "--->":
+                picno += 1
+                if picno > maxpics:
+                    picno = 1
+        if picno == 4:
+            c = easygui.buttonbox(msg="Select Face:", title="Character Creation", choices=("<---", "SELECT", "--->"), image=pic4)
+            if c == "<---":
+                picno -= 1
+            if c == "SELECT":
+                playerPicture = pic4
+                return
+            if c == "--->":
+                picno += 1
+                if picno > maxpics:
+                    picno = 1
+
