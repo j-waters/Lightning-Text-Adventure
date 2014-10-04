@@ -212,7 +212,7 @@ def player_attack(tgt):
                 pxp = int((int(trnk) + 1) * (random.randint(1, 3) + random.random()))
                 print("you gain " + str(pxp) + " XP!")
                 pka = int(int(trnk) * (random.randint(1, 2) + random.random()))
-                playerXpa(pka)
+                player_Xpa(pka)
                 if taln == "g":
                     print(target + " was good." + "You lose" + str(pka) + " karma")
                     playerKarma -= pka
@@ -534,7 +534,7 @@ def move(choices):
     #Shows a choicebox with places that the player can move to
     #returns the selection
 
-    choices = [i for i in choices if searchmet("building", i == "T"]
+    choices = [i for i in choices if searchmet("building", i) == "T"]
 
     TheOut = easygui.choicebox(msg="Move To:", choices=(t(choices, 0)))
 
@@ -597,7 +597,7 @@ def take(string, choices, mmax):
     #Returns the item
     debug("TAKING")
 
-    choices = [i for i in choices if searchmet("i", i == "T"]
+    choices = [i for i in choices if searchmet("i", i) == "T"]
 
     TheOut = easygui.multchoicebox(msg=string, choices=(t(choices, 0)))
 
@@ -620,4 +620,5 @@ def read(item):
     print("Knowledge Acquired! " + getmet(item, 1) + "!")
     playerKnowledge.append(getmet(item, 1))
 
-
+def save():
+    vars().update(get_save('character.save'))
