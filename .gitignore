@@ -2,3 +2,5 @@ bin
 .project
 .pydevproject
 /__pycache__/
+/PIL/
+/Saves/
