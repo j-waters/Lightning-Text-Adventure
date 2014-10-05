@@ -6,10 +6,20 @@
 #Import the Core modules
 from lightCore import *  # @UnusedWildImport
 from adventureCore import *  # @UnusedWildImport
+#Import Variable Modules
+import player, world, inventory
 
-YOU1 = "Pics/YOU1.png"
-YOU2 = "Pics/YOU2.png"
-Full_Bag = "Pics/Bag Full.png"
-Fight_Symbol = "Pics/Fight.png"
 
-player_picture(YOU1, YOU2)
+
+def firstLoad():
+    if player.load() == False:
+        create_character()
+    
+    
+
+
+
+
+def create_character():
+    player_picture(YOU1, YOU2)
+    player_name()
