@@ -14,12 +14,10 @@ import player, world, inventory
 def firstLoad():
     if player.load() == False:
         create_character()
-    
-    
-
-
 
 
 def create_character():
-    player_picture(YOU1, YOU2)
+    player_picture()
     player_name()
+
+firstLoad()
