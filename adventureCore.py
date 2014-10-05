@@ -658,5 +658,7 @@ def player_picture():
 
 def player_name():
     player.Name = easygui.enterbox(msg="What will you be known as?", title="Character Creation", image=player.Picture)
+    if player.Name == "":
+        player.Name = "Person"
     return
 
