@@ -45,5 +45,5 @@ def load():
         return True
     else:
         globals().update(get_save('Saves/DEFAULT_Player.save'))
-        save()
+        #save() #TEMP
         return False
