@@ -38,3 +38,12 @@ def load():
         globals().update(get_save('Saves/DEFAULT_World.save'))
         save()
         return False
+
+
+TN1_R1 = [
+          ("A Knife", "A slightly blunt knife", "weapon|2|i"),
+          ("A Cloak", "A spare cloak", "cloak|1|c|i"),
+          ("A Pair Of Trousers", "A spare pair of trousers", "trouser|1|c|i"),
+          ("A Shirt", "A spare shirt", "shirt|1|c|i"),
+          ("A Pouch Of Money", "A disappointingly small pouch of coppers", "money|15|i")
+          ]
