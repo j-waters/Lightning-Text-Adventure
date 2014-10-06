@@ -14,10 +14,23 @@ import player, world, inventory
 def firstLoad():
     if player.load() == False:
         create_character()
+    if world.load() == False:
+        TN1_R1()
 
 
 def create_character():
     player_picture()
     player_name()
 
+
+def TN1_R1():
+    options()
+
+
+
+
+
+
+
 firstLoad()
+
