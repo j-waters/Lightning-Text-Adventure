@@ -2,6 +2,8 @@ bin
 .project
 .pydevproject
 /__pycache__/
-/Saves/
+/Saves/Player.save
+/Saves/Inventory.save
+/Saves/World.save
 /Pics/Thumbs.db
 /PIL/
