@@ -1,0 +1,3 @@
+inventoryContents = []
+inventorySize = 10
+inventoryMoney = 0

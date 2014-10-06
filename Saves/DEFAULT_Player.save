@@ -1,0 +1,12 @@
+playerName = "Bob"
+playerAge = 15
+playerHealth = 20
+playerCloak = ""
+playerShirt = ""
+playerTrouser = ""
+playerKnowledge = []
+playerKarma = 0
+playerXp = 0
+playerXpl = 1
+playerXpn = 10
+playerPicture = "Pics/YOU1.png"
