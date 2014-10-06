@@ -404,6 +404,8 @@ def inventory_get():
         verb = "Use"
         if searchmet("book", vop) == "T":
             verb = "Read"
+        if searchmet("map", vop) == "T":
+            verb = "Read"
 
         IgI = options(Full_Bag, getdes(vop), "Discard", verb, "Back")
 
@@ -411,6 +413,8 @@ def inventory_get():
             inventory_remove(vop)
         if IgI == verb:
             if getmet(vop, 0) == "book":
+                read(vop)
+            if getmet(vop, 0) == "map":
                 read(vop)
             #other items
 
@@ -597,12 +601,12 @@ def take(string, choices, mmax):
         return find_tup(TheOut, choices)
 
 def read(item):
-    book = getnam(item)
-    book = book.split(':')[1]
-    book = book.replace(" ", "")
+    book = getmet(item, 1)
+    book = "Books/" + book
     importVar(book)
-    print("Knowledge Acquired! " + getmet(item, 1) + "!")
-    player.Knowledge.append(getmet(item, 1))
+    if getmet(item, 0) == "book":
+        print("Knowledge Acquired! " + getmet(item, 1) + "!")
+        player.Knowledge.append(getmet(item, 1))
 
 def player_picture():
     pic1 = "Pics/Player_1.png"
