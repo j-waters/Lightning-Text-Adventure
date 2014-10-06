@@ -36,7 +36,7 @@ def load():
         return True
     else:
         globals().update(get_save('Saves/DEFAULT_World.save'))
-        save()
+        #save() #TEMPORARY
         return False
 
 
