@@ -5,7 +5,8 @@ ITEM META DATA:
     shirt|<defence>|c|i
     trouser|<defence>|c|i
     cloak|<defence>|c|i
-    book|<knowledge>|i
+    book|<knowledge/book name>|i
+    map|<map name>|i
     weapon|<damage>|i
     money|<amount>|i
 
@@ -19,7 +20,7 @@ PLACE META DATA:
     In town squares:
         building|<type>
         <type>: house/herb/inn/armoury/supply
-    
+
 Out Posts:
     SHK# = Random Shack/house
     TWR#_L# = Random Tower With multiple levels
