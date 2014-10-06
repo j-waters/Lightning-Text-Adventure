@@ -26,11 +26,11 @@ import inventory
 #####
 def print(string):  # @DontTrace @ReservedAssignment
     #easygui print
-    easygui.msgbox(msg=string, title=world_time())
+    easygui.msgbox(msg=string, title=world.time())
 
 def pprint(pic, string):
     #easygui picture print
-    easygui.msgbox(image=pic, msg=string, title=world_time())
+    easygui.msgbox(image=pic, msg=string, title=world.time())
 
 #####
 #Pictures
@@ -429,31 +429,6 @@ def inventory_remove(item):
 #END INVENTORY
 #####
 
-#####
-#WORLD
-#####
-
-def world_time():
-    if world.Day % 10 == 1:
-        world.Dayp = "st"
-    if world.Day % 10 == 2:
-        world.Dayp = "nd"
-    if world.Day % 10 == 3:
-        world.Dayp = "rd"
-    if world.Day % 10  == 0:
-        world.Dayp = "th"
-    if world.Day % 10 > 3:
-        world.Dayp = "th"
-
-    TheOut = str(world.Hour) + ":" + str(world.Minute) + "0" + " " + str(world.Day) + str(world.Dayp) + " of " + str(world.Month)
-
-    #str(TheOut)
-    return TheOut
-
-#####
-#END WORLD
-#####
-
 def getmet(item, metno):
     #Gets the metadata from a tuple (item)
     #finds the correct metadata by number (metno)
@@ -500,17 +475,17 @@ def searchmet(string, item):
 
 def input(string):  # @ReservedAssignment
     #Creates an enter box with a string, and the time as the title
-    TheInput = easygui.enterbox(msg=string, title=world_time())
+    TheInput = easygui.enterbox(msg=string, title=world.time())
     return TheInput
 
 def options(pic, string, op1, op2, op3=None, op4=None):
     #creates an button box with 2, up to 4 choices
     if not op4 == None:
-        TheOut = easygui.buttonbox(choices=(op1, op2, op3, op4, "Inventory"), msg=string, image=pic, title=world_time())
+        TheOut = easygui.buttonbox(choices=(op1, op2, op3, op4, "Inventory"), msg=string, image=pic, title=world.time())
     if op4 == None:
-        TheOut = easygui.buttonbox(choices=(op1, op2, op3, "Inventory"), msg=string, image=pic, title=world_time())
+        TheOut = easygui.buttonbox(choices=(op1, op2, op3, "Inventory"), msg=string, image=pic, title=world.time())
     if op4 and op3 == None:
-        TheOut = easygui.buttonbox(choices=(op1, op2, "Inventory"), msg=string, image=pic, title=world_time())
+        TheOut = easygui.buttonbox(choices=(op1, op2, "Inventory"), msg=string, image=pic, title=world.time())
 
     if TheOut == "Inventory":
         inventory_get()
@@ -559,28 +534,23 @@ def find_tup(item, lis):
 
                 return TheOut
 
-def view(items, string=""):
+def view(items, string="You Can See:"):
     #Creates a choicebox from a list
     #Can use a string, by default shows 'you can see:'
 
-    TheOut = ""
-    str(TheOut)
+    while True:
+        TheOut = ""
+        str(TheOut)
 
-    if string == "":
-        TheOut = easygui.choicebox(msg="You Can See:", choices=(t(items, 0)), title=world_time())
+        TheOut = easygui.choicebox(msg=string, choices=(t(items, 0)), title=world.time())
 
-    else:
-        TheOut = easygui.choicebox(msg=string, choices=(t(items, 0)), title=world_time())
+        if TheOut == None:
+            return
 
+        TheOut = find_tup(TheOut, items)
+        print(TheOut[1])
 
-    TheOut = find_tup(TheOut, items)
-
-    print(TheOut[1])
-
-
-    return TheOut
-
-def take(string, choices, mmax):
+def take(string="You Can Take:", choices, mmax):
     #Takes an item and places it into the players inventory
     #Returns the item
     debug("TAKING")
@@ -666,3 +636,12 @@ def player_name():
         player.Name = "Person"
     return
 
+def choices(things):
+    des = easygui.buttonbox(msg="What Will You Do?", title=world.time, choices=("Look Around","Take Something", "Move Somewhere", "View Inventory"))
+    if des == "Look Around":
+        view(things)
+
+    if des == "Take Something":
+        take(things)
+    if des == "Move Somewhere":
+        move(things)
