@@ -16,7 +16,10 @@ ITEM META DATA:
         p = place
 
 PLACE META DATA:
-
-    building|<type>
-
-    <type>: house/herb/inn/armoury/supply
+    In town squares:
+        building|<type>
+        <type>: house/herb/inn/armoury/supply
+    
+Out Posts:
+    SHK# = Random Shack/house
+    TWR#_L# = Random Tower With multiple levels
