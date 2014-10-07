@@ -24,7 +24,7 @@ def create_character():
 
 
 def TN1_R1():
-    options()
+    choices(world.TN1_R1)
 
 
 
