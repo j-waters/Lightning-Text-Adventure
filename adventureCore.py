@@ -384,6 +384,9 @@ def inventory_get():
     if type(vop) == list:
         vop = vop[0]
 
+    if getnam(vop) == pstring:
+        print(getdes(vop))
+
     if getmet(vop, "all") == "i":
         #Is it an average item?
         pprint(Full_Bag, getdes(vop))
@@ -550,7 +553,7 @@ def view(items, string="You Can See:"):
         TheOut = find_tup(TheOut, items)
         print(TheOut[1])
 
-def take(string="You Can Take:", choices, mmax):
+def take(choices, mmax=0, string="You Can Take:"):
     #Takes an item and places it into the players inventory
     #Returns the item
     debug("TAKING")
@@ -563,7 +566,9 @@ def take(string="You Can Take:", choices, mmax):
         return
 
     if len(TheOut) > mmax:
-        return
+        if not mmax == 0:
+            print("You can only take " + mmax + " items.")
+            return
 
     else:
 
@@ -637,11 +642,12 @@ def player_name():
     return
 
 def choices(things):
-    des = easygui.buttonbox(msg="What Will You Do?", title=world.time, choices=("Look Around","Take Something", "Move Somewhere", "View Inventory"))
+    des = easygui.buttonbox(msg="What Will You Do?", title=world.time(), choices=("Look Around","Take Something", "Move Somewhere", "View Inventory"))
     if des == "Look Around":
         view(things)
-
     if des == "Take Something":
         take(things)
     if des == "Move Somewhere":
         move(things)
+    if des == "View Inventory":
+        inventory_get()
