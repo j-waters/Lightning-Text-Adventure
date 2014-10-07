@@ -24,3 +24,5 @@ PLACE META DATA:
 Out Posts:
     SHK# = Random Shack/house
     TWR#_L# = Random Tower With multiple levels
+
+#TODO: FIX "i", not sure what to change to...
