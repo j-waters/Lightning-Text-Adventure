@@ -76,7 +76,7 @@ def player_defence():
     #Calculates the defence of a player
     TheOut = 1
     try:
-        TheOut += int(getmet(player.Cloak, 1))
+        TheOut += int(getmet(player.Helm, 1))
     except:
         TheOut += 0
     try:
@@ -94,9 +94,9 @@ def player_unEquip(item):
     #Unequips an item from the player
     debug("Un Equip")
 
-    if item == "cloak":
-        inventory_add(player.Cloak)
-        player.Cloak = ""
+    if item == "helm":
+        inventory_add(player.Helm)
+        player.Helm = ""
 
     if item == "shirt":
         inventory_add(player.Shirt)
@@ -110,15 +110,15 @@ def player_equip(item):
     #Equips an item to the player
     debug("equiping:")
 
-    if getmet(item, 0) == "cloak":
-        if player.Cloak == "":
-            player.Cloak = item
+    if getmet(item, 0) == "helm":
+        if player.Helm == "":
+            player.Helm = item
             inventory_remove(item)
 
         else:
             inventory_remove(item)
-            inventory_add(player.Cloak)
-            player.Cloak = item
+            inventory_add(player.Helm)
+            player.Helm = item
 
 
 
@@ -163,25 +163,24 @@ def player_attack(tgt):
 
     weapons = []
     wdamage = []
+    wpics = []
 
     for i in range(0, len(inventory.Contents)):
         spl = getmet(inventory.Contents[i], 0)
         if spl == "weapon":
             weapons.append(getnam(inventory.Contents[i]))
             wdamage.append(getmet(inventory.Contents[i], 1))
+            wpics.append(getpic(inventory.Contents[i]))
 
     weapons.append("Your Fists")
     wdamage.append("2")
+    wpics.append("Fist01.png")
 
     #pprint(Fight_Symbol, player.Name + " (" + str(player.Health) + ", " + str(player_defence()) + ")" + " Attacks " + target + " (" + str(tlife) + ", " + str(tdef) + ")" + "!")
-    pprint(Fight_Symbol, player.Name + " (Level " + str(player.Xpl) + ")" + " Attacks " + str(target) + " (Level " + str(trnk) + ")" + "!")
-    att_weapon = easygui.choicebox(msg="Chose your weapon", choices=(weapons))
+    pprint(Fight_Symbol, player.Name + " (Level " + str(player.Xpl) + ")" + " Attacks " + str(target) + " (Level " + str(trnk) + ")" + "! Choose your weapon!")
+    #att_weapon = easygui.choicebox(msg="Chose your weapon", choices=(weapons))
+    patt = weaponselect(weapons, wdamage, wpics)
 
-    patt = 0
-
-    for i in range(0, len(weapons)):
-        if weapons[i] == att_weapon:
-            patt = int(wdamage[i])
 
     while True:
         ###Choose Attacker###
@@ -309,18 +308,18 @@ def inventory_get():
 
     estring1 = "You Have Equipped: "
     try:
-        if not player.Cloak == "":
-            estring2 = player.Cloak[0]
-            estring2d = player.Cloak[1]
-            estring2m = "e|cloak"
+        if not player.Helm == "":
+            estring2 = player.Helm[0]
+            estring2d = player.Helm[1]
+            estring2m = "e|helm"
 
-        if player.Cloak == "":
-            estring2 = "No Cloak"
-            estring2d = "Your not wearing a cloak"
+        if player.Helm == "":
+            estring2 = "No helm"
+            estring2d = "Your not wearing a helm"
             estring2m = ""
     except:
-        estring2 = "No Cloak"
-        estring2d = "Your not wearing a cloak"
+        estring2 = "No helm"
+        estring2d = "Your not wearing a helm"
         estring2m = ""
 
     try:
@@ -345,7 +344,7 @@ def inventory_get():
             estring4m = "e|trouser"
 
         if player.Trouser == "":
-            estring4 = "No Extra Trouser"
+            estring4 = "No Extra Trousers"
             estring4d = "Your not wearing any over trousers"
             estring4m = ""
     except:
@@ -389,17 +388,17 @@ def inventory_get():
 
     if getmet(vop, "all") == "i":
         #Is it an average item?
-        pprint(Full_Bag, getdes(vop))
+        pprint(getpic(vop), getdes(vop))
 
     if searchmet("e", vop) == "T":
         #Is it an equipped item?
-        IgI = easygui.buttonbox(image=Full_Bag, msg=getdes(vop), choices=("Back", "Un Equip"))
+        IgI = easygui.buttonbox(image=getpic(vop), msg=getdes(vop), choices=("Back", "Un Equip"))
         if IgI == "Un Equip":
             player_unEquip(getmet(vop, 1))
 
     if searchmet("c", vop) == "T":
         #Is it an eqipable item?
-        IgI = easygui.buttonbox(image=Full_Bag, msg=getdes(vop), choices=("Back", "Equip"))
+        IgI = easygui.buttonbox(image=getpic(vop), msg=getdes(vop), choices=("Back", "Equip"))
         if IgI == "Equip":
             player_equip(vop)
 
@@ -410,7 +409,7 @@ def inventory_get():
         if searchmet("map", vop) == "T":
             verb = "Read"
 
-        IgI = options(Full_Bag, getdes(vop), "Discard", verb, "Back")
+        IgI = options(getpic(vop), getdes(vop), "Discard", verb, "Back")
 
         if IgI == "Discard":
             inventory_remove(vop)
@@ -454,6 +453,16 @@ def getdes(item):
     #Gets the description from a tuple (item)
     TheOut = item[1]
     return TheOut
+
+def getpic(item):
+    #Gets the image from a tuple (item)
+    if type(item) == tuple:
+        TheOut = item[3]
+        TheOut = "Pics/" + TheOut
+        return TheOut
+    if type(item) == str:
+        TheOut = "Pics/" + TheOut
+        return TheOut
 
 def getnam(item):
     #Gets the name from a tuple (item)
@@ -651,3 +660,54 @@ def choices(things):
         move(things)
     if des == "View Inventory":
         inventory_get()
+
+def selector(things, pictures, string, metno, title):
+    #insert %m in string to replace that with output from metno
+    #insert %t in string to replace that with thing name
+    items = []
+    names = []
+    nmax = len(things)
+    for i in range(0, len(things)):
+        item = getnam(things[i])
+        met = getmet(things[i], metno)
+        line = string
+        line.replace("%m", met)
+        line.replace("%t", item)
+        items.append(line)
+        names.append(item)
+
+    num = 0
+    while True:
+
+        out = easygui.buttonbox(msg=items[num], title=title, choices=("<---", "SELECT", "--->"), image=pictures[num])
+        if out == "<---":
+            num -= 1
+            if num < 0:
+                num = nmax
+            if out == "SELECT":
+                for i in names:
+                    for t in things:
+                        if getnam(t) == i[num]:
+                            TheOut = t
+                return TheOut
+        if out == "--->":
+            num += 1
+            if num > nmax:
+                num = 0
+
+def weaponselect(weapon, wdamage, pic):
+    nmax = len(weapon)
+    num = 0
+    while True:
+        string = weapon[num] + ": Does " + wdamage[num] + " Damage."
+        out = easygui.buttonbox(msg=string, title="Choose Your Weapon:", choices=("<---", "SELECT", "--->"), image=pic[num])
+        if out == "<---":
+            num -= 1
+            if num < 0:
+                num = nmax
+        if out == "SELECT":
+            return wdamage[num]
+        if out == "--->":
+            num += 1
+            if num > nmax:
+                num = 0
