@@ -4,4 +4,4 @@ worldDay = 0
 worldDayp = 0
 worldMonth = 0
 worldWeather = "clear"
-TN1_R1 = [("A Knife", "A slightly blunt knife", "weapon|2|i"), ("A Cloak", "A spare cloak", "cloak|1|c|i"), ("A Pair Of Trousers", "A spare pair of trousers", "trouser|1|c|i"), ("A Shirt", "A spare shirt", "shirt|1|c|i"), ("A Pouch Of Money", "A disappointingly small pouch of coppers", "money|15|i"), ("A Map", "A Crudely Drawn Map Of The Area", "map|MP1|i")]
+TN1_R1 = [("A Knife", "A slightly blunt knife", "weapon|2|i", "Rdagger.png"), ("A helmet", "A nice tough helmet", "helm|1|c|i"), ("A Pair Of Trousers", "A spare pair of trousers", "trouser|1|c|i"), ("A Shirt", "A spare shirt", "shirt|1|c|i"), ("A Pouch Of Money", "A disappointingly small pouch of coppers", "money|15|i"), ("A Map", "A Crudely Drawn Map Of The Area", "map|MP1|i")]
