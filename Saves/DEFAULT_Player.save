@@ -1,7 +1,7 @@
 playerName = "Bob"
 playerAge = 15
 playerHealth = 20
-playerCloak = ""
+playerhelm = ""
 playerShirt = ""
 playerTrouser = ""
 playerKnowledge = []
