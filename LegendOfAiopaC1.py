@@ -12,10 +12,12 @@ import player, world, inventory
 
 
 def firstLoad():
+    inventory.load()
     if player.load() == False:
         create_character()
     if world.load() == False:
         TN1_R1()
+
 
 
 def create_character():
