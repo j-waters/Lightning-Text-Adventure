@@ -3,7 +3,7 @@ import os.path
 Name = ""
 Age = 0
 Health = 0
-Cloak = ""
+Helm = ""
 Shirt = ""
 Trouser = ""
 Knowledge = []
@@ -20,7 +20,7 @@ def save():
     'Age':Age,
     'Health':Health,
     'Health':Health,
-    'Cloak':Cloak,
+    'Helm':Helm,
     'Shirt':Shirt,
     'Trouser':Trouser,
     'Knowledge':Knowledge,
