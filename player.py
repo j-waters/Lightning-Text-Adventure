@@ -5,7 +5,7 @@ Age = 0
 Health = 0
 Helm = ""
 Shirt = ""
-Trouser = ""
+Boot = ""
 Knowledge = []
 Karma = 0
 Xp = 0
@@ -22,7 +22,7 @@ def save():
     'Health':Health,
     'Helm':Helm,
     'Shirt':Shirt,
-    'Trouser':Trouser,
+    'boot':boot,
     'Knowledge':Knowledge,
     'Karma':Karma,
     'Xp':Xp,
