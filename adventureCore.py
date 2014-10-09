@@ -84,7 +84,7 @@ def player_defence():
     except:
         TheOut += 0
     try:
-        TheOut += int(getmet(player.Trouser, 1))
+        TheOut += int(getmet(player.Boot, 1))
     except:
         TheOut += 0
 
@@ -102,13 +102,15 @@ def player_unEquip(item):
         inventory_add(player.Shirt)
         player.Shirt = ""
 
-    if item == "trouser":
-        inventory_add(player.Trouser)
-        player.Trouser = ""
+    if item == "boot":
+        inventory_add(player.Boot)
+        player.boot = ""
 
 def player_equip(item):
     #Equips an item to the player
     debug("equiping:")
+    debug(item)
+    debug(getmet(item, 0))
 
     if getmet(item, 0) == "helm":
         if player.Helm == "":
@@ -119,6 +121,7 @@ def player_equip(item):
             inventory_remove(item)
             inventory_add(player.Helm)
             player.Helm = item
+        return
 
 
 
@@ -132,22 +135,24 @@ def player_equip(item):
             inventory_remove(item)
             inventory_add(player.Shirt)
             player.Shirt = item
+        return
 
 
 
-    if getmet(item, 0) == "trouser":
-        if player.Trouser == "":
-            player.Trouser = item
+    if getmet(item, 0) == "boot":
+        if player.Boot == "":
+            player.boot = item
 
             inventory_remove(item)
 
         else:
             inventory_remove(item)
-            inventory_add(player.Trouser)
-            player.Trouser = item
+            inventory_add(player.Boot)
+            player.boot = item
+        return
 
     else:
-        print("Cannot equip a " + item)
+        print("Cannot equip a " + str(item))
 
 
 
@@ -254,8 +259,11 @@ def player_attack(tgt):
 #####
 
 def inventory_add(item):
+
     debug("ADD TO INVENTORY:")
+    #This bit will have problems with lists of items due to the 1
     if 1 + len(inventory.Contents) > inventory.Size:
+        debug(inventory.Size)
         spaceleft = inventory.Size - len(inventory.Contents)
         things = len(item)
         pprint(Full_Bag, "You Can't fit " + str(things) + " More item in a bag that can only hold " + str(spaceleft) + " more items!")
@@ -338,18 +346,18 @@ def inventory_get():
         estring3m = ""
 
     try:
-        if not player.Trouser == "":
-            estring4 = player.Trouser[0]
-            estring4d = player.Trouser[1]
-            estring4m = "e|trouser"
+        if not player.Boot == "":
+            estring4 = player.Boot[0]
+            estring4d = player.Boot[1]
+            estring4m = "e|boot"
 
-        if player.Trouser == "":
-            estring4 = "No Extra Trousers"
-            estring4d = "Your not wearing any over trousers"
+        if player.Boot == "":
+            estring4 = "No Extra boots"
+            estring4d = "Your not wearing any over boots"
             estring4m = ""
     except:
-        estring4 = "No Extra Trouser"
-        estring4d = "Your not wearing any over trousers"
+        estring4 = "No Extra boot"
+        estring4d = "Your not wearing any over boots"
         estring4m = ""
 
     inventory.Contents.append((estring1 + estring2,estring2d, estring2m))
@@ -384,7 +392,7 @@ def inventory_get():
         vop = vop[0]
 
     if getnam(vop) == pstring:
-        print(getdes(vop))
+        pprint(player.Picture, getdes(vop))
 
     if getmet(vop, "all") == "i":
         #Is it an average item?
@@ -437,15 +445,17 @@ def getmet(item, metno):
     TheOut = None
 
     if type(item) == tuple:
-        TheOut = item[2].split('|')[metno]
-
         if metno == "all":
             TheOut = item[2]
+            return TheOut
+
+        TheOut = item[2].split('|')[metno]
 
     if type(item) == list:
-        TheOut = item[0][2].split('|')[metno]
         if metno == "all":
             TheOut = item[0][2]
+            return TheOut
+        TheOut = item[0][2].split('|')[metno]
 
     return TheOut
 
@@ -456,6 +466,7 @@ def getdes(item):
 
 def getpic(item):
     #Gets the image from a tuple (item)
+    debug(item)
     if type(item) == tuple:
         TheOut = item[3]
         TheOut = "Pics/" + TheOut
@@ -479,7 +490,7 @@ def searchmet(string, item):
     if type(item) == tuple:
         item = getmet(item, "all")
 
-    for i in len(item.split('|')):
+    for i in range(0, len(item.split('|'))):
         if item.split('|')[i] == string:
             return "T"
 
@@ -560,7 +571,7 @@ def view(items, string="You Can See:"):
             return
 
         TheOut = find_tup(TheOut, items)
-        print(TheOut[1])
+        pprint(getpic(TheOut), getdes(TheOut))
 
 def take(choices, mmax=0, string="You Can Take:"):
     #Takes an item and places it into the players inventory
@@ -570,6 +581,7 @@ def take(choices, mmax=0, string="You Can Take:"):
     choices = [i for i in choices if searchmet("i", i) == "T"]
 
     TheOut = easygui.multchoicebox(msg=string, choices=(t(choices, 0)))
+    debug(TheOut)
 
     if TheOut == None:
         return
@@ -579,10 +591,8 @@ def take(choices, mmax=0, string="You Can Take:"):
             print("You can only take " + mmax + " items.")
             return
 
-    else:
-
-        inventory_add(find_tup(TheOut, choices))
-        return find_tup(TheOut, choices)
+    inventory_add(find_tup(TheOut, choices))
+    return find_tup(TheOut, choices)
 
 def read(item):
     book = getmet(item, 1)
@@ -651,15 +661,16 @@ def player_name():
     return
 
 def choices(things):
-    des = easygui.buttonbox(msg="What Will You Do?", title=world.time(), choices=("Look Around","Take Something", "Move Somewhere", "View Inventory"))
-    if des == "Look Around":
-        view(things)
-    if des == "Take Something":
-        take(things)
-    if des == "Move Somewhere":
-        move(things)
-    if des == "View Inventory":
-        inventory_get()
+    while True:
+        des = easygui.buttonbox(msg="What Will You Do?", title=world.time(), choices=("Look Around","Take Something", "Move Somewhere", "View Inventory"))
+        if des == "Look Around":
+            view(things)
+        if des == "Take Something":
+            take(things)
+        if des == "Move Somewhere":
+            move(things)
+        if des == "View Inventory":
+            inventory_get()
 
 def selector(things, pictures, string, metno, title):
     #insert %m in string to replace that with output from metno
