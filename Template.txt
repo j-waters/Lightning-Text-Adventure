@@ -3,7 +3,7 @@ NPC META DATA: <name>|<attack>|<defence>|<Health>|<rank>|<G-ood/E-vil>
 ITEM META DATA:
 
     shirt|<defence>|c|i
-    trouser|<defence>|c|i
+    boot|<defence>|c|i
     helm|<defence>|c|i
     book|<knowledge/book name>|i
     map|<map name>|i
