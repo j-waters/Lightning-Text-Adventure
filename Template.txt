@@ -4,7 +4,7 @@ ITEM META DATA:
 
     shirt|<defence>|c|i
     trouser|<defence>|c|i
-    cloak|<defence>|c|i
+    helm|<defence>|c|i
     book|<knowledge/book name>|i
     map|<map name>|i
     weapon|<damage>|i
