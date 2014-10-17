@@ -662,7 +662,14 @@ def player_name():
 
 def choices(things):
     while True:
-        des = easygui.buttonbox(msg="What Will You Do?", title=world.time(), choices=("Look Around","Take Something", "Move Somewhere", "View Inventory"))
+        chs = ["Look Around","Take Something", "Move Somewhere", "View Inventory"]
+        for i in things:
+            if getmet(i, 0) == "npc":
+                chs.append("Interact With Something")
+                break
+
+        des = easygui.buttonbox(msg="What Will You Do?", title=world.time(), choices=(chs))
+
         if des == "Look Around":
             view(things)
         if des == "Take Something":
@@ -671,6 +678,15 @@ def choices(things):
             move(things)
         if des == "View Inventory":
             inventory_get()
+        if des == "Interact With Something":
+            soth = []
+            for i in things:
+                if getmet(i, 0) == "npc":
+                    soth.append(i)
+
+            something = easygui.multchoicebox(msg="You can interact with...", title=world.time(), choices=t(soth, 0))
+            if getmet(something, 0) == "npc":
+                talk(something)
 
 def selector(things, pictures, string, metno, title):
     #insert %m in string to replace that with output from metno
@@ -722,3 +738,5 @@ def weaponselect(weapon, wdamage, pic):
             num += 1
             if num > nmax:
                 num = 0
+
+def talk(person):
