@@ -26,3 +26,16 @@ Out Posts:
     TWR#_L# = Random Tower With multiple levels
 
 #TODO: FIX "i", not sure what to change to...
+
+TALKING:
+
+personName = {
+  'Trunk01' : {
+    'branch01' : {
+        'twig01' : {},
+        'twig02' : {},
+        'twig03' : {}},
+    'branch02' : {},
+    'branch03' : {},
+  },
+}
