@@ -1,4 +1,4 @@
-NPC META DATA: <name>|<attack>|<defence>|<Health>|<rank>|<G-ood/E-vil>
+NPC META DATA: npc|<attack>|<defence>|<Health>|<rank>|<G-ood/E-vil>
 
 ITEM META DATA:
 
@@ -39,3 +39,13 @@ personName = {
     'branch03' : {},
   },
 }
+
+
+
+{
+    "G1" : "Hello There",
+    "G2" : "Good Day",
+    "G3" : "Greetings"
+}
+
+{"G1" : {"t" : "Hello There"}, "G2" : {"t" : "Good Day"}, "G3" : {"t" : "Greetings"}}
