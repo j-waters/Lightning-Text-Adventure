@@ -10,6 +10,8 @@ int(Minute)
 int(Hour)
 Weather = "clear"
 
+TN1_R1 =[]
+
 def save():
     f = open('Saves/World.save', 'w')
 
