@@ -684,8 +684,10 @@ def choices(things):
                 if getmet(i, 0) == "npc":
                     soth.append(i)
 
-            something = easygui.multchoicebox(msg="You can interact with...", title=world.time(), choices=t(soth, 0))
+            something = easygui.choicebox(msg="You can interact with...", title=world.time(), choices=t(soth, 0))
+            something = find_tup(something, things)
             if getmet(something, 0) == "npc":
+                debug("talk")
                 talk(something)
 
 def selector(things, pictures, string, metno, title):
@@ -740,3 +742,12 @@ def weaponselect(weapon, wdamage, pic):
                 num = 0
 
 def talk(person):
+    dic = person[3]
+    rdm = random.randint(1, len(dic))
+    for key in dic:
+        if list(dic[key])[0] == "G":
+            print(dic["G" + str(rdm)])
+            break
+
+        if list(dic[key])[0] == "C":
+            print(dic[key])
