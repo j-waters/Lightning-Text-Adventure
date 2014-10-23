@@ -4,4 +4,4 @@ Day = 0
 Dayp = 0
 Month = 0
 Weather = "clear"
-TN1_R1 = [("A Knife", "A slightly blunt knife", "weapon|2|i", "Rdagger.png"), ("A Hat", "A nice warm hat", "helm|1|c|i", "Hat01.png"), ("A Pair Of Boots", "A nice pair of Boots", "boot|1|c|i", "Shoes01.png"), ("A Shirt", "A spare shirt", "shirt|1|c|i", "Clothing01.png"), ("A Pouch Of Money", "A disappointingly small pouch of coppers", "money|15|i", "BronzeCoin.png"), ("A Map", "A Crudely Drawn Map Of The Area", "map|MP1|i", "Map.png")]
+TN1_R1 = [("A Knife", "A slightly blunt knife", "weapon|2|i", "Rdagger.png"), ("A Hat", "A nice warm hat", "helm|1|c|i", "Hat01.png"), ("A Pair Of Boots", "A nice pair of Boots", "boot|1|c|i", "Shoes01.png"), ("A Shirt", "A spare shirt", "shirt|1|c|i", "Clothing01.png"), ("A Pouch Of Money", "A disappointingly small pouch of coppers", "money|15|i", "BronzeCoin.png"), ("A Map", "A Crudely Drawn Map Of The Area", "map|MP1|i", "Map.png"), ("An Old Man", "A wrinkly old man", "npc|2|1|7|1|G", {"G1" : "Hello There", "G2" : "Good Day", "G3" : "Greetings"})]
