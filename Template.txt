@@ -29,23 +29,14 @@ Out Posts:
 
 TALKING:
 
-personName = {
-  'Trunk01' : {
-    'branch01' : {
-        'twig01' : {},
-        'twig02' : {},
-        'twig03' : {}},
-    'branch02' : {},
-    'branch03' : {},
-  },
-}
-
-
-
 {
-    "G1" : "Hello There",
-    "G2" : "Good Day",
-    "G3" : "Greetings"
+    "T" : "#Sentence/statement#",
+    "O1" : {
+        "B" : "#Button name#",
+        "T" : "#Sentence/statement#"
+        "O1" : etc... }
+    "O2" : {
+        "B" : "#Button name#",
+        "T" : "#Sentence/statement#"
+        "O1" : etc... }
 }
-
-{"G1" : {"t" : "Hello There"}, "G2" : {"t" : "Good Day"}, "G3" : {"t" : "Greetings"}}
