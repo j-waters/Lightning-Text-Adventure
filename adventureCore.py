@@ -744,10 +744,30 @@ def weaponselect(weapon, wdamage, pic):
 def talk(person):
     dic = person[3]
     rdm = random.randint(1, len(dic))
+    otn = []
+    otndic = []
     for key in dic:
-        if list(dic[key])[0] == "G":
-            print(dic["G" + str(rdm)])
-            break
+        if list(key)[0] == "O":
+            otn.append(dic[key]["B"])
+            otndic.append(dic[key])
+    c = easygui.buttonbox(msg=dic["T"], title=world.time(), choices=otn)
 
-        if list(dic[key])[0] == "C":
-            print(dic[key])
+    for d in otndic:
+        if d["B"] == c:
+            cur = d
+
+    while True:
+        otn = []
+        otndic = []
+        for key in cur:
+            if list(key)[0] == "O":
+                otn.append(cur[key]["B"])
+                otndic.append(cur[key])
+
+            if list(key)[0] == "R":
+                exec(cur[key]["R"])
+        c = easygui.buttonbox(msg=cur["T"], title=world.time(), choices=otn)
+
+        for d in otndic:
+            if d["B"] == c:
+                cur = d
