@@ -8,7 +8,7 @@ from lightCore import *  # @UnusedWildImport
 from adventureCore import *  # @UnusedWildImport
 #Import Variable Modules
 import player, world, inventory
-
+import ConversationTreeMaker
 
 
 def firstLoad():
@@ -28,11 +28,8 @@ def create_character():
 def TN1_R1():
     choices(world.TN1_R1)
 
+#firstLoad()
 
-
-
-
-
-
-firstLoad()
-
+world.load()
+dic = world.TN1_R1[6][3]
+ConversationTreeMaker.printTree(dic)
