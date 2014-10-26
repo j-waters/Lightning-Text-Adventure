@@ -76,3 +76,4 @@ def get_save(filename):
             line = line.split(' = ',1)
             result[line[0]] = ast.literal_eval(line[1].strip())
     return result
+
