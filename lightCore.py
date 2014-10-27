@@ -1,3 +1,4 @@
+
 import sys  # @UnusedImport
 from urllib.request import urlretrieve
 
@@ -77,3 +78,12 @@ def get_save(filename):
             result[line[0]] = ast.literal_eval(line[1].strip())
     return result
 
+def printTree(tree, depth = 0):
+    if tree == None or len(tree) == 0:
+        debug ("\t" * depth + "-")
+    if type(tree) == str:
+        debug ("\t" * depth + tree)
+    else:
+        for key, val in tree.items():
+            debug ("\t" * depth + key)
+            printTree(val, depth+1)
