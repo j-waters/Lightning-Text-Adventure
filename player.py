@@ -12,6 +12,9 @@ Xp = 0
 Xpl = 0
 Xpn = 0
 Picture = ""
+Luck = 0
+Speed = 0
+Strength = 0
 
 def save():
     f = open('Saves/Player.save', 'w')
