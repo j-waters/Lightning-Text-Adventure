@@ -37,6 +37,7 @@ def pprint(pic, string):
 #####
 Full_Bag = "Pics/Bag Full.png"
 Fight_Symbol = "Pics/Fight.png"
+Coin = "Pics/BronzeCoin.png"
 
 #####
 #PLAYER
@@ -159,11 +160,13 @@ def player_equip(item):
 def player_attack(tgt):
     #Player attacks 'tgt'
     debug("ATTACKING")
-    tatt = getmet(tgt, 1)
-    tdef = getmet(tgt, 2)
-    tlife = getmet(tgt, 3)
-    trnk = getmet(tgt, 4)
+    tatt = int(getmet(tgt, 1))
+    tdef = int(getmet(tgt, 2))
+    tlife = int(getmet(tgt, 3))
+    trnk = int(getmet(tgt, 4))
     taln = getmet(tgt, 5)
+    tspd = int(getmet(tgt, 6))
+    tlck = int(getmet(tgt, 7))
     target = getnam(tgt)
 
     weapons = []
@@ -178,76 +181,119 @@ def player_attack(tgt):
             wpics.append(getpic(inventory.Contents[i]))
 
     weapons.append("Your Fists")
-    wdamage.append("2")
+    wdamage.append(player.Strength)
     wpics.append("Fist01.png")
 
     #pprint(Fight_Symbol, player.Name + " (" + str(player.Health) + ", " + str(player_defence()) + ")" + " Attacks " + target + " (" + str(tlife) + ", " + str(tdef) + ")" + "!")
     pprint(Fight_Symbol, player.Name + " (Level " + str(player.Xpl) + ")" + " Attacks " + str(target) + " (Level " + str(trnk) + ")" + "! Choose your weapon!")
     #att_weapon = easygui.choicebox(msg="Chose your weapon", choices=(weapons))
     patt = weaponselect(weapons, wdamage, wpics)
-
+    debug(patt)
+    debug(type(patt))
 
     while True:
-        ###Choose Attacker###
-        rnd = random.randint(1,2)
         PtE = int( patt * (1 + random.random())- int(tdef))
         EtP = int( int (tatt) * (1 + random.random()) - player_defence())
         tlife = int(tlife)
-        if PtE < 0:
-            PtE = 0
+        Pcrit = False
+        Ecrit = False
 
-        if EtP < 0:
-            EtP = 0
+        des = easygui.buttonbox(msg="Your Turn!", choices=("Attack", "Defend", "Magic", "Retreat", "Change Weapon"))
 
-        if rnd == 1:
-            ###Player Attacks###
-            print(player.Name + " Attacks!")
-            print(player.Name + " Deals " + str(PtE) + " Damage To " + target)
-            tlife -= PtE
-            print(target + " Is Now On " + str(tlife) + " Health.")
+        if des == "Attack":
+            if tspd + random.randint(-2, 2) > player.Speed + random.randint(-2, 2):
+                order = "target"
+            elif tspd + random.randint(-2, 2) < player.Speed + random.randint(-2, 2):
+                order = "player"
+            else:
+                rdm = random.randint(1,2)
+                if rdm == 1:
+                    order = "target"
+                if rdm == 1:
+                    order = "player"
 
+            if PtE < 0:
+                PtE = 0
 
-            if tlife < 1:
-                print("You defeat " + target + ".")
-                pxp = int((int(trnk) + 1) * (random.randint(1, 3) + random.random()))
-                print("you gain " + str(pxp) + " XP!")
-                pka = int(int(trnk) * (random.randint(1, 2) + random.random()))
-                player_Xpa(pka)
-                if taln == "g":
-                    print(target + " was good." + "You lose" + str(pka) + " karma")
-                    player.Karma -= pka
-                if taln == "e":
-                    print(target + "was evil." + "You gain" + str(pka) + " karma")
-                    player.Karma += pka
-                return "win"
+            if EtP < 0:
+                EtP = 0
 
-            print(target + " Deals " + str(EtP) + " Damage To " + player.Name)
-            player.Health -= EtP
-            print(player.Name + " Is Now On " + str(player.Health) + " Health.")
+            if random.randint(0, 100) < player.Luck:
+                PtE = PtE * [int(i) for i in str(player.Luck)][0]
+                Pcrit = True
+            if random.randint(0, 100) < player.Luck:
+                EtP = EtP * [int(i) for i in str(tlck)][0]
+                Ecrit = True
 
+            if order == "player":
+                print(player.Name + " Attacks!")
+                if Pcrit == True:
+                    print("Critical Hit! x" + list(str(player.Luck))[0])
+                print(player.Name + " Deals " + str(PtE) + " Damage To " + target)
+                tlife -= PtE
+                print(target + " Is Now On " + str(tlife) + " Health.")
 
-            if player.Health < 1:
+                if tlife < 1:
+                    print("You defeat " + target + ".")
+                    pxp = int((int(trnk) + 1) * (random.randint(1, 3) + random.random()))
+                    print("you gain " + str(pxp) + " XP!")
+                    pka = int(int(trnk) * (random.randint(1, 2) + random.random()))
+                    player_Xpa(pka)
+                    if taln == "g":
+                        print(target + " was good." + "You lose" + str(pka) + " karma")
+                        player.Karma -= pka
+                    if taln == "e":
+                        print(target + "was evil." + "You gain" + str(pka) + " karma")
+                        player.Karma += pka
+                    return "win"
 
-                player_die()
+                print(target + "Attacks!")
+                if Ecrit == True:
+                    print("Critical Hit! x" + list(str(tlck))[0])
 
+                print(target + " Deals " + str(EtP) + " Damage To " + player.Name)
+                player.Health -= EtP
+                print(player.Name + " Is Now On " + str(player.Health) + " Health.")
 
-        if rnd == 2:
-            ###Opponent Attacks###
-            print(target + " Attacks!")
-            print(target + " Deals " + str(EtP) + " Damage To " + player.Name)
-            player.Health -= EtP
-            print(player.Name + " Is Now On " + str(player.Health) + " Health.")
+                if player.Health < 1:
 
-            if player.Health < 1:
-                player_die()
+                    player_die()
 
-            print(player.Name + " Deals " + str(PtE) + " Damage To " + target)
-            tlife -= PtE
-            print(target + " Is Now On " + str(tlife) + " Health.")
+            if order == "target":
+                print(target + " Attacks!")
+                if Ecrit == True:
+                    print("Critical Hit! x" + list(str(tlck))[0])
+                print(target + " Deals " + str(EtP) + " Damage To " + player.Name)
+                player.Health -= EtP
+                print(player.Name + " Is Now On " + str(player.Health) + " Health.")
 
+                if player.Health < 1:
 
-            if tlife < 1:
-                return "win"
+                    player_die()
+
+                print(player.Name + "Attacks!")
+                if Pcrit == True:
+                    print("Critical Hit! x" + list(str(player.Luck))[0])
+
+                print(player.Name + " Deals " + str(PtE) + " Damage To " + target)
+                tlife -= PtE
+                print(target + " Is Now On " + str(tlife) + " Health.")
+
+                if tlife < 1:
+                    print("You defeat " + target + ".")
+                    pxp = int((int(trnk) + 1) * (random.randint(1, 3) + random.random()))
+                    print("you gain " + str(pxp) + " XP!")
+                    pka = int(int(trnk) * (random.randint(1, 2) + random.random()))
+                    player_Xpa(pka)
+                    if taln == "g":
+                        print(target + " was good." + "You lose" + str(pka) + " karma")
+                        player.Karma -= pka
+                    if taln == "e":
+                        print(target + "was evil." + "You gain" + str(pka) + " karma")
+                        player.Karma += pka
+
+                    return "win"
+
 
 
 #####
@@ -393,23 +439,21 @@ def inventory_get():
 
     if getnam(vop) == pstring:
         pprint(player.Picture, getdes(vop))
-
-    if getmet(vop, "all") == "i":
+    elif getnam(vop) == mstring:
+        pprint(Coin, getdes(vop))
+    elif getmet(vop, "all") == "i":
         #Is it an average item?
         pprint(getpic(vop), getdes(vop))
-
-    if searchmet("e", vop) == "T":
+    elif searchmet("e", vop) == "T":
         #Is it an equipped item?
         IgI = easygui.buttonbox(image=getpic(vop), msg=getdes(vop), choices=("Back", "Un Equip"))
         if IgI == "Un Equip":
             player_unEquip(getmet(vop, 1))
-
-    if searchmet("c", vop) == "T":
+    elif searchmet("c", vop) == "T":
         #Is it an eqipable item?
         IgI = easygui.buttonbox(image=getpic(vop), msg=getdes(vop), choices=("Back", "Equip"))
         if IgI == "Equip":
             player_equip(vop)
-
     else:
         verb = "Use"
         if searchmet("book", vop) == "T":
@@ -687,8 +731,11 @@ def choices(things):
             something = easygui.choicebox(msg="You can interact with...", title=world.time(), choices=t(soth, 0))
             something = find_tup(something, things)
             if getmet(something, 0) == "npc":
-                debug("talk")
-                talk(something)
+                des = easygui.buttonbox(msg="Interact With " + getnam(something), title=world.time(), choices=("Talk", "Attack"))
+                if des == "Talk":
+                    talk(something)
+                if des == "Attack":
+                    player_attack(something)
 
 def selector(things, pictures, string, metno, title):
     #insert %m in string to replace that with output from metno
@@ -725,10 +772,10 @@ def selector(things, pictures, string, metno, title):
                 num = 0
 
 def weaponselect(weapon, wdamage, pic):
-    nmax = len(weapon)
+    nmax = len(weapon) - 1
     num = 0
     while True:
-        string = weapon[num] + ": Does " + wdamage[num] + " Damage."
+        string = weapon[num] + ": Does " + str(wdamage[num]) + " Damage."
         out = easygui.buttonbox(msg=string, title="Choose Your Weapon:", choices=("<---", "SELECT", "--->"), image=pic[num])
         if out == "<---":
             num -= 1
