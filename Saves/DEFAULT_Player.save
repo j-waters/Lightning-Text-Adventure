@@ -10,3 +10,6 @@ Xp = 0
 Xpl = 1
 Xpn = 10
 Picture = "Pics/YOU1.png"
+Speed = 2
+Luck = 10
+Strength = 2
