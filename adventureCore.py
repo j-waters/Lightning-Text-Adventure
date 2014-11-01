@@ -124,9 +124,6 @@ def player_equip(item):
             player.Helm = item
         return
 
-
-
-
     if getmet(item, 0) == "shirt":
         if player.Shirt == "":
             player.Shirt = item
@@ -137,8 +134,6 @@ def player_equip(item):
             inventory_add(player.Shirt)
             player.Shirt = item
         return
-
-
 
     if getmet(item, 0) == "boot":
         if player.Boot == "":
@@ -156,18 +151,17 @@ def player_equip(item):
         print("Cannot equip a " + str(item))
 
 
-
 def player_attack(tgt):
     #Player attacks 'tgt'
     debug("ATTACKING")
-    tatt = int(getmet(tgt, 1))
-    tdef = int(getmet(tgt, 2))
-    tlife = int(getmet(tgt, 3))
-    trnk = int(getmet(tgt, 4))
-    taln = getmet(tgt, 5)
-    tspd = int(getmet(tgt, 6))
-    tlck = int(getmet(tgt, 7))
-    tmgc = int(getmet(tgt, 8))
+    tatt = int(tgt[3]["att"])
+    tdef = int(tgt[3]["def"])
+    tlife = int(tgt[3]["hlt"])
+    trnk = int(tgt[3]["rnk"])
+    taln = tgt[3]["aln"]
+    tspd = int(tgt[3]["spd"])
+    tlck = int(tgt[3]["lck"])
+    tmgc = int(tgt[3]["mgc"])
     target = getnam(tgt)
 
     weapons = []
@@ -189,8 +183,7 @@ def player_attack(tgt):
     pprint(Fight_Symbol, player.Name + " (Level " + str(player.Xpl) + ")" + " Attacks " + str(target) + " (Level " + str(trnk) + ")" + "! Choose your weapon!")
     #att_weapon = easygui.choicebox(msg="Chose your weapon", choices=(weapons))
     patt = weaponselect(weapons, wdamage, wpics)
-    debug(patt)
-    debug(type(patt))
+    patt = int(patt + int(player.Strength / 2))
 
     #Calculate personality
     total = tatt + tdef + tmgc
@@ -198,9 +191,17 @@ def player_attack(tgt):
     defp = int((tdef / total) * 100) + attp
     mgcp = int((tdef / total) * 100) + defp
 
+    tempdef = 0
+    tartempdef = 0
+
     while True:
-        PtE = int( patt * (1 + random.random())- int(tdef))
-        EtP = int( int (tatt) * (1 + random.random()) - player_defence())
+        debug("PATT " + str(patt))
+        debug("TDEF " + str(tdef))
+        debug("PDEF " + str(player_defence()))
+        PtE = int( patt * (1 + random.random())- (tdef + tartempdef))
+        EtP = int( int (tatt) * (1 + random.random()) - (player_defence() + tempdef))
+        debug("PtE " + str(PtE))
+        debug("EtP " + str(EtP))
         if PtE < 0:
             PtE = 0
         if EtP < 0:
@@ -210,7 +211,7 @@ def player_attack(tgt):
         Ecrit = False
 
         if tspd + random.randint(-2, 2) > player.Speed + random.randint(-2, 2):
-                order = "target"
+            order = "target"
         else:
             order = "player"
 
@@ -220,6 +221,9 @@ def player_attack(tgt):
         if random.randint(0, 100) < tlck:
             EtP = EtP * ((tlck + 10) / 10)
             Ecrit = True
+
+        tempdef = 0
+        tartempdef = 0
 
         #NPC decide action
         rdn = random.randint(0, 100)
@@ -243,6 +247,34 @@ def player_attack(tgt):
                 tlife -= PtE
                 print(target + " Is Now On " + str(tlife) + " Health.")
 
+            if des == "Defend":
+                print(player.Name + " Is Defending.")
+                tempdef = player_defence() + player.Strength
+
+            if des == "Magic":
+                pass
+
+            if des == "Retreat":
+                #update npc's health
+                return "Retreat"
+
+            if des == "Change Weapon":
+                weapons = []
+                wdamage = []
+                wpics = []
+                for i in range(0, len(inventory.Contents)):
+                    spl = getmet(inventory.Contents[i], 0)
+                    if spl == "weapon":
+                        weapons.append(getnam(inventory.Contents[i]))
+                        wdamage.append(getmet(inventory.Contents[i], 1))
+                        wpics.append(getpic(inventory.Contents[i]))
+                weapons.append("Your Fists")
+                wdamage.append(player.Strength)
+                wpics.append("Pics/Fist01.png")
+                patt = weaponselect(weapons, wdamage, wpics)
+                patt = int(patt + player.Strength)
+
+
             if tlife < 1:
                 print("You defeat " + target + ".")
                 pxp = int((int(trnk) + 1) * (random.randint(1, 3) + random.random()))
@@ -257,16 +289,94 @@ def player_attack(tgt):
                     player.Karma += pka
                 return "win"
 
-            print(target + " Attacks!")
-            if Ecrit == True:
-                print("Critical Hit! x" + str(((tlck + 10) / 10)))
+            if taction == "Attack":
+                print(target + " Attacks!")
+                if Ecrit == True:
+                    print("Critical Hit! x" + str(((tlck + 10) / 10)))
 
-            print(target + " Deals " + str(EtP) + " Damage To " + player.Name)
-            player.Health -= EtP
-            print(player.Name + " Is Now On " + str(player.Health) + " Health.")
+                print(target + " Deals " + str(EtP) + " Damage To " + player.Name)
+                player.Health -= EtP
+                print(player.Name + " Is Now On " + str(player.Health) + " Health.")
+
+            if taction == "Defend":
+                print(target + " Is Defending.")
+                tartempdef = tdef + tatt
+
+            if taction == "Magic":
+                pass
 
             if player.Health < 1:
                 player_die()
+
+
+        if order == "target":
+            if des == "Change Weapon":
+                weapons = []
+                wdamage = []
+                wpics = []
+                for i in range(0, len(inventory.Contents)):
+                    spl = getmet(inventory.Contents[i], 0)
+                    if spl == "weapon":
+                        weapons.append(getnam(inventory.Contents[i]))
+                        wdamage.append(getmet(inventory.Contents[i], 1))
+                        wpics.append(getpic(inventory.Contents[i]))
+                weapons.append("Your Fists")
+                wdamage.append(player.Strength)
+                wpics.append("Pics/Fist01.png")
+                patt = weaponselect(weapons, wdamage, wpics)
+                patt = int(patt + player.Strength)
+
+            if taction == "Attack":
+                print(target + " Attacks!")
+                if Ecrit == True:
+                    print("Critical Hit! x" + str(((tlck + 10) / 10)))
+
+                print(target + " Deals " + str(EtP) + " Damage To " + player.Name)
+                player.Health -= EtP
+                print(player.Name + " Is Now On " + str(player.Health) + " Health.")
+
+            if taction == "Defend":
+                print(target + " Is Defending.")
+                tartempdef = tdef + tatt
+
+            if taction == "Magic":
+                pass
+
+            if player.Health < 1:
+                player_die()
+
+            if des == "Attack":
+                print(player.Name + " Attacks!")
+                if Pcrit == True:
+                    print("Critical Hit! x" + str(((player.Luck + 10) / 10)))
+                print(player.Name + " Deals " + str(PtE) + " Damage To " + target)
+                tlife -= PtE
+                print(target + " Is Now On " + str(tlife) + " Health.")
+
+            if des == "Defend":
+                print(player.Name + " Is Defending.")
+                tempdef = player_defence() + player.Strength
+
+            if des == "Magic":
+                pass
+
+            if des == "Retreat":
+                #update npc's health
+                return "Retreat"
+
+            if tlife < 1:
+                print("You defeat " + target + ".")
+                pxp = int((int(trnk) + 1) * (random.randint(1, 3) + random.random()))
+                print("you gain " + str(pxp) + " XP!")
+                pka = int(int(trnk) * (random.randint(1, 2) + random.random()))
+                player_Xpa(pka)
+                if taln == "g":
+                    print(target + " was good." + "You lose" + str(pka) + " karma")
+                    player.Karma -= pka
+                if taln == "e":
+                    print(target + "was evil." + "You gain" + str(pka) + " karma")
+                    player.Karma += pka
+                return "win"
 
 #####
 #END PLAYER
@@ -761,7 +871,7 @@ def weaponselect(weapon, wdamage, pic):
                 num = 0
 
 def talk(person):
-    dic = person[3]
+    dic = person[4]
     printTree(dic)
     #rdm = random.randint(1, len(dic))
     otn = []
