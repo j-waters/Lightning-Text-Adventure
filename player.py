@@ -15,6 +15,7 @@ Picture = ""
 Luck = 0
 Speed = 0
 Strength = 0
+Spells = ["heal"]
 
 def save():
     f = open('Saves/Player.save', 'w')
