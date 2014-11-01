@@ -1,4 +1,4 @@
-NPC META DATA: npc|<attack>|<defence>|<Health>|<rank>|<G-ood/E-vil>|<speed>|<luck>
+NPC META DATA: npc|<attack>|<defence>|<Health>|<rank>|<G-ood/E-vil>|<speed>|<luck>|<magic>
 
 ITEM META DATA:
 
