@@ -167,6 +167,7 @@ def player_attack(tgt):
     taln = getmet(tgt, 5)
     tspd = int(getmet(tgt, 6))
     tlck = int(getmet(tgt, 7))
+    tmgc = int(getmet(tgt, 8))
     target = getnam(tgt)
 
     weapons = []
@@ -182,7 +183,7 @@ def player_attack(tgt):
 
     weapons.append("Your Fists")
     wdamage.append(player.Strength)
-    wpics.append("Fist01.png")
+    wpics.append("Pics/Fist01.png")
 
     #pprint(Fight_Symbol, player.Name + " (" + str(player.Health) + ", " + str(player_defence()) + ")" + " Attacks " + target + " (" + str(tlife) + ", " + str(tdef) + ")" + "!")
     pprint(Fight_Symbol, player.Name + " (Level " + str(player.Xpl) + ")" + " Attacks " + str(target) + " (Level " + str(trnk) + ")" + "! Choose your weapon!")
@@ -191,110 +192,81 @@ def player_attack(tgt):
     debug(patt)
     debug(type(patt))
 
+    #Calculate personality
+    total = tatt + tdef + tmgc
+    attp = int((tatt / total) * 100)
+    defp = int((tdef / total) * 100) + attp
+    mgcp = int((tdef / total) * 100) + defp
+
     while True:
         PtE = int( patt * (1 + random.random())- int(tdef))
         EtP = int( int (tatt) * (1 + random.random()) - player_defence())
+        if PtE < 0:
+            PtE = 0
+        if EtP < 0:
+            EtP = 0
         tlife = int(tlife)
         Pcrit = False
         Ecrit = False
 
+        if tspd + random.randint(-2, 2) > player.Speed + random.randint(-2, 2):
+                order = "target"
+        else:
+            order = "player"
+
+        if random.randint(0, 100) < player.Luck:
+            PtE = PtE * ((player.Luck + 10) / 10)
+            Pcrit = True
+        if random.randint(0, 100) < tlck:
+            EtP = EtP * ((tlck + 10) / 10)
+            Ecrit = True
+
+        #NPC decide action
+        rdn = random.randint(0, 100)
+        if rdn <= attp:
+            taction = "Attack"
+        elif rdn <= defp:
+            taction = "Defend"
+        elif rdn <= mgcp:
+            taction = "Magic"
+        else:
+            debug("npc ai error")
+
         des = easygui.buttonbox(msg="Your Turn!", choices=("Attack", "Defend", "Magic", "Retreat", "Change Weapon"))
 
-        if des == "Attack":
-            if tspd + random.randint(-2, 2) > player.Speed + random.randint(-2, 2):
-                order = "target"
-            elif tspd + random.randint(-2, 2) < player.Speed + random.randint(-2, 2):
-                order = "player"
-            else:
-                rdm = random.randint(1,2)
-                if rdm == 1:
-                    order = "target"
-                if rdm == 1:
-                    order = "player"
-
-            if PtE < 0:
-                PtE = 0
-
-            if EtP < 0:
-                EtP = 0
-
-            if random.randint(0, 100) < player.Luck:
-                PtE = PtE * [int(i) for i in str(player.Luck)][0]
-                Pcrit = True
-            if random.randint(0, 100) < player.Luck:
-                EtP = EtP * [int(i) for i in str(tlck)][0]
-                Ecrit = True
-
-            if order == "player":
+        if order == "player":
+            if des == "Attack":
                 print(player.Name + " Attacks!")
                 if Pcrit == True:
-                    print("Critical Hit! x" + list(str(player.Luck))[0])
+                    print("Critical Hit! x" + str(((player.Luck + 10) / 10)))
                 print(player.Name + " Deals " + str(PtE) + " Damage To " + target)
                 tlife -= PtE
                 print(target + " Is Now On " + str(tlife) + " Health.")
 
-                if tlife < 1:
-                    print("You defeat " + target + ".")
-                    pxp = int((int(trnk) + 1) * (random.randint(1, 3) + random.random()))
-                    print("you gain " + str(pxp) + " XP!")
-                    pka = int(int(trnk) * (random.randint(1, 2) + random.random()))
-                    player_Xpa(pka)
-                    if taln == "g":
-                        print(target + " was good." + "You lose" + str(pka) + " karma")
-                        player.Karma -= pka
-                    if taln == "e":
-                        print(target + "was evil." + "You gain" + str(pka) + " karma")
-                        player.Karma += pka
-                    return "win"
+            if tlife < 1:
+                print("You defeat " + target + ".")
+                pxp = int((int(trnk) + 1) * (random.randint(1, 3) + random.random()))
+                print("you gain " + str(pxp) + " XP!")
+                pka = int(int(trnk) * (random.randint(1, 2) + random.random()))
+                player_Xpa(pka)
+                if taln == "g":
+                    print(target + " was good." + "You lose" + str(pka) + " karma")
+                    player.Karma -= pka
+                if taln == "e":
+                    print(target + "was evil." + "You gain" + str(pka) + " karma")
+                    player.Karma += pka
+                return "win"
 
-                print(target + "Attacks!")
-                if Ecrit == True:
-                    print("Critical Hit! x" + list(str(tlck))[0])
+            print(target + " Attacks!")
+            if Ecrit == True:
+                print("Critical Hit! x" + str(((tlck + 10) / 10)))
 
-                print(target + " Deals " + str(EtP) + " Damage To " + player.Name)
-                player.Health -= EtP
-                print(player.Name + " Is Now On " + str(player.Health) + " Health.")
+            print(target + " Deals " + str(EtP) + " Damage To " + player.Name)
+            player.Health -= EtP
+            print(player.Name + " Is Now On " + str(player.Health) + " Health.")
 
-                if player.Health < 1:
-
-                    player_die()
-
-            if order == "target":
-                print(target + " Attacks!")
-                if Ecrit == True:
-                    print("Critical Hit! x" + list(str(tlck))[0])
-                print(target + " Deals " + str(EtP) + " Damage To " + player.Name)
-                player.Health -= EtP
-                print(player.Name + " Is Now On " + str(player.Health) + " Health.")
-
-                if player.Health < 1:
-
-                    player_die()
-
-                print(player.Name + "Attacks!")
-                if Pcrit == True:
-                    print("Critical Hit! x" + list(str(player.Luck))[0])
-
-                print(player.Name + " Deals " + str(PtE) + " Damage To " + target)
-                tlife -= PtE
-                print(target + " Is Now On " + str(tlife) + " Health.")
-
-                if tlife < 1:
-                    print("You defeat " + target + ".")
-                    pxp = int((int(trnk) + 1) * (random.randint(1, 3) + random.random()))
-                    print("you gain " + str(pxp) + " XP!")
-                    pka = int(int(trnk) * (random.randint(1, 2) + random.random()))
-                    player_Xpa(pka)
-                    if taln == "g":
-                        print(target + " was good." + "You lose" + str(pka) + " karma")
-                        player.Karma -= pka
-                    if taln == "e":
-                        print(target + "was evil." + "You gain" + str(pka) + " karma")
-                        player.Karma += pka
-
-                    return "win"
-
-
+            if player.Health < 1:
+                player_die()
 
 #####
 #END PLAYER
