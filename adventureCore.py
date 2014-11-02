@@ -268,7 +268,7 @@ def player_attack(tgt):
                     print("You have no spells")
 
             if des == "Retreat":
-                #update npc's health
+                #TODO: update npc's health
                 return "Retreat"
 
             if des == "Change Weapon":
@@ -316,6 +316,7 @@ def player_attack(tgt):
                 tartempdef = tdef + int(tatt / 2)
 
             if taction == "Magic":
+                #TODO: npc magic
                 print("Magic.. blah blah blah")
 
             player_refresh()
@@ -352,6 +353,7 @@ def player_attack(tgt):
                 tartempdef = tdef + int(tatt / 2)
 
             if taction == "Magic":
+                #TODO: npc magic
                 print("Magic.. blah blah blah")
 
 
@@ -377,7 +379,7 @@ def player_attack(tgt):
                     print("You have no spells")
 
             if des == "Retreat":
-                #update npc's health
+                #TODO: update npc's health
                 return "Retreat"
 
             if tlife < 1:
