@@ -3,6 +3,7 @@ import os.path
 Name = ""
 Age = 0
 Health = 0
+MaxHealth = 0
 Helm = ""
 Shirt = ""
 Boot = ""
@@ -15,7 +16,8 @@ Picture = ""
 Luck = 0
 Speed = 0
 Strength = 0
-Spells = ["heal"]
+Magic = 0
+Spells = []
 
 def save():
     f = open('Saves/Player.save', 'w')
