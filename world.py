@@ -8,7 +8,9 @@ Month = 0
 int(Day)
 int(Minute)
 int(Hour)
-Weather = "clear"
+Weather = ""
+
+Location = ""
 
 TN1_R1 =[]
 
