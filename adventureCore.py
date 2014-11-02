@@ -300,7 +300,7 @@ def player_attack(tgt):
 
             if taction == "Defend":
                 print(target + " Is Defending.")
-                tartempdef = tdef + tatt
+                tartempdef = tdef + int(tatt / 2)
 
             if taction == "Magic":
                 pass
