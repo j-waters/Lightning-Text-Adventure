@@ -63,6 +63,9 @@ def player_refresh():
     if player.Health < 1:
         player_die()
 
+    if player.Health > player.MaxHealth:
+            player.Health = player.MaxHealth
+
 def player_Xpa(xp):
     #Adds 'xp' XP to the players xp, checking if the player level can be increased
     player.Xp += xp
@@ -75,7 +78,7 @@ def player_Xpa(xp):
 
 def player_defence():
     #Calculates the defence of a player
-    TheOut = 1
+    TheOut = 0
     try:
         TheOut += int(getmet(player.Helm, 1))
     except:
@@ -198,6 +201,7 @@ def player_attack(tgt):
         debug("PATT " + str(patt))
         debug("TDEF " + str(tdef))
         debug("PDEF " + str(player_defence()))
+        debug("Player Defence " + str(player_defence()))
         PtE = int( patt * (1 + random.random())- (tdef + tartempdef))
         EtP = int( int (tatt) * (1 + random.random()) - (player_defence() + tempdef))
         debug("PtE " + str(PtE))
@@ -214,11 +218,16 @@ def player_attack(tgt):
             order = "target"
         else:
             order = "player"
+        debug(order)
 
         if random.randint(0, 100) < player.Luck:
+            if PtE == 0:
+                PtE = 1
             PtE = PtE * ((player.Luck + 10) / 10)
             Pcrit = True
         if random.randint(0, 100) < tlck:
+            if EtP == 0:
+                EtP = 1
             EtP = EtP * ((tlck + 10) / 10)
             Ecrit = True
 
@@ -252,7 +261,11 @@ def player_attack(tgt):
                 tempdef = player_defence() + player.Strength
 
             if des == "Magic":
-                pass
+                if not player.Spells == []:
+                    spl = easygui.choicebox(msg="Choose A Spell To Cast", title=world.time(), choices=player.Spells)
+                    player_magicCast(spl)
+                else:
+                    print("You have no spells")
 
             if des == "Retreat":
                 #update npc's health
@@ -303,10 +316,9 @@ def player_attack(tgt):
                 tartempdef = tdef + int(tatt / 2)
 
             if taction == "Magic":
-                pass
+                print("Magic.. blah blah blah")
 
-            if player.Health < 1:
-                player_die()
+            player_refresh()
 
 
         if order == "target":
@@ -337,13 +349,13 @@ def player_attack(tgt):
 
             if taction == "Defend":
                 print(target + " Is Defending.")
-                tartempdef = tdef + tatt
+                tartempdef = tdef + int(tatt / 2)
 
             if taction == "Magic":
-                pass
+                print("Magic.. blah blah blah")
 
-            if player.Health < 1:
-                player_die()
+
+            player_refresh()
 
             if des == "Attack":
                 print(player.Name + " Attacks!")
@@ -358,7 +370,11 @@ def player_attack(tgt):
                 tempdef = player_defence() + player.Strength
 
             if des == "Magic":
-                pass
+                if not player.Spells == []:
+                    spl = easygui.choicebox(msg="Choose A Spell To Cast", title=world.time(), choices=player.Spells)
+                    player_magicCast(spl)
+                else:
+                    print("You have no spells")
 
             if des == "Retreat":
                 #update npc's health
@@ -377,6 +393,17 @@ def player_attack(tgt):
                     print(target + "was evil." + "You gain" + str(pka) + " karma")
                     player.Karma += pka
                 return "win"
+
+def player_magicCast(spell):
+    if player.Spells.__contains__(spell) == False:
+        return "No Spell"
+    if spell == "heal":
+        amount = player.Magic * random.randint(1, 2)
+        print("You cast 'heal' recovering " + str(amount) + " health")
+        print("You now have " + str(player.Health) + " Health")
+        player.Health += amount
+        player_refresh()
+
 
 #####
 #END PLAYER
