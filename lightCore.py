@@ -18,6 +18,7 @@ import sys #@UnusedImport @Reimport
 import atexit #@UnusedImport
 import ast #@UnusedImport
 import os.path #@UnusedImport
+import traceback #@UnusedImport
 #####
 #End Module Imports
 #####
@@ -87,3 +88,6 @@ def printTree(tree, depth = 0):
         for key, val in tree.items():
             debug ("\t" * depth + key)
             printTree(val, depth+1)
+
+class Error(Exception):
+    pass
