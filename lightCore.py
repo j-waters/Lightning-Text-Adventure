@@ -75,8 +75,11 @@ def get_save(filename):
     result = {}
     with open(filename) as f:
         for line in f:
-            line = line.split(' = ',1)
-            result[line[0]] = ast.literal_eval(line[1].strip())
+            try:
+                line = line.split(' = ',1)
+                result[line[0]] = ast.literal_eval(line[1].strip())
+            except:
+                pass
     return result
 
 def printTree(tree, depth = 0):
