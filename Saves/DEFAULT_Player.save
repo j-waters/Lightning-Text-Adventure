@@ -1,6 +1,7 @@
 Name = "Bob"
 Age = 15
 Health = 20
+MaxHealth = 20
 helm = ""
 Shirt = ""
 Boot = ""
@@ -14,3 +15,4 @@ Speed = 10
 Luck = 10
 Strength = 2
 Magic = 2
+Spells = ["heal"]
