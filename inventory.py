@@ -28,6 +28,5 @@ def load():
         return True
     else:
         globals().update(get_save('Saves/DEFAULT_Inventory.save'))
-        print(Size)
         #save() #TEMP
         return False
