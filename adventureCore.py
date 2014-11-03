@@ -294,10 +294,10 @@ def player_attack(tgt):
                 print("you gain " + str(pxp) + " XP!")
                 pka = int(int(trnk) * (random.randint(1, 2) + random.random()))
                 player_Xpa(pka)
-                if taln == "g":
+                if taln == "G":
                     print(target + " was good." + "You lose" + str(pka) + " karma")
                     player.Karma -= pka
-                if taln == "e":
+                if taln == "E":
                     print(target + "was evil." + "You gain" + str(pka) + " karma")
                     player.Karma += pka
                 return "win"
@@ -388,10 +388,10 @@ def player_attack(tgt):
                 print("you gain " + str(pxp) + " XP!")
                 pka = int(int(trnk) * (random.randint(1, 2) + random.random()))
                 player_Xpa(pka)
-                if taln == "g":
+                if taln == "G":
                     print(target + " was good." + "You lose" + str(pka) + " karma")
                     player.Karma -= pka
-                if taln == "e":
+                if taln == "E":
                     print(target + "was evil." + "You gain" + str(pka) + " karma")
                     player.Karma += pka
                 return "win"
