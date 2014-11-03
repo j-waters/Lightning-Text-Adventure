@@ -85,8 +85,10 @@ def get_save(filename):
 def printTree(tree, depth = 0):
     if tree == None or len(tree) == 0:
         debug ("\t" * depth + "-")
-    if type(tree) == str:
+    elif type(tree) == str:
         debug ("\t" * depth + tree)
+    elif type(tree) == list:
+        debug ("\t" * depth + str(tree))
     else:
         for key, val in tree.items():
             debug ("\t" * depth + key)
