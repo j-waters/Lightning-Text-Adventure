@@ -402,10 +402,9 @@ def player_magicCast(spell):
     if spell == "heal":
         amount = player.Magic * random.randint(1, 2)
         print("You cast 'heal' recovering " + str(amount) + " health")
-        print("You now have " + str(player.Health) + " Health")
         player.Health += amount
         player_refresh()
-
+        print("You now have " + str(player.Health) + " Health")
 
 #####
 #END PLAYER
