@@ -479,11 +479,11 @@ def inventory_get():
 
         if player.Helm == "":
             estring2 = "No helm"
-            estring2d = "Your not wearing a helm"
+            estring2d = "Your not wearing a helmet"
             estring2m = ""
     except:
         estring2 = "No helm"
-        estring2d = "Your not wearing a helm"
+        estring2d = "Your not wearing a helmet"
         estring2m = ""
 
     try:
@@ -509,11 +509,11 @@ def inventory_get():
 
         if player.Boot == "":
             estring4 = "No Extra boots"
-            estring4d = "Your not wearing any over boots"
+            estring4d = "Your not wearing any boots"
             estring4m = ""
     except:
         estring4 = "No Extra boot"
-        estring4d = "Your not wearing any over boots"
+        estring4d = "Your not wearing any boots"
         estring4m = ""
 
     inventory.Contents.append((estring1 + estring2,estring2d, estring2m))
@@ -551,6 +551,8 @@ def inventory_get():
         pprint(player.Picture, getdes(vop))
     elif getnam(vop) == mstring:
         pprint(Coin, getdes(vop))
+    elif getmet(vop, "all") == "":
+        print(getdes(vop))
     elif getmet(vop, "all") == "i":
         #Is it an average item?
         pprint(getpic(vop), getdes(vop))
