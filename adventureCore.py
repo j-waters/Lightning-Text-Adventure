@@ -933,9 +933,11 @@ def talk(person):
                     hi = dic[i]
                 cur = hi
         if hi == {}:
-            if otn == []:
-                otn.append("...")
-            c = easygui.buttonbox(msg=cur["T"], title=world.time(), choices=otn)
+            if type(cur["T"]) == list:
+                for i in cur["T"]:
+                    c = easygui.buttonbox(msg=i, title=world.time(), choices=otn)
+            else:
+                c = easygui.buttonbox(msg=cur["T"], title=world.time(), choices=otn)
 
             for d in otndic:
                 if d["B"] == c:
