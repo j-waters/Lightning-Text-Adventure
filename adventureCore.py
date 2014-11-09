@@ -153,6 +153,7 @@ def player_equip(item):
     else:
         print("Cannot equip a " + str(item))
 
+#TODO: mana and regeneration
 
 def player_attack(tgt):
     #Player attacks 'tgt'
@@ -549,7 +550,7 @@ def inventory_get():
 
     ##adding player stats##
     pstring = "Your Statistics"
-    pstringd = "Your Stats:\n" + "Health: " + str(player.Health) + "\nDefence: " + str(player_defence())
+    pstringd = "Your Stats:\n" + "Health: " + str(player.Health) + "/" + str(player.MaxHealth) + "\nDefence: " + str(player_defence()) + "\nMagic Strength: " + str(player.Magic)+ "\nStrength: " + str(player.Strength)+ "\nKarma: " + str(player.Karma)+ "\nSpeed: " + str(player.Speed) #TODO: Add more stats
     pstringm = ""
     inventory.Contents.append((pstring, pstringd, pstringm))
 
