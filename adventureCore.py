@@ -330,6 +330,10 @@ def player_attack(tgt):
                 if spell == "heal":
                     amount = tmgc * random.randint(1, 2)
                     print(target + "casts 'heal' and recovers " + str(amount) + " health")
+                    tlife += amount
+                    if tlife > tmhlt:
+                        tlife = tmhlt
+                    print(target + "is now on " + str(tlife) + " Health")
 
             player_refresh()
 
@@ -369,6 +373,10 @@ def player_attack(tgt):
                 if spell == "heal":
                     amount = tmgc * random.randint(1, 2)
                     print(target + "casts 'heal' and recovers " + str(amount) + " health")
+                    tlife += amount
+                    if tlife > tmhlt:
+                        tlife = tmhlt
+                    print(target + "is now on " + str(tlife) + " Health")
 
 
             player_refresh()
