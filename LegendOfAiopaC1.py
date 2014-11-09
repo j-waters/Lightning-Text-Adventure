@@ -23,6 +23,7 @@ def create_character():
 
 
 def TN1_R1():
+    world.Location = "TN1_R1"
     choices(world.TN1_R1)
 
 #try:
