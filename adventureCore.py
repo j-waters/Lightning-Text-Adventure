@@ -160,12 +160,20 @@ def player_attack(tgt):
     tatt = int(tgt[3]["att"])
     tdef = int(tgt[3]["def"])
     tlife = int(tgt[3]["hlt"])
+    tmhlt = int(tgt[3]["mhlt"])
     trnk = int(tgt[3]["rnk"])
     taln = tgt[3]["aln"]
     tspd = int(tgt[3]["spd"])
     tlck = int(tgt[3]["lck"])
     tmgc = int(tgt[3]["mgc"])
+    tspl = tgt[3]["spl"]
     target = getnam(tgt)
+
+    loc = 0
+    for i in world.Location:
+        if i == tgt:
+            break
+        loc += 1
 
     weapons = []
     wdamage = []
@@ -190,9 +198,10 @@ def player_attack(tgt):
 
     #Calculate personality
     total = tatt + tdef + tmgc
-    attp = int((tatt / total) * 100)
+    mgcp = int((tdef / total) * 100)
+    attp = int((tatt / total) * 100) + mgcp
     defp = int((tdef / total) * 100) + attp
-    mgcp = int((tdef / total) * 100) + defp
+
 
     tempdef = 0
     tartempdef = 0
@@ -235,7 +244,7 @@ def player_attack(tgt):
         tartempdef = 0
 
         #NPC decide action
-        rdn = random.randint(0, 100)
+        rdn = random.randint(1, 100)
         if rdn <= attp:
             taction = "Attack"
         elif rdn <= defp:
@@ -268,7 +277,8 @@ def player_attack(tgt):
                     print("You have no spells")
 
             if des == "Retreat":
-                #TODO: update npc's health
+                #TODO: update npc's health (maybe done?)
+                world.Location()[loc][tgt][3]["hlt"] = tlife
                 return "Retreat"
 
             if des == "Change Weapon":
@@ -316,8 +326,10 @@ def player_attack(tgt):
                 tartempdef = tdef + int(tatt / 2)
 
             if taction == "Magic":
-                #TODO: npc magic
-                print("Magic.. blah blah blah")
+                spell = target_magicCast(target, tlife, tmhlt, tmgc, tspl)
+                if spell == "heal":
+                    amount = tmgc * random.randint(1, 2)
+                    print(target + "casts 'heal' and recovers " + str(amount) + " health")
 
             player_refresh()
 
@@ -353,8 +365,10 @@ def player_attack(tgt):
                 tartempdef = tdef + int(tatt / 2)
 
             if taction == "Magic":
-                #TODO: npc magic
-                print("Magic.. blah blah blah")
+                spell = target_magicCast(target, tlife, tmhlt, tmgc, tspl)
+                if spell == "heal":
+                    amount = tmgc * random.randint(1, 2)
+                    print(target + "casts 'heal' and recovers " + str(amount) + " health")
 
 
             player_refresh()
@@ -409,6 +423,11 @@ def player_magicCast(spell):
 #####
 #END PLAYER
 #####
+
+def target_magicCast(name, tlife, tmlife, tmgc, tspl):
+    if tspl.__contains__("heal") == True:
+        if tlife < tmlife / 2:
+            return "heal"
 
 #####
 #INVENTORY
