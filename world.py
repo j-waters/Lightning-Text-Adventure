@@ -3,8 +3,7 @@ import os.path
 Location = ""
 Turn = 0
 TurnString = ""
-
-TN1_R1 =[]
+#TN1_R1 =[] probably not for api
 
 def save():
     f = open('Saves/World.save', 'w')
