@@ -1,35 +1,21 @@
 from lightCore import get_save
 import os.path
-Minute = 0
-Hour = 0
-Day = 0
-Dayp = ""
-Month = 0
-int(Day)
-int(Minute)
-int(Hour)
-Weather = ""
 
 Location = ""
-<<<<<<< master
 Turn = 0
 TurnString = ""
 #TN1_R1 =[] probably not for api
-=======
 
 TN1_R1 =[]
->>>>>>> 3740d74 Removed world.time function. Replaced all world.times with turn. Removed all time variables.
 
 def save():
     f = open('Saves/World.save', 'w')
 
     save = {
-    'Minute':Minute,
-    'Hour':Hour,
-    'Day':Day,
-    'Dayp':Dayp,
-    'Month':Month,
-    'Weather':Weather
+    'Location':Location,
+    'Turn':Turn,
+    'TurnString':TurnString,
+    'TN1_R1':TN1_R1
     }
 
     for key in save.keys():
