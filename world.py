@@ -6,8 +6,6 @@ Turn = 0
 TurnString = ""
 #TN1_R1 =[] probably not for api
 
-TN1_R1 =[]
-
 def save():
     f = open('Saves/World.save', 'w')
 
@@ -15,7 +13,6 @@ def save():
     'Location':Location,
     'Turn':Turn,
     'TurnString':TurnString,
-    'TN1_R1':TN1_R1
     }
 
     for key in save.keys():
@@ -35,22 +32,3 @@ def load():
         #save() #TEMPORARY
         return False
 
-def time():
-    if Day % 10 == 1:
-        Dayp = "st"
-    if Day % 10 == 2:
-        Dayp = "nd"
-    if Day % 10 == 3:
-        Dayp = "rd"
-    if Day % 10  == 0:
-        Dayp = "th"
-    if Day % 10 > 3:
-        Dayp = "th"
-
-    TheOut = str(Hour) + ":" + str(Minute) + "0" + " " + str(Day) + str(Dayp) + " of " + str(Month)
-
-    #str(TheOut)
-    return TheOut
-
-
-TN1_R1 = []
