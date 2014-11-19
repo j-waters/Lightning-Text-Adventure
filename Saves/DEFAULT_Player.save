@@ -16,3 +16,5 @@ Luck = 10
 Strength = 2
 Magic = 2
 Spells = ["heal"]
+Mana = 10
+MaxMana = 10
