@@ -26,11 +26,11 @@ import inventory
 #####
 def print(string):  # @DontTrace @ReservedAssignment
     #easygui print
-    easygui.msgbox(msg=string, title=world.time())
+    easygui.msgbox(msg=string, title=turns())
 
 def pprint(pic, string):
     #easygui picture print
-    easygui.msgbox(image=pic, msg=string, title=world.time())
+    easygui.msgbox(image=pic, msg=string, title=turns())
 
 #####
 #Pictures
@@ -273,7 +273,7 @@ def player_attack(tgt):
 
             if des == "Magic":
                 if not player.Spells == []:
-                    spl = easygui.choicebox(msg="Choose A Spell To Cast", title=world.time(), choices=player.Spells)
+                    spl = easygui.choicebox(msg="Choose A Spell To Cast", title=turns(), choices=player.Spells)
                     player_magicCast(spl)
                 else:
                     print("You have no spells")
@@ -397,7 +397,7 @@ def player_attack(tgt):
 
             if des == "Magic":
                 if not player.Spells == []:
-                    spl = easygui.choicebox(msg="Choose A Spell To Cast", title=world.time(), choices=player.Spells)
+                    spl = easygui.choicebox(msg="Choose A Spell To Cast", title=turns(), choices=player.Spells)
                     player_magicCast(spl)
                 else:
                     print("You have no spells")
@@ -638,7 +638,7 @@ def inventory_remove(item):
 #####
 
 def turns():
-    string = ""
+    return world.TurnString + str(world.Turn)
 
 def getmet(item, metno):
     #Gets the metadata from a tuple (item)
@@ -699,17 +699,17 @@ def searchmet(string, item):
 
 def input(string):  # @ReservedAssignment
     #Creates an enter box with a string, and the time as the title
-    TheInput = easygui.enterbox(msg=string, title=world.time())
+    TheInput = easygui.enterbox(msg=string, title=turns())
     return TheInput
 
 def options(pic, string, op1, op2, op3=None, op4=None):
     #creates an button box with 2, up to 4 choices
     if not op4 == None:
-        TheOut = easygui.buttonbox(choices=(op1, op2, op3, op4, "Inventory"), msg=string, image=pic, title=world.time())
+        TheOut = easygui.buttonbox(choices=(op1, op2, op3, op4, "Inventory"), msg=string, image=pic, title=turns())
     if op4 == None:
-        TheOut = easygui.buttonbox(choices=(op1, op2, op3, "Inventory"), msg=string, image=pic, title=world.time())
+        TheOut = easygui.buttonbox(choices=(op1, op2, op3, "Inventory"), msg=string, image=pic, title=turns())
     if op4 and op3 == None:
-        TheOut = easygui.buttonbox(choices=(op1, op2, "Inventory"), msg=string, image=pic, title=world.time())
+        TheOut = easygui.buttonbox(choices=(op1, op2, "Inventory"), msg=string, image=pic, title=turns())
 
     if TheOut == "Inventory":
         inventory_get()
@@ -766,7 +766,7 @@ def view(items, string="You Can See:"):
         TheOut = ""
         str(TheOut)
 
-        TheOut = easygui.choicebox(msg=string, choices=(t(items, 0)), title=world.time())
+        TheOut = easygui.choicebox(msg=string, choices=(t(items, 0)), title=turns())
 
         if TheOut == None:
             return
@@ -869,12 +869,12 @@ def choices(things):
                 chs.append("Interact With Something")
                 break
 
-        des = easygui.buttonbox(msg="What Will You Do?", title=world.time(), choices=(chs))
+        des = easygui.buttonbox(msg="What Will You Do?", title=turns(), choices=(chs))
 
         if des == "Look Around":
             view(things)
         if des == "Take Something":
-            Turn += 1
+            world.Turn += 1
             take(things)
         if des == "Move Somewhere":
             move(things)
@@ -886,10 +886,10 @@ def choices(things):
                 if getmet(i, 0) == "npc":
                     soth.append(i)
 
-            something = easygui.choicebox(msg="You can interact with...", title=world.time(), choices=t(soth, 0))
+            something = easygui.choicebox(msg="You can interact with...", title=turns(), choices=t(soth, 0))
             something = find_tup(something, things)
             if getmet(something, 0) == "npc":
-                des = easygui.buttonbox(msg="Interact With " + getnam(something), title=world.time(), choices=("Talk", "Attack"))
+                des = easygui.buttonbox(msg="Interact With " + getnam(something), title=turns(), choices=("Talk", "Attack"))
                 if des == "Talk":
                     talk(something)
                 if des == "Attack":
@@ -956,7 +956,7 @@ def talk(person):
         if list(key)[0] == "O":
             otn.append(dic[key]["B"])
             otndic.append(dic[key])
-    c = easygui.buttonbox(msg=dic["T"], title=world.time(), choices=otn)
+    c = easygui.buttonbox(msg=dic["T"], title=turns(), choices=otn)
 
     for d in otndic:
         if d["B"] == c:
@@ -986,9 +986,9 @@ def talk(person):
                 return
             if type(cur["T"]) == list:
                 for i in cur["T"]:
-                    c = easygui.buttonbox(msg=i, title=world.time(), choices=otn)
+                    c = easygui.buttonbox(msg=i, title=turns(), choices=otn)
             else:
-                c = easygui.buttonbox(msg=cur["T"], title=world.time(), choices=otn)
+                c = easygui.buttonbox(msg=cur["T"], title=turns(), choices=otn)
 
             for d in otndic:
                 if d["B"] == c:
