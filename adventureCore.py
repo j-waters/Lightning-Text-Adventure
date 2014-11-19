@@ -66,6 +66,9 @@ def player_refresh():
     if player.Health > player.MaxHealth:
             player.Health = player.MaxHealth
 
+    if player.Mana > player.MaxMana:
+        player.Mana = player.MaxMana
+
 def player_Xpa(xp):
     #Adds 'xp' XP to the players xp, checking if the player level can be increased
     player.Xp += xp
@@ -152,8 +155,6 @@ def player_equip(item):
 
     else:
         print("Cannot equip a " + str(item))
-
-#TODO: mana and regeneration
 
 def player_attack(tgt):
     #Player attacks 'tgt'
@@ -423,12 +424,21 @@ def player_magicCast(spell):
     if player.Spells.__contains__(spell) == False:
         return "No Spell"
     if spell == "heal":
-        amount = player.Magic * random.randint(1, 2)
-        print("You cast 'heal' recovering " + str(amount) + " health")
-        player.Health += amount
-        player_refresh()
-        print("You now have " + str(player.Health) + " Health")
+        if player.Mana >= 3:
+            player.Mana -= 3
+            player_refresh()
+            amount = player.Magic * random.randint(1, 2)
+            print("You cast 'heal' recovering " + str(amount) + " health")
+            player.Health += amount
+            player_refresh()
+            print("You now have " + str(player.Health) + " Health")
+        else:
+            print("You do not have enough Mana to cast the spell heal! You only have " + player.Mana + " Mana!")
 
+def player_addMana():
+    amount = player.Magic + int(player.Luck / 10)
+    player.Mana += amount
+    player_refresh()
 #####
 #END PLAYER
 #####
@@ -622,6 +632,13 @@ def inventory_remove(item):
 #####
 #END INVENTORY
 #####
+
+#####
+#WORLD
+#####
+
+def turns():
+    string = ""
 
 def getmet(item, metno):
     #Gets the metadata from a tuple (item)
@@ -857,6 +874,7 @@ def choices(things):
         if des == "Look Around":
             view(things)
         if des == "Take Something":
+            Turn += 1
             take(things)
         if des == "Move Somewhere":
             move(things)
@@ -947,7 +965,8 @@ def talk(person):
     while True:
         otn = []
         otndic = []
-        hi = {}
+        end = False
+        debug(cur)
         for key in cur:
             if list(key)[0] == "O":
                 otn.append(cur[key]["B"])
@@ -957,10 +976,14 @@ def talk(person):
                 exec(cur[key]["R"])
 
             if list(key)[0] == "E":
-                for i in cur[key]:
-                    hi = dic[i]
-                cur = hi
-        if hi == {}:
+                if cur[key] == "E":
+                    return
+                if type(cur[key]) == list:
+                    cur = reduce(lambda a, b: a[b], cur[key], dic)
+                    end = True
+        if end == False:
+            if cur.get("T") == None:
+                return
             if type(cur["T"]) == list:
                 for i in cur["T"]:
                     c = easygui.buttonbox(msg=i, title=world.time(), choices=otn)
