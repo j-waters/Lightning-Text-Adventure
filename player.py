@@ -18,6 +18,8 @@ Speed = 0
 Strength = 0
 Magic = 0
 Spells = []
+Mana = 0
+MaxMana = 0
 
 def save():
     f = open('Saves/Player.save', 'w')
@@ -35,6 +37,13 @@ def save():
     'Xpl':Xpl,
     'Xpn':Xpn,
     'Picture':Picture,
+    'Luck':Luck,
+    'Speed':Speed,
+    'Strength':Strength,
+    'Magic':Magic,
+    'Spells':Spells,
+    'Mana':Mana,
+    'MaxMana':MaxMana
     }
 
     for key in save.keys():
