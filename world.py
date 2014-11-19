@@ -1,16 +1,35 @@
 from lightCore import get_save
 import os.path
+Minute = 0
+Hour = 0
+Day = 0
+Dayp = ""
+Month = 0
+int(Day)
+int(Minute)
+int(Hour)
+Weather = ""
+
 Location = ""
+<<<<<<< master
 Turn = 0
 TurnString = ""
 #TN1_R1 =[] probably not for api
+=======
+
+TN1_R1 =[]
+>>>>>>> 3740d74 Removed world.time function. Replaced all world.times with turn. Removed all time variables.
 
 def save():
     f = open('Saves/World.save', 'w')
 
     save = {
-    'Location':Location,
-    'Turn':Turn
+    'Minute':Minute,
+    'Hour':Hour,
+    'Day':Day,
+    'Dayp':Dayp,
+    'Month':Month,
+    'Weather':Weather
     }
 
     for key in save.keys():
@@ -29,3 +48,23 @@ def load():
         globals().update(get_save('Saves/DEFAULT_World.save'))
         #save() #TEMPORARY
         return False
+
+def time():
+    if Day % 10 == 1:
+        Dayp = "st"
+    if Day % 10 == 2:
+        Dayp = "nd"
+    if Day % 10 == 3:
+        Dayp = "rd"
+    if Day % 10  == 0:
+        Dayp = "th"
+    if Day % 10 > 3:
+        Dayp = "th"
+
+    TheOut = str(Hour) + ":" + str(Minute) + "0" + " " + str(Day) + str(Dayp) + " of " + str(Month)
+
+    #str(TheOut)
+    return TheOut
+
+
+TN1_R1 = []
