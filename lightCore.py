@@ -1,4 +1,3 @@
-
 import sys  # @UnusedImport
 from urllib.request import urlretrieve
 
@@ -13,7 +12,10 @@ from urllib.request import urlretrieve
 #General Modules
 import time #@UnusedImport
 import random #@UnusedImport
-import easygui #@UnresolvedImport @UnusedImport
+try:
+    import easygui #@UnresolvedImport @UnusedImport
+except:
+    pass
 import sys #@UnusedImport @Reimport
 import atexit #@UnusedImport
 import ast #@UnusedImport
@@ -90,6 +92,8 @@ def printTree(tree, depth = 0):
         debug ("\t" * depth + tree)
     elif type(tree) == list:
         debug ("\t" * depth + str(tree))
+    elif tree == {}:
+        debug("\t" * depth)
     else:
         for key, val in tree.items():
             debug ("\t" * depth + key)
