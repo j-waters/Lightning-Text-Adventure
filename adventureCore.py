@@ -640,6 +640,16 @@ def inventory_remove(item):
 def turns():
     return world.TurnString + str(world.Turn)
 
+def world_refresh():
+    for i in world.Places[world.Location]:
+        if getmet(i, 0) == "npc":
+            if i[3]["hlt"] < 1:
+                world.Places[world.Location].remove(i)
+
+#####
+#END WORLD
+#####
+
 def getmet(item, metno):
     #Gets the metadata from a tuple (item)
     #finds the correct metadata by number (metno)
@@ -862,6 +872,8 @@ def player_name():
     return
 
 def choices(things):
+    player_refresh()
+    world_refresh()
     while True:
         chs = ["Look Around","Take Something", "Move Somewhere", "View Inventory"]
         for i in things:
