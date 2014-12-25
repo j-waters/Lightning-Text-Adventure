@@ -12,10 +12,10 @@ import player, world, inventory
 def firstLoad():
     inventory.load()
     if player.load() == False:
-        #create_character()
+        create_character()
         player.Health = player.MaxHealth
     if world.load() == False:
-        #TN1_R1()
+        TN1_R1()
         pass
 
 def create_character():
@@ -25,11 +25,10 @@ def create_character():
 
 def TN1_R1():
     world.Location = "TN1_R1"
-    choices(world.Places("TN1_R1"))
+    choices(world.Places["TN1_R1"])
 
 #try:
 firstLoad()
-world_update()
 #except:
     #t = time.strftime("%d %b %Y %H.%M.%S", time.gmtime())
     #erf = open("Crash Reports/Error Report at " + t + ".txt", "w")
