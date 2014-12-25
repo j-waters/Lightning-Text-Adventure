@@ -4,7 +4,7 @@ import os.path
 Location = ""
 Turn = 0
 TurnString = ""
-#TN1_R1 =[] probably not for api
+Places = {}
 
 def save():
     f = open('Saves/World.save', 'w')
@@ -13,6 +13,7 @@ def save():
     'Location':Location,
     'Turn':Turn,
     'TurnString':TurnString,
+    'Places':Places
     }
 
     for key in save.keys():
