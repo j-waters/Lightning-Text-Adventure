@@ -171,12 +171,6 @@ def player_attack(tgt):
     tspl = tgt[3]["spl"]
     target = getnam(tgt)
 
-    loc = 0
-    for i in world.Location:
-        if i == tgt:
-            break
-        loc += 1
-
     weapons = []
     wdamage = []
     wpics = []
@@ -280,7 +274,8 @@ def player_attack(tgt):
 
             if des == "Retreat":
                 #TODO: update npc's health (maybe done?)
-                world.Location()[loc][tgt][3]["hlt"] = tlife
+                debug(world.Places[world.Location])
+                world.Places[world.Location][tgt][3]["hlt"] = tlife
                 return "Retreat"
 
             if des == "Change Weapon":
