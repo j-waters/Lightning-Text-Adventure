@@ -249,6 +249,10 @@ def player_attack(tgt):
             taction = "Magic"
         else:
             debug("npc ai error")
+            debug("rdn: " + str(rdn))
+            debug("defp: " + str(defp))
+            debug("attp: " + str(attp))
+            debug("mgcp: " + str(mgcp))
 
         des = easygui.buttonbox(msg="Your Turn!", choices=("Attack", "Defend", "Magic", "Retreat", "Change Weapon"))
 
@@ -273,9 +277,10 @@ def player_attack(tgt):
                     print("You have no spells")
 
             if des == "Retreat":
-                #TODO: update npc's health (maybe done?)
-                debug(world.Places[world.Location])
-                world.Places[world.Location][tgt][3]["hlt"] = tlife
+                #TODO: update npc's health (maybe done?) (NOT DONE)
+                debug("Pre Update: " + str(world.Places[world.Location][lfind(world.Places[world.Location], tgt)][3]["hlt"]))
+                world.Places[world.Location][lfind(world.Places[world.Location], tgt)][3]["hlt"] = tlife
+                debug("Pre Update: " + str(world.Places[world.Location][lfind(world.Places[world.Location], tgt)][3]["hlt"]))
                 return "Retreat"
 
             if des == "Change Weapon":
