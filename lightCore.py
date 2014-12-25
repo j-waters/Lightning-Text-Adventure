@@ -101,3 +101,10 @@ def printTree(tree, depth = 0):
 
 class Error(Exception):
     pass
+
+def lfind(list=[], item=""):
+    #returns the index of the item given
+    try:
+        list.index(item)
+    except:
+        pass
