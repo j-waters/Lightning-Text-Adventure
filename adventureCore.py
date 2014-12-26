@@ -143,7 +143,7 @@ def player_equip(item):
 
     if getmet(item, 0) == "boot":
         if player.Boot == "":
-            player.boot = item
+            player.Boot = item
 
             inventory_remove(item)
 
@@ -194,7 +194,7 @@ def player_attack(tgt):
 
     #Calculate personality
     total = tatt + tdef + tmgc
-    mgcp = int((tdef / total) * 100)
+    mgcp = int((tmgc / total) * 100)
     attp = int((tatt / total) * 100) + mgcp
     defp = int((tdef / total) * 100) + attp
 
@@ -277,10 +277,7 @@ def player_attack(tgt):
                     print("You have no spells")
 
             if des == "Retreat":
-                #TODO: update npc's health (maybe done?) (NOT DONE)
-                debug("Pre Update: " + str(world.Places[world.Location][lfind(world.Places[world.Location], tgt)][3]["hlt"]))
                 world.Places[world.Location][lfind(world.Places[world.Location], tgt)][3]["hlt"] = tlife
-                debug("Pre Update: " + str(world.Places[world.Location][lfind(world.Places[world.Location], tgt)][3]["hlt"]))
                 return "Retreat"
 
             if des == "Change Weapon":
@@ -307,10 +304,12 @@ def player_attack(tgt):
                 pka = int(int(trnk) * (random.randint(1, 2) + random.random()))
                 player_Xpa(pka)
                 if taln == "G":
-                    print(target + " was good." + "You lose" + str(pka) + " karma")
+                    print(target + " was good. " + "You lose " + str(pka) + " karma")
+                    debug("Pre karma: " + str(player.Karma))
                     player.Karma -= pka
+                    debug("Post karma: " + str(player.Karma))
                 if taln == "E":
-                    print(target + "was evil." + "You gain" + str(pka) + " karma")
+                    print(target + "was evil. " + "You gain " + str(pka) + " karma")
                     player.Karma += pka
                 return "win"
 
@@ -403,7 +402,7 @@ def player_attack(tgt):
                     print("You have no spells")
 
             if des == "Retreat":
-                #TODO: update npc's health
+                world.Places[world.Location][lfind(world.Places[world.Location], tgt)][3]["hlt"] = tlife
                 return "Retreat"
 
             if tlife < 1:
@@ -413,10 +412,10 @@ def player_attack(tgt):
                 pka = int(int(trnk) * (random.randint(1, 2) + random.random()))
                 player_Xpa(pka)
                 if taln == "G":
-                    print(target + " was good." + "You lose" + str(pka) + " karma")
+                    print(target + " was good. " + "You lose " + str(pka) + " karma")
                     player.Karma -= pka
                 if taln == "E":
-                    print(target + "was evil." + "You gain" + str(pka) + " karma")
+                    print(target + "was evil. " + "You gain" + str(pka) + " karma")
                     player.Karma += pka
                 return "win"
 
@@ -514,49 +513,58 @@ def inventory_get():
             estring2 = player.Helm[0]
             estring2d = player.Helm[1]
             estring2m = "e|helm"
+            estring2p = player.Helm[3]
 
         if player.Helm == "":
             estring2 = "No helm"
             estring2d = "Your not wearing a helmet"
             estring2m = ""
+            estring2p = ""
     except:
         estring2 = "No helm"
         estring2d = "Your not wearing a helmet"
         estring2m = ""
+        estring2p = ""
 
     try:
         if not player.Shirt == "":
             estring3 = player.Shirt[0]
             estring3d = player.Shirt[1]
             estring3m = "e|shirt"
+            estring3p = player.Shirt[3]
 
         if player.Shirt == "":
             estring3 = "No Extra Shirt"
             estring3d = "Your not wearing any extra shirt"
             estring3m = ""
+            estring3p = ""
     except:
         estring3 = "No Extra Shirt"
         estring3d = "Your not wearing an extra shirt"
         estring3m = ""
+        estring3p = ""
 
     try:
         if not player.Boot == "":
             estring4 = player.Boot[0]
             estring4d = player.Boot[1]
             estring4m = "e|boot"
+            estring4p = player.Boot[3]
 
         if player.Boot == "":
             estring4 = "No Extra boots"
             estring4d = "Your not wearing any boots"
             estring4m = ""
+            estring4p = ""
     except:
         estring4 = "No Extra boot"
         estring4d = "Your not wearing any boots"
         estring4m = ""
+        estring4p = ""
 
-    inventory.Contents.append((estring1 + estring2,estring2d, estring2m))
-    inventory.Contents.append((estring1 + estring3,estring3d, estring3m))
-    inventory.Contents.append((estring1 + estring4,estring4d, estring4m))
+    inventory.Contents.append((estring1 + estring2,estring2d, estring2m, estring2p))
+    inventory.Contents.append((estring1 + estring3,estring3d, estring3m, estring3p))
+    inventory.Contents.append((estring1 + estring4,estring4d, estring4m, estring4p))
 
     ##adding player stats##
     pstring = "Your Statistics"
@@ -572,9 +580,9 @@ def inventory_get():
 
     inventory.Contents.remove((mstring, mstringd, mstringm))
     inventory.Contents.remove((pstring, pstringd, pstringm))
-    inventory.Contents.remove((estring1 + estring2,estring2d, estring2m))
-    inventory.Contents.remove((estring1 + estring3,estring3d, estring3m))
-    inventory.Contents.remove((estring1 + estring4,estring4d, estring4m))
+    inventory.Contents.remove((estring1 + estring2,estring2d, estring2m, estring2p))
+    inventory.Contents.remove((estring1 + estring3,estring3d, estring3m, estring3p))
+    inventory.Contents.remove((estring1 + estring4,estring4d, estring4m, estring4p))
 
     debug("\n VOP:")
     debug(vop)
