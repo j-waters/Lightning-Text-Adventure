@@ -3,6 +3,9 @@ import os.path
 Contents = []
 Size = 0
 Money = 0
+Helm = ""
+Shirt = ""
+Boot = ""
 
 
 def save():
@@ -11,7 +14,10 @@ def save():
     save = {
     'Contents':Contents,
     'Size':Size,
-    'Money':Money
+    'Money':Money,
+    'Helm':Helm,
+    'Shirt':Shirt,
+    'Boot':Boot
     }
 
     for key in save.keys():
