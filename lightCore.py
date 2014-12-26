@@ -28,6 +28,7 @@ from functools import reduce #@UnusedImport
 
 def debug(string):
     #Normal print function, outputting to the console
+    string = str(string)
     if string == None:
         string = "*None*"
     sys.stdout.write(str(string))
@@ -105,6 +106,6 @@ class Error(Exception):
 def lfind(list=[], item=""):
     #returns the index of the item given
     try:
-        list.index(item)
+        return list.index(item)
     except:
         pass
