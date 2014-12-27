@@ -28,11 +28,14 @@ from functools import reduce #@UnusedImport
 
 def debug(string):
     #Normal print function, outputting to the console
-    string = str(string)
-    if string == None:
-        string = "*None*"
-    sys.stdout.write(str(string))
-    sys.stdout.write("\n")
+    try:
+        string = str(string)
+        if string == None:
+            string = "*None*"
+        sys.stdout.write(str(string))
+        sys.stdout.write("\n")
+    except:
+        pass
 
 def reporthook(blocknum, blocksize, totalsize):
     #Shows percentage of download
