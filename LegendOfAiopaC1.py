@@ -12,18 +12,22 @@ import player, world, inventory
 def firstLoad():
     inventory.load()
     if player.load() == False:
+        debug("#Player#")
         create_character()
         player.Health = player.MaxHealth
     if world.load() == False:
+        debug("#World#")
         TN1_R1()
         pass
 
 def create_character():
+    debug("#Character#")
     player_picture()
     player_name()
 
 
 def TN1_R1():
+    debug("#TN1_R1#")
     world.Location = "TN1_R1"
     choices(world.Places["TN1_R1"])
 
