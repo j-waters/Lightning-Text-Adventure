@@ -33,6 +33,7 @@ def TN1_R1():
 
 #try:
 firstLoad()
+
 #except:
     #t = time.strftime("%d %b %Y %H.%M.%S", time.gmtime())
     #erf = open("Crash Reports/Error Report at " + t + ".txt", "w")
