@@ -14,6 +14,7 @@ import time #@UnusedImport
 import random #@UnusedImport
 try:
     import easygui #@UnresolvedImport @UnusedImport
+    import PIL
 except:
     pass
 import sys #@UnusedImport @Reimport
