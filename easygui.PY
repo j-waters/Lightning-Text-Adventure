@@ -134,6 +134,16 @@ if sys.hexversion >= 0x030000F0:
 else:
     runningPython3 = False
 
+from platform import architecture as arc
+
+DIR = os.path.dirname(__file__)
+
+if sys.version_info[:2] == (3, 3):
+    sys.path.append(os.path.join(DIR, "PIL (3.3).egg"))
+
+if sys.version_info[:2] == (3, 4):
+    sys.path.append(os.path.join(DIR, "PIL (3.4).egg"))
+
 try:
     from PIL import Image   as PILImage
     from PIL import ImageTk as PILImageTk
