@@ -14,7 +14,6 @@ import time #@UnusedImport
 import random #@UnusedImport
 try:
     import easygui #@UnresolvedImport @UnusedImport
-    import PIL
 except:
     pass
 import sys #@UnusedImport @Reimport
@@ -83,10 +82,14 @@ def get_save(filename):
     result = {}
     with open(filename) as f:
         for line in f:
+            debug(line)
             try:
                 line = line.split(' = ',1)
                 result[line[0]] = ast.literal_eval(line[1].strip())
+
             except:
+                debug("FAILED")
+                time.sleep(5)
                 pass
     return result
 
