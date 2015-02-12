@@ -24,6 +24,7 @@ import inventory
 #####
 #Setup print and pprint
 #####
+
 def print(string):  # @DontTrace @ReservedAssignment
     #easygui print
     easygui.msgbox(msg=string, title=turns())
@@ -790,6 +791,8 @@ def view(items, string="You Can See:"):
             return
 
         TheOut = find_tup(TheOut, items)
+
+        if searchmet() #TODO:
         pprint(getpic(TheOut), getdes(TheOut))
 
 def take(choices, mmax=0, string="You Can Take:"):
