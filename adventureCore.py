@@ -603,21 +603,21 @@ def inventory_get():
     elif getmet(vop, "all") == "i":
         #Is it an average item?
         pprint(getpic(vop), getdes(vop))
-    elif searchmet("e", vop) == "T":
+    elif searchmet("e", vop) == True:
         #Is it an equipped item?
         IgI = easygui.buttonbox(image=getpic(vop), msg=getdes(vop), choices=("Back", "Un Equip"))
         if IgI == "Un Equip":
             player_unEquip(getmet(vop, 1))
-    elif searchmet("c", vop) == "T":
+    elif searchmet("c", vop) == True:
         #Is it an eqipable item?
         IgI = easygui.buttonbox(image=getpic(vop), msg=getdes(vop), choices=("Back", "Equip"))
         if IgI == "Equip":
             player_equip(vop)
     else:
         verb = "Use"
-        if searchmet("book", vop) == "T":
+        if searchmet("book", vop) == True:
             verb = "Read"
-        if searchmet("map", vop) == "T":
+        if searchmet("map", vop) == True:
             verb = "Read"
 
         IgI = options(getpic(vop), getdes(vop), "Discard", verb, "Back")
@@ -712,9 +712,9 @@ def searchmet(string, item):
 
     for i in range(0, len(item.split('|'))):
         if item.split('|')[i] == string:
-            return "T"
+            return True
 
-    return "F"
+    return False
 
 def input(string):  # @ReservedAssignment
     #Creates an enter box with a string, and the time as the title
@@ -740,7 +740,7 @@ def move(choices):
     #Shows a choicebox with places that the player can move to
     #returns the selection
 
-    choices = [i for i in choices if searchmet("building", i) == "T"]
+    choices = [i for i in choices if searchmet("building", i) == True]
 
     TheOut = easygui.choicebox(msg="Move To:", choices=(t(choices, 0)))
 
@@ -792,8 +792,16 @@ def view(items, string="You Can See:"):
 
         TheOut = find_tup(TheOut, items)
 
-        if searchmet() #TODO:
-        pprint(getpic(TheOut), getdes(TheOut))
+        if searchmet("i", TheOut) == True:
+            choice = easygui.buttonbox(image=getpic(TheOut), msg=getdes(TheOut), choices=("Take", "Back"))
+        else:
+            choice = easygui.buttonbox(image=getpic(TheOut), msg=getdes(TheOut), choices=("Back"))
+
+        if choice == "Take":
+            inventory_add(TheOut)
+            return "Take"
+        else:
+            return
 
 def take(choices, mmax=0, string="You Can Take:"):
     #Takes an item and places it into the players inventory
@@ -896,9 +904,6 @@ def choices(things):
 
         if des == "Look Around":
             view(things)
-        if des == "Take Something":
-            world.Turn += 1
-            take(things)
         if des == "Move Somewhere":
             move(things)
         if des == "View Inventory":
