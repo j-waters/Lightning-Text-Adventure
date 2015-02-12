@@ -101,6 +101,7 @@ def player_defence():
 def player_unEquip(item):
     #Unequips an item from the player
     debug("Un Equip")
+    debug(item)
 
     if item == "helm":
         inventory_add(player.Helm)
@@ -112,7 +113,7 @@ def player_unEquip(item):
 
     if item == "boot":
         inventory_add(player.Boot)
-        player.boot = ""
+        player.Boot = ""
 
 def player_equip(item):
     #Equips an item to the player
@@ -458,24 +459,17 @@ def inventory_add(item):
     #This bit will have problems with lists of items due to the 1
     if 1 + len(inventory.Contents) > inventory.Size:
         debug(inventory.Size)
-        spaceleft = inventory.Size - len(inventory.Contents)
-        things = len(item)
-        pprint(Full_Bag, "You Can't fit " + str(things) + " More item in a bag that can only hold " + str(spaceleft) + " more items!")
+        pprint(Full_Bag, "You can't fit anything else into a bag that can only hold " + str(inventory.Size) + " items!")
 
-        INV_A_DC = easygui.choicebox(msg="What to discard: (cancel to not discard anything)", choices=(inventory.Contents))
+        INV_A_DC = easygui.choicebox(msg="What to drop: (cancel to not drop anything)", choices=(getnam(inventory.Contents)))
         if not INV_A_DC == None:
+            INV_A_DC = find_tup(INV_A_DC, inventory.Contents)
             inventory_remove(INV_A_DC)
         if INV_A_DC == None:
-            return
+            return False
 
-    else:
-        if type(item) == tuple:
-            inventory.Contents.append(item)
-
-        if type(item) == list:
-            for i in range(len(item)):
-
-                inventory.Contents.append(item[i])
+    inventory.Contents.append(item)
+    return True
 
 
 
@@ -513,7 +507,7 @@ def inventory_get():
         if not player.Helm == "":
             estring2 = player.Helm[0]
             estring2d = player.Helm[1]
-            estring2m = "e|helm"
+            estring2m = ["e", "helm", player.Helm[2][1]]
             estring2p = player.Helm[3]
 
         if player.Helm == "":
@@ -531,7 +525,7 @@ def inventory_get():
         if not player.Shirt == "":
             estring3 = player.Shirt[0]
             estring3d = player.Shirt[1]
-            estring3m = "e|shirt"
+            estring3m = ["e", "shirt", player.Shirt[2][1]]
             estring3p = player.Shirt[3]
 
         if player.Shirt == "":
@@ -549,7 +543,7 @@ def inventory_get():
         if not player.Boot == "":
             estring4 = player.Boot[0]
             estring4d = player.Boot[1]
-            estring4m = "e|boot"
+            estring4m = ["e", "boot", player.Boot[2][1]]
             estring4p = player.Boot[3]
 
         if player.Boot == "":
@@ -636,6 +630,7 @@ def inventory_get():
     return
 
 def inventory_remove(item):
+    world.Places[world.Location].append(item)
     inventory.Contents.remove(item)
 
 #####
@@ -669,13 +664,13 @@ def getmet(item, metno):
             TheOut = item[2]
             return TheOut
 
-        TheOut = item[2].split('|')[metno]
+        TheOut = item[2][metno]
 
     if type(item) == list:
         if metno == "all":
             TheOut = item[0][2]
             return TheOut
-        TheOut = item[0][2].split('|')[metno]
+        TheOut = item[0][2][metno]
 
     return TheOut
 
@@ -710,8 +705,8 @@ def searchmet(string, item):
     if type(item) == tuple:
         item = getmet(item, "all")
 
-    for i in range(0, len(item.split('|'))):
-        if item.split('|')[i] == string:
+    for i in item:
+        if i == string:
             return True
 
     return False
@@ -798,8 +793,9 @@ def view(items, string="You Can See:"):
             choice = easygui.buttonbox(image=getpic(TheOut), msg=getdes(TheOut), choices=("Back"))
 
         if choice == "Take":
-            inventory_add(TheOut)
-            return "Take"
+            if inventory_add(TheOut) == True:
+                world.Places[world.Location].remove(TheOut)
+                return "Take"
         else:
             return
 
@@ -894,7 +890,7 @@ def choices(things):
     player_refresh()
     world_refresh()
     while True:
-        chs = ["Look Around","Take Something", "Move Somewhere", "View Inventory"]
+        chs = ["Look Around", "Move Somewhere", "View Inventory"]
         for i in things:
             if getmet(i, 0) == "npc":
                 chs.append("Interact With Something")
