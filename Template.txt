@@ -2,13 +2,13 @@ NPC META DATA: "npc" dic: <attack>; <defence>; <Health>; <rank>; <G-ood/E-vil>; 
 
 ITEM META DATA:
 
-    shirt|<defence>|c|i
-    boot|<defence>|c|i
-    helm|<defence>|c|i
-    book|<knowledge/book name>|i
-    map|<map name>|i
-    weapon|<damage>|i
-    money|<amount>|i
+    shirt, <defence>, c, i
+    boot, <defence>, c, i
+    helm, <defence>, c, i
+    book, <knowledge/book name>, i
+    map, <map name>, i
+    weapon, <damage>, i
+    money, <amount>, i
 
     types:
         i = non-usable item
@@ -18,7 +18,7 @@ ITEM META DATA:
 
 PLACE META DATA:
     In town squares:
-        building|<type>
+        building, <type>
         <type>: house/herb/inn/armoury/supply
 
 Out Posts:
