@@ -82,14 +82,11 @@ def get_save(filename):
     result = {}
     with open(filename) as f:
         for line in f:
-            debug(line)
             try:
                 line = line.split(' = ',1)
                 result[line[0]] = ast.literal_eval(line[1].strip())
 
             except:
-                debug("FAILED")
-                time.sleep(5)
                 pass
     return result
 
