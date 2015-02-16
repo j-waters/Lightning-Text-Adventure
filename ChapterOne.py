@@ -7,7 +7,7 @@
 from lightCore import *  # @UnusedWildImport
 from adventureCore import *  # @UnusedWildImport
 #Import Variable Modules
-import player, world, inventory
+import player, world, inventory  # @Reimport
 
 
 def firstLoad():
