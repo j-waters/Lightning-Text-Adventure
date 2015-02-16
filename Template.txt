@@ -1,12 +1,12 @@
-NPC META DATA: "npc" dic: <attack>; <defence>; <Health>; <rank>; <G-ood/E-vil>; <speed>; <luck>; <magic>
+NPC META DATA: "npc" dic: "name":, "att":, "def":, "hlt":, "mhlt":, "rnk":, "aln":"G"\"E", "spd":, "lck":, "mgc":, "spl" : []
 
 ITEM META DATA:
 
     shirt, <defence>, c, i
     boot, <defence>, c, i
     helm, <defence>, c, i
-    book, <knowledge/book name>, i
-    map, <map name>, i
+    book, <knowledge/book name>, i, u
+    map, <map name>, i, u
     weapon, <damage>, i
     money, <amount>, i
 
