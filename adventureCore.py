@@ -158,8 +158,11 @@ def player_equip(item):
     else:
         print("Cannot equip a " + str(item))
 
-def player_attack(tgt):
+def battle(tgt):
     #Player attacks 'tgt'
+
+    global tlife
+
     debug("ATTACKING")
     tatt = int(tgt[3]["att"])
     tdef = int(tgt[3]["def"])
@@ -200,6 +203,8 @@ def player_attack(tgt):
     attp = int((tatt / total) * 100) + mgcp
     defp = int((tdef / total) * 100) + attp
 
+    global tempdef
+    global tartempdef
 
     tempdef = 0
     tartempdef = 0
@@ -207,8 +212,7 @@ def player_attack(tgt):
     while True:
         debug("PATT " + str(patt))
         debug("TDEF " + str(tdef))
-        debug("PDEF " + str(player_defence()))
-        debug("Player Defence " + str(player_defence()))
+        debug("PDEF " + str(player_defence() + tempdef))
         PtE = int( patt * (1 + random.random())- (tdef + tartempdef))
         EtP = int( int (tatt) * (1 + random.random()) - (player_defence() + tempdef))
         debug("PtE " + str(PtE))
@@ -259,45 +263,7 @@ def player_attack(tgt):
         des = easygui.buttonbox(msg="Your Turn!", choices=("Attack", "Defend", "Magic", "Retreat", "Change Weapon"))
 
         if order == "player":
-            if des == "Attack":
-                print(player.Name + " Attacks!")
-                if Pcrit == True:
-                    print("Critical Hit! x" + str(((player.Luck + 10) / 10)))
-                print(player.Name + " Deals " + str(PtE) + " Damage To " + target)
-                tlife -= PtE
-                print(target + " Is Now On " + str(tlife) + " Health.")
-
-            if des == "Defend":
-                print(player.Name + " Is Defending.")
-                tempdef = player_defence() + player.Strength
-
-            if des == "Magic":
-                if not player.Spells == []:
-                    spl = easygui.choicebox(msg="Choose A Spell To Cast", title=turns(), choices=player.Spells)
-                    player_magicCast(spl)
-                else:
-                    print("You have no spells")
-
-            if des == "Retreat":
-                world.Places[world.Location][lfind(world.Places[world.Location], tgt)][3]["hlt"] = tlife
-                return "Retreat"
-
-            if des == "Change Weapon":
-                weapons = []
-                wdamage = []
-                wpics = []
-                for i in range(0, len(inventory.Contents)):
-                    spl = getmet(inventory.Contents[i], 0)
-                    if spl == "weapon":
-                        weapons.append(getnam(inventory.Contents[i]))
-                        wdamage.append(getmet(inventory.Contents[i], 1))
-                        wpics.append(getpic(inventory.Contents[i]))
-                weapons.append("Your Fists")
-                wdamage.append(player.Strength)
-                wpics.append("Pics/Fist01.png")
-                patt = weaponselect(weapons, wdamage, wpics)
-                patt = int(patt + player.Strength)
-
+            player_attack(des, Pcrit, PtE, target, tgt)
 
             if tlife < 1:
                 print("You defeat " + target + ".")
@@ -315,97 +281,13 @@ def player_attack(tgt):
                     player.Karma += pka
                 return "win"
 
-            if taction == "Attack":
-                print(target + " Attacks!")
-                if Ecrit == True:
-                    print("Critical Hit! x" + str(((tlck + 10) / 10)))
-
-                print(target + " Deals " + str(EtP) + " Damage To " + player.Name)
-                player.Health -= EtP
-                print(player.Name + " Is Now On " + str(player.Health) + " Health.")
-
-            if taction == "Defend":
-                print(target + " Is Defending.")
-                tartempdef = tdef + int(tatt / 2)
-
-            if taction == "Magic":
-                spell = target_magicCast(target, tlife, tmhlt, tmgc, tspl)
-                if spell == "heal":
-                    amount = tmgc * random.randint(1, 2)
-                    print(target + "casts 'heal' and recovers " + str(amount) + " health")
-                    tlife += amount
-                    if tlife > tmhlt:
-                        tlife = tmhlt
-                    print(target + "is now on " + str(tlife) + " Health")
-
+            enemy_attack(taction, Ecrit, target, tlck, EtP, tdef, tatt, tlife, tmhlt, tmgc, tspl)
             player_refresh()
-
 
         if order == "target":
-            if des == "Change Weapon":
-                weapons = []
-                wdamage = []
-                wpics = []
-                for i in range(0, len(inventory.Contents)):
-                    spl = getmet(inventory.Contents[i], 0)
-                    if spl == "weapon":
-                        weapons.append(getnam(inventory.Contents[i]))
-                        wdamage.append(getmet(inventory.Contents[i], 1))
-                        wpics.append(getpic(inventory.Contents[i]))
-                weapons.append("Your Fists")
-                wdamage.append(player.Strength)
-                wpics.append("Pics/Fist01.png")
-                patt = weaponselect(weapons, wdamage, wpics)
-                patt = int(patt + player.Strength)
-
-            if taction == "Attack":
-                print(target + " Attacks!")
-                if Ecrit == True:
-                    print("Critical Hit! x" + str(((tlck + 10) / 10)))
-
-                print(target + " Deals " + str(EtP) + " Damage To " + player.Name)
-                player.Health -= EtP
-                print(player.Name + " Is Now On " + str(player.Health) + " Health.")
-
-            if taction == "Defend":
-                print(target + " Is Defending.")
-                tartempdef = tdef + int(tatt / 2)
-
-            if taction == "Magic":
-                spell = target_magicCast(target, tlife, tmhlt, tmgc, tspl)
-                if spell == "heal":
-                    amount = tmgc * random.randint(1, 2)
-                    print(target + "casts 'heal' and recovers " + str(amount) + " health")
-                    tlife += amount
-                    if tlife > tmhlt:
-                        tlife = tmhlt
-                    print(target + "is now on " + str(tlife) + " Health")
-
-
+            enemy_attack(taction, Ecrit, target, tlck, EtP, tdef, tatt, tlife, tmhlt, tmgc, tspl)
             player_refresh()
-
-            if des == "Attack":
-                print(player.Name + " Attacks!")
-                if Pcrit == True:
-                    print("Critical Hit! x" + str(((player.Luck + 10) / 10)))
-                print(player.Name + " Deals " + str(PtE) + " Damage To " + target)
-                tlife -= PtE
-                print(target + " Is Now On " + str(tlife) + " Health.")
-
-            if des == "Defend":
-                print(player.Name + " Is Defending.")
-                tempdef = player_defence() + player.Strength
-
-            if des == "Magic":
-                if not player.Spells == []:
-                    spl = easygui.choicebox(msg="Choose A Spell To Cast", title=turns(), choices=player.Spells)
-                    player_magicCast(spl)
-                else:
-                    print("You have no spells")
-
-            if des == "Retreat":
-                world.Places[world.Location][lfind(world.Places[world.Location], tgt)][3]["hlt"] = tlife
-                return "Retreat"
+            player_attack(des, Pcrit, PtE, target, tgt)
 
             if tlife < 1:
                 print("You defeat " + target + ".")
@@ -415,11 +297,84 @@ def player_attack(tgt):
                 player_Xpa(pka)
                 if taln == "G":
                     print(target + " was good. " + "You lose " + str(pka) + " karma")
+                    debug("Pre karma: " + str(player.Karma))
                     player.Karma -= pka
+                    debug("Post karma: " + str(player.Karma))
                 if taln == "E":
-                    print(target + "was evil. " + "You gain" + str(pka) + " karma")
+                    print(target + "was evil. " + "You gain " + str(pka) + " karma")
                     player.Karma += pka
                 return "win"
+
+def player_attack(des, Pcrit, PtE, target, tgt):
+    global tempdef
+    global tlife
+    if des == "Attack":
+        print(player.Name + " Attacks!")
+        if Pcrit == True:
+            print("Critical Hit! x" + str(((player.Luck + 10) / 10)))
+        print(player.Name + " Deals " + str(PtE) + " Damage To " + target)
+        tlife -= PtE
+        print(target + " Is Now On " + str(tlife) + " Health.")
+
+    if des == "Defend":
+        print(player.Name + " Is Defending.")
+        tempdef = int(player.Strength / 2)
+        debug("tempdef " + str(tempdef))
+
+    if des == "Magic":
+        if not player.Spells == []:
+            spl = easygui.choicebox(msg="Choose A Spell To Cast", title=turns(), choices=player.Spells)
+            player_magicCast(spl)
+        else:
+            print("You have no spells")
+
+    if des == "Retreat":
+        world.Places[world.Location][lfind(world.Places[world.Location], tgt)][3]["hlt"] = tlife
+        return "Retreat"
+
+    if des == "Change Weapon":
+        weapons = []
+        wdamage = []
+        wpics = []
+        for i in range(0, len(inventory.Contents)):
+            spl = getmet(inventory.Contents[i], 0)
+            if spl == "weapon":
+                weapons.append(getnam(inventory.Contents[i]))
+                wdamage.append(getmet(inventory.Contents[i], 1))
+                wpics.append(getpic(inventory.Contents[i]))
+        weapons.append("Your Fists")
+        wdamage.append(player.Strength)
+        wpics.append("Pics/Fist01.png")
+        patt = weaponselect(weapons, wdamage, wpics)
+        patt = int(patt + player.Strength)
+
+
+
+
+def enemy_attack(taction, Ecrit, target, tlck, EtP, tdef, tatt, tlife, tmhlt, tmgc, tspl):
+    global tartempdef
+    if taction == "Attack":
+        print(target + " Attacks!")
+        if Ecrit == True:
+            print("Critical Hit! x" + str(((tlck + 10) / 10)))
+
+        print(target + " Deals " + str(EtP) + " Damage To " + player.Name)
+        player.Health -= EtP
+        print(player.Name + " Is Now On " + str(player.Health) + " Health.")
+
+    if taction == "Defend":
+        print(target + " Is Defending.")
+        tartempdef = int(tatt / 2)
+
+    if taction == "Magic":
+        spell = target_magicCast(target, tlife, tmhlt, tmgc, tspl)
+        if spell == "heal":
+            amount = tmgc * random.randint(1, 2)
+            print(target + "casts 'heal' and recovers " + str(amount) + " health")
+            tlife += amount
+            if tlife > tmhlt:
+                tlife = tmhlt
+            print(target + "is now on " + str(tlife) + " Health")
 
 def player_magicCast(spell):
     if player.Spells.__contains__(spell) == False:
@@ -564,14 +519,14 @@ def inventory_get():
     ##adding player stats##
     pstring = "Your Statistics"
     pstringd = "Your Stats:\n" + "Health: " + str(player.Health) + "/" + str(player.MaxHealth) + "\nDefence: " + str(player_defence()) + "\nMagic Strength: " + str(player.Magic)+ "\nStrength: " + str(player.Strength)+ "\nKarma: " + str(player.Karma)+ "\nSpeed: " + str(player.Speed) #TODO: Add more stats
-    pstringm = ""
+    pstringm = ["stats"]
     inventory.Contents.append((pstring, pstringd, pstringm))
 
     ##showing inventory##
 
-    vop = easygui.choicebox(msg = "Your Inventory:", choices=(getnam(inventory.Contents)))
+    selected = easygui.choicebox(msg = "Your Inventory:", choices=(getnam(inventory.Contents)))
 
-    vop = find_tup(vop, inventory.Contents)
+    selected = find_tup(selected, inventory.Contents)
 
     inventory.Contents.remove((mstring, mstringd, mstringm))
     inventory.Contents.remove((pstring, pstringd, pstringm))
@@ -579,51 +534,51 @@ def inventory_get():
     inventory.Contents.remove((estring1 + estring3,estring3d, estring3m, estring3p))
     inventory.Contents.remove((estring1 + estring4,estring4d, estring4m, estring4p))
 
-    debug("\n VOP:")
-    debug(vop)
+    debug("\n selected:")
+    debug(selected)
 
-    if vop == None:
+    if selected == None:
         return "exit"
 
-    if type(vop) == list:
-        vop = vop[0]
+    if type(selected) == list:
+        selected = selected[0]
 
-    if getnam(vop) == pstring:
-        pprint(player.Picture, getdes(vop))
-    elif getnam(vop) == mstring:
-        pprint(Coin, getdes(vop))
-    elif getmet(vop, "all") == "":
-        print(getdes(vop))
-    elif getmet(vop, "all") == "i":
+    if getnam(selected) == pstring:
+        pprint(player.Picture, getdes(selected))
+    elif getnam(selected) == mstring:
+        pprint(Coin, getdes(selected))
+    elif getmet(selected, "all") == "":
+        print(getdes(selected))
+    elif getmet(selected, "all") == "i" and getmet(selected, "all") != "u": #TODO: maybe change this, need to really redo the entire item metadata thing
         #Is it an average item?
-        pprint(getpic(vop), getdes(vop))
-    elif searchmet("e", vop) == True:
+        easygui.buttonbox(image=getpic(selected), msg=getdes(selected), choices=("Back", "Discard"))
+    elif searchmet("e", selected) == True:
         #Is it an equipped item?
-        IgI = easygui.buttonbox(image=getpic(vop), msg=getdes(vop), choices=("Back", "Un Equip"))
+        IgI = easygui.buttonbox(image=getpic(selected), msg=getdes(selected), choices=("Back", "Un Equip"))
         if IgI == "Un Equip":
-            player_unEquip(getmet(vop, 1))
-    elif searchmet("c", vop) == True:
+            player_unEquip(getmet(selected, 1))
+    elif searchmet("c", selected) == True:
         #Is it an eqipable item?
-        IgI = easygui.buttonbox(image=getpic(vop), msg=getdes(vop), choices=("Back", "Equip"))
+        IgI = easygui.buttonbox(image=getpic(selected), msg=getdes(selected), choices=("Back", "Equip", "Discard"))
         if IgI == "Equip":
-            player_equip(vop)
-    else:
+            player_equip(selected)
+    elif searchmet("u", selected):
         verb = "Use"
-        if searchmet("book", vop) == True:
+        if searchmet("book", selected) == True:
             verb = "Read"
-        if searchmet("map", vop) == True:
+        if searchmet("map", selected) == True:
             verb = "Read"
 
-        IgI = options(getpic(vop), getdes(vop), "Discard", verb, "Back")
+        IgI = easygui.buttonbox(image = getpic(selected), msg = getdes(selected), choices =("Back", verb, "Discard"))
 
-        if IgI == "Discard":
-            inventory_remove(vop)
-        if IgI == verb:
-            if getmet(vop, 0) == "book":
-                read(vop)
-            if getmet(vop, 0) == "map":
-                read(vop)
-            #other items
+    if IgI == "Discard":
+        inventory_remove(selected)
+    if IgI == verb:
+        if getmet(selected, 0) == "book":
+            read(selected)
+        if getmet(selected, 0) == "map":
+            read(selected)
+        #other items
 
 
     inventory_get()
@@ -917,7 +872,7 @@ def choices(things):
                 if des == "Talk":
                     talk(something)
                 if des == "Attack":
-                    player_attack(something)
+                    battle(something)
 
 def selector(things, pictures, string, metno, title):
     #insert %m in string to replace that with output from metno
