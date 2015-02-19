@@ -30,7 +30,7 @@ def save():
     'Health':Health,
     'Helm':Helm,
     'Shirt':Shirt,
-    'boot':Boot,
+    'Boot':Boot,
     'Knowledge':Knowledge,
     'Karma':Karma,
     'Xp':Xp,
