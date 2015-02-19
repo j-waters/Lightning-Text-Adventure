@@ -450,7 +450,7 @@ def inventory_get():
 
     mstring = "You Have: " + str(inventory.Money) + " Gold"
     mstringd = "Your small bag of money full of coins that are known as 'gold' by the comoners"
-    mstringm = ""
+    mstringm = []
     inventory.Contents.append((mstring, mstringd, mstringm))
 
     ##done money##
@@ -468,12 +468,12 @@ def inventory_get():
         if player.Helm == "":
             estring2 = "No helm"
             estring2d = "Your not wearing a helmet"
-            estring2m = ""
+            estring2m = []
             estring2p = ""
     except:
         estring2 = "No helm"
         estring2d = "Your not wearing a helmet"
-        estring2m = ""
+        estring2m = []
         estring2p = ""
 
     try:
@@ -486,12 +486,12 @@ def inventory_get():
         if player.Shirt == "":
             estring3 = "No Extra Shirt"
             estring3d = "Your not wearing any extra shirt"
-            estring3m = ""
+            estring3m = []
             estring3p = ""
     except:
         estring3 = "No Extra Shirt"
         estring3d = "Your not wearing an extra shirt"
-        estring3m = ""
+        estring3m = []
         estring3p = ""
 
     try:
@@ -504,12 +504,12 @@ def inventory_get():
         if player.Boot == "":
             estring4 = "No Extra boots"
             estring4d = "Your not wearing any boots"
-            estring4m = ""
+            estring4m = []
             estring4p = ""
     except:
         estring4 = "No Extra boot"
         estring4d = "Your not wearing any boots"
-        estring4m = ""
+        estring4m = []
         estring4p = ""
 
     inventory.Contents.append((estring1 + estring2,estring2d, estring2m, estring2p))
@@ -518,7 +518,7 @@ def inventory_get():
 
     ##adding player stats##
     pstring = "Your Statistics"
-    pstringd = "Your Stats:\n" + "Health: " + str(player.Health) + "/" + str(player.MaxHealth) + "\nDefence: " + str(player_defence()) + "\nMagic Strength: " + str(player.Magic)+ "\nStrength: " + str(player.Strength)+ "\nKarma: " + str(player.Karma)+ "\nSpeed: " + str(player.Speed) #TODO: Add more stats
+    pstringd = "Ooops"
     pstringm = ["stats"]
     inventory.Contents.append((pstring, pstringd, pstringm))
 
@@ -540,16 +540,21 @@ def inventory_get():
     if selected == None:
         return "exit"
 
+    IgI = None
+    verb = "Use"
+
     if type(selected) == list:
         selected = selected[0]
 
-    if getnam(selected) == pstring:
-        pprint(player.Picture, getdes(selected))
+    debug(getmet(selected, "all"))
+
+    if getmet(selected, "all") == ['stats']:
+        statistics()
     elif getnam(selected) == mstring:
         pprint(Coin, getdes(selected))
-    elif getmet(selected, "all") == "":
+    elif getmet(selected, "all") == []:
         print(getdes(selected))
-    elif getmet(selected, "all") == "i" and getmet(selected, "all") != "u": #TODO: maybe change this, need to really redo the entire item metadata thing
+    elif getmet(selected, "all") == ["i"]:
         #Is it an average item?
         easygui.buttonbox(image=getpic(selected), msg=getdes(selected), choices=("Back", "Discard"))
     elif searchmet("e", selected) == True:
@@ -563,7 +568,7 @@ def inventory_get():
         if IgI == "Equip":
             player_equip(selected)
     elif searchmet("u", selected):
-        verb = "Use"
+
         if searchmet("book", selected) == True:
             verb = "Read"
         if searchmet("map", selected) == True:
@@ -622,6 +627,8 @@ def getmet(item, metno):
         TheOut = item[2][metno]
 
     if type(item) == list:
+        debug("GETMET HAS DONE A LIST")
+        Error()
         if metno == "all":
             TheOut = item[0][2]
             return TheOut
@@ -852,7 +859,6 @@ def choices(things):
                 break
 
         des = easygui.buttonbox(msg="What Will You Do?", title=turns(), choices=(chs))
-
         if des == "Look Around":
             view(things)
         if des == "Move Somewhere":
@@ -864,7 +870,6 @@ def choices(things):
             for i in things:
                 if getmet(i, 0) == "npc":
                     soth.append(i)
-
             something = easygui.choicebox(msg="You can interact with...", title=turns(), choices=t(soth, 0))
             something = find_tup(something, things)
             if getmet(something, 0) == "npc":
@@ -873,6 +878,9 @@ def choices(things):
                     talk(something)
                 if des == "Attack":
                     battle(something)
+
+        if des == None:
+            exit()
 
 def selector(things, pictures, string, metno, title):
     #insert %m in string to replace that with output from metno
@@ -972,3 +980,32 @@ def talk(person):
             for d in otndic:
                 if d["B"] == c:
                     cur = d
+
+def statistics():
+    cur = 0
+    items = ["Your Physical Attributes:" + "\nStrength: " + str(player.Strength) + "\nHealth: " + str(player.Health) + "/" + str(player.MaxHealth) + "\nSpeed: " + str(player.Speed) + "\nDefence: " + str(player_defence()),
+             "Your Mental Attributes:" + "\nMagical Strength: " + str(player.Magic) + "\nMana: " + str(player.Mana) + "/" + str(player.MaxMana) + "\nKarma: " + str(player.Karma) + "\nLuck: " + str(player.Luck),
+             "Your Spells:\n" + '\n'.join(player.Spells),
+             "Your Knowledge:\n" + '\n'.join(player.Knowledge)]
+    while True:
+        debug(cur)
+        choice = easygui.buttonbox(msg=items[cur], title=turns(), choices=("<---", "Back", "--->"), image=player.Picture)
+
+        if choice == "<---":
+            cur -= 1
+        if choice == "--->":
+            cur += 1
+        if choice == "Back":
+            return
+
+        if cur > len(items) - 1:
+            cur = 0
+        if cur < 0:
+            cur = len(items) - 1
+
+def exit():
+    if easygui.ynbox(msg="Are You Sure You Want To Exit? The Game Will Save.") == True:
+        #player.save()
+        #inventory.save()
+        #world.save()
+        sys.exit()
