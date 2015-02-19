@@ -19,7 +19,7 @@ def firstLoad():
     if world.load() == False:
         debug("#World#")
         TN1_R1()
-        pass
+
 
 def create_character():
     debug("#Character#")
@@ -33,6 +33,7 @@ def TN1_R1():
     choices(world.Places[world.Location])
 
 #try:
+debug("BEGIN")
 firstLoad()
 
 #except:
