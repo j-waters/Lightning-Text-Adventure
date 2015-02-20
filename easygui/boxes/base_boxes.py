@@ -1054,6 +1054,7 @@ def __buttonEvent(event=None, buttons=None, virtual_event=None):
 
 
 def __put_buttons_in_buttonframe(choices, default_choice, cancel_choice):
+    print("PUT BUTTONS")
     """Put the buttons in the buttons frame
     """
     global buttonsFrame, cancel_invoke
@@ -1088,7 +1089,10 @@ def __put_buttons_in_buttonframe(choices, default_choice, cancel_choice):
 
     # Assign default and cancel buttons
     if cancel_choice in buttons:
+        print("CANCEL CHOICE IN BUTTONS")
         buttons[cancel_choice]['cancel_choice'] = True
+    else:
+        print("CANCEL CHOICE NOT IN BUTTONS")
     boxRoot.bind_all('<Escape>', lambda e: __buttonEvent(
         e, buttons, virtual_event='cancel'), add=True)
     boxRoot.protocol('WM_DELETE_WINDOW', lambda: __buttonEvent(
