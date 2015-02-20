@@ -1003,7 +1003,7 @@ def statistics():
         if cur < 0:
             cur = len(items) - 1
 
-def exit():
+def exit():  # @ReservedAssignment
     if easygui.ynbox(msg="Are You Sure You Want To Exit? The Game Will Save.") == True:
         #player.save()
         #inventory.save()
