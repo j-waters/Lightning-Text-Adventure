@@ -160,6 +160,7 @@ def player_equip(item):
 
 def battle(tgt):
     #Player attacks 'tgt'
+    world.Turn += 1
 
     global tlife
 
@@ -279,6 +280,7 @@ def battle(tgt):
                 if taln == "E":
                     print(target + "was evil. " + "You gain " + str(pka) + " karma")
                     player.Karma += pka
+                world.Places[world.Location][0].remove(tgt)
                 return "win"
 
             enemy_attack(taction, Ecrit, target, tlck, EtP, tdef, tatt, tlife, tmhlt, tmgc, tspl)
@@ -303,6 +305,7 @@ def battle(tgt):
                 if taln == "E":
                     print(target + "was evil. " + "You gain " + str(pka) + " karma")
                     player.Karma += pka
+                world.Places[world.Location][0].remove(tgt)
                 return "win"
 
 def player_attack(des, Pcrit, PtE, target, tgt):
@@ -329,7 +332,7 @@ def player_attack(des, Pcrit, PtE, target, tgt):
             print("You have no spells")
 
     if des == "Retreat":
-        world.Places[world.Location][lfind(world.Places[world.Location], tgt)][3]["hlt"] = tlife
+        world.Places[world.Location][0][lfind(world.Places[world.Location], tgt)][3]["hlt"] = tlife
         return "Retreat"
 
     if des == "Change Weapon":
@@ -590,7 +593,7 @@ def inventory_get():
     return
 
 def inventory_remove(item):
-    world.Places[world.Location].append(item)
+    world.Places[world.Location][0].append(item)
     inventory.Contents.remove(item)
 
 #####
@@ -605,10 +608,10 @@ def turns():
     return world.TurnString + str(world.Turn)
 
 def world_refresh():
-    for i in world.Places[world.Location]:
+    for i in world.Places[world.Location][0]:
         if getmet(i, 0) == "npc":
             if i[3]["hlt"] < 1:
-                world.Places[world.Location].remove(i)
+                world.Places[world.Location][0].remove(i)
 
 #####
 #END WORLD
@@ -694,14 +697,19 @@ def options(pic, string, op1, op2, op3=None, op4=None):
     return TheOut
 
 def move(choices):
+    world.Turn += 1
     #Shows a choicebox with places that the player can move to
     #returns the selection
 
-    choices = [i for i in choices if searchmet("building", i) == True]
+    choices = [i for i in choices if searchmet("place", i) == True]
 
     TheOut = easygui.choicebox(msg="Move To:", choices=(t(choices, 0)))
 
     TheOut = find_tup(TheOut, choices)
+
+    debug(getmet(TheOut, 1))
+    world.Location = getmet(TheOut, 1)
+    newPlace()
 
     return TheOut
 
@@ -756,12 +764,14 @@ def view(items, string="You Can See:"):
 
         if choice == "Take":
             if inventory_add(TheOut) == True:
-                world.Places[world.Location].remove(TheOut)
+                world.Places[world.Location][0].remove(TheOut)
+                world.Turn += 1
                 return "Take"
         else:
             return
 
 def take(choices, mmax=0, string="You Can Take:"):
+    world.Turn += 1
     #Takes an item and places it into the players inventory
     #Returns the item
     debug("TAKING")
@@ -783,6 +793,7 @@ def take(choices, mmax=0, string="You Can Take:"):
     return find_tup(TheOut, choices)
 
 def read(item):
+    world.Turn += 1
     book = getmet(item, 1)
     book = "Books/" + book
     importVar(book)
@@ -882,6 +893,15 @@ def choices(things):
         if des == None:
             exit()
 
+def newPlace():
+    l = world.Places[world.Location]
+    for i in l[1]:
+        print(i)
+    choices(l[0])
+
+
+
+
 def selector(things, pictures, string, metno, title):
     #insert %m in string to replace that with output from metno
     #insert %t in string to replace that with thing name
@@ -934,6 +954,7 @@ def weaponselect(weapon, wdamage, pic):
                 num = 0
 
 def talk(person):
+    world.Turn += 1
     dic = person[4]
     printTree(dic)
     #rdm = random.randint(1, len(dic))
