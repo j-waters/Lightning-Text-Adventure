@@ -18,6 +18,7 @@ def firstLoad():
         player.Health = player.MaxHealth
     if world.load() == False:
         debug("#World#")
+        world.Turn = 1
         TN1_R1()
 
 
@@ -30,7 +31,7 @@ def create_character():
 def TN1_R1():
     debug("#TN1_R1#")
     world.Location = "TN1_R1"
-    choices(world.Places[world.Location])
+    newPlace()
 
 #try:
 debug("BEGIN")
