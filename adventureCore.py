@@ -70,6 +70,8 @@ def player_refresh():
     if player.Mana > player.MaxMana:
         player.Mana = player.MaxMana
 
+    player.Health = int(player.Health)
+
 def player_Xpa(xp):
     #Adds 'xp' XP to the players xp, checking if the player level can be increased
     player.Xp += xp
@@ -213,9 +215,6 @@ def battle(tgt):
         debug("PATT " + str(patt))
         debug("TDEF " + str(tdef))
         debug("PDEF " + str(player_defence() + tempdef))
-
-
-
         tlife = int(tlife)
         Pcrit = False
         Ecrit = False
@@ -224,12 +223,6 @@ def battle(tgt):
         else:
             order = "player"
         debug(order)
-
-
-
-
-        tempdef = 0
-        tartempdef = 0
 
         #NPC decide action
         rdn = random.randint(1, 100)
@@ -249,6 +242,7 @@ def battle(tgt):
         des = easygui.buttonbox(msg="Your Turn!", choices=("Attack", "Defend", "Magic", "Retreat", "Change Weapon"))
 
         if order == "player":
+            tempdef = 0
             PtE = int( patt * (1 + random.random())- (tdef + tartempdef))
             if PtE < 0:
                 PtE = 0
@@ -257,7 +251,9 @@ def battle(tgt):
                     PtE = 1
                 PtE = PtE * ((player.Luck + 10) / 10)
                 Pcrit = True
-            player_attack(des, Pcrit, PtE, target, tgt)
+            if player_attack(des, Pcrit, PtE, target, tgt) == "Retreat":
+                return "retreat"
+            debug("tempdef" + str(tempdef))
 
             if tlife < 1:
                 print("You defeat " + target + ".")
@@ -275,7 +271,11 @@ def battle(tgt):
                     player.Karma += pka
                 world.Places[world.Location][0].remove(tgt)
                 return "win"
+            tartempdef = 0
             EtP = int( int (tatt) * (1 + random.random()) - (player_defence() + tempdef))
+            debug("ETP " + str(EtP))
+            debug("ETP without tempdef " + str(EtP + tempdef))
+
             if EtP < 0:
                 EtP = 0
             if random.randint(0, 100) < tlck:
@@ -283,11 +283,15 @@ def battle(tgt):
                     EtP = 1
                 EtP = EtP * ((tlck + 10) / 10)
                 Ecrit = True
+
             enemy_attack(taction, Ecrit, target, tlck, EtP, tdef, tatt, tlife, tmhlt, tmgc, tspl)
             player_refresh()
 
         if order == "target":
+            tartempdef = 0
             EtP = int( int (tatt) * (1 + random.random()) - (player_defence() + tempdef))
+            debug("ETP " + str(EtP))
+            debug("ETP without tempdef " + str(EtP + tempdef))
             if EtP < 0:
                 EtP = 0
             if random.randint(0, 100) < tlck:
@@ -296,8 +300,11 @@ def battle(tgt):
                 EtP = EtP * ((tlck + 10) / 10)
                 Ecrit = True
             enemy_attack(taction, Ecrit, target, tlck, EtP, tdef, tatt, tlife, tmhlt, tmgc, tspl)
+
             player_refresh()
+            tempdef = 0
             PtE = int( patt * (1 + random.random())- (tdef + tartempdef))
+
             if PtE < 0:
                 PtE = 0
             if random.randint(0, 100) < player.Luck:
@@ -305,7 +312,9 @@ def battle(tgt):
                     PtE = 1
                 PtE = PtE * ((player.Luck + 10) / 10)
                 Pcrit = True
-            player_attack(des, Pcrit, PtE, target, tgt)
+            if player_attack(des, Pcrit, PtE, target, tgt) == "Retreat":
+                return "retreat"
+            debug("tempdef" + str(tempdef))
 
             if tlife < 1:
                 print("You defeat " + target + ".")
@@ -339,6 +348,8 @@ def player_attack(des, Pcrit, PtE, target, tgt):
         print(player.Name + " Is Defending.")
         tempdef = int(player.Strength / 2)
         debug("tempdef " + str(tempdef))
+        #return int(player.Strength / 2)
+
 
     if des == "Magic":
         if not player.Spells == []:
@@ -348,7 +359,8 @@ def player_attack(des, Pcrit, PtE, target, tgt):
             print("You have no spells")
 
     if des == "Retreat":
-        world.Places[world.Location][0][lfind(world.Places[world.Location], tgt)][3]["hlt"] = tlife
+        world.Places[world.Location][0][lfind(world.Places[world.Location][0], tgt)][3]["hlt"] = tlife
+        print(target + " Watches you as you scamper away...")
         return "Retreat"
 
     if des == "Change Weapon":
@@ -379,11 +391,12 @@ def enemy_attack(taction, Ecrit, target, tlck, EtP, tdef, tatt, tlife, tmhlt, tm
 
         print(target + " Deals " + str(EtP) + " Damage To " + player.Name)
         player.Health -= EtP
-        print(player.Name + " Is Now On " + str(player.Health) + " Health.")
+        print(player.Name + " Is Now On " + str(int(player.Health)) + " Health.")
 
     if taction == "Defend":
         print(target + " Is Defending.")
         tartempdef = int(tatt / 2)
+        #return int(tatt / 2)
 
     if taction == "Magic":
         spell = target_magicCast(target, tlife, tmhlt, tmgc, tspl)
@@ -901,7 +914,9 @@ def choices(things):
                 if des == "Talk":
                     talk(something)
                 if des == "Attack":
+                    debug("pre bat")
                     battle(something)
+                    debug("post bat")
 
         if des == None:
             exit()
