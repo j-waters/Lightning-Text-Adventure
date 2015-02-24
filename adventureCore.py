@@ -181,13 +181,12 @@ def battle(tgt):
     wdamage = []
     wpics = []
 
-    for i in range(0, len(inventory.Contents)):
-        spl = getmet(inventory.Contents[i], 0)
+    for i in inventory.Contents:
+        spl = getmet(i, 0)
         if spl == "weapon":
-            weapons.append(getnam(inventory.Contents[i]))
-            wdamage.append(getmet(inventory.Contents[i], 1))
-            wpics.append(getpic(inventory.Contents[i]))
-
+            weapons.append(getnam(i))
+            wdamage.append(int(getmet(i, 1)) + player.Strength)
+            wpics.append(getpic(i))
     weapons.append("Your Fists")
     wdamage.append(player.Strength)
     wpics.append("Pics/Fist01.png")
@@ -214,34 +213,20 @@ def battle(tgt):
         debug("PATT " + str(patt))
         debug("TDEF " + str(tdef))
         debug("PDEF " + str(player_defence() + tempdef))
-        PtE = int( patt * (1 + random.random())- (tdef + tartempdef))
-        EtP = int( int (tatt) * (1 + random.random()) - (player_defence() + tempdef))
-        debug("PtE " + str(PtE))
-        debug("EtP " + str(EtP))
-        if PtE < 0:
-            PtE = 0
-        if EtP < 0:
-            EtP = 0
+
+
+
         tlife = int(tlife)
         Pcrit = False
         Ecrit = False
-
         if tspd + random.randint(-2, 2) > player.Speed + random.randint(-2, 2):
             order = "target"
         else:
             order = "player"
         debug(order)
 
-        if random.randint(0, 100) < player.Luck:
-            if PtE == 0:
-                PtE = 1
-            PtE = PtE * ((player.Luck + 10) / 10)
-            Pcrit = True
-        if random.randint(0, 100) < tlck:
-            if EtP == 0:
-                EtP = 1
-            EtP = EtP * ((tlck + 10) / 10)
-            Ecrit = True
+
+
 
         tempdef = 0
         tartempdef = 0
@@ -264,6 +249,14 @@ def battle(tgt):
         des = easygui.buttonbox(msg="Your Turn!", choices=("Attack", "Defend", "Magic", "Retreat", "Change Weapon"))
 
         if order == "player":
+            PtE = int( patt * (1 + random.random())- (tdef + tartempdef))
+            if PtE < 0:
+                PtE = 0
+            if random.randint(0, 100) < player.Luck:
+                if PtE == 0:
+                    PtE = 1
+                PtE = PtE * ((player.Luck + 10) / 10)
+                Pcrit = True
             player_attack(des, Pcrit, PtE, target, tgt)
 
             if tlife < 1:
@@ -282,13 +275,36 @@ def battle(tgt):
                     player.Karma += pka
                 world.Places[world.Location][0].remove(tgt)
                 return "win"
-
+            EtP = int( int (tatt) * (1 + random.random()) - (player_defence() + tempdef))
+            if EtP < 0:
+                EtP = 0
+            if random.randint(0, 100) < tlck:
+                if EtP == 0:
+                    EtP = 1
+                EtP = EtP * ((tlck + 10) / 10)
+                Ecrit = True
             enemy_attack(taction, Ecrit, target, tlck, EtP, tdef, tatt, tlife, tmhlt, tmgc, tspl)
             player_refresh()
 
         if order == "target":
+            EtP = int( int (tatt) * (1 + random.random()) - (player_defence() + tempdef))
+            if EtP < 0:
+                EtP = 0
+            if random.randint(0, 100) < tlck:
+                if EtP == 0:
+                    EtP = 1
+                EtP = EtP * ((tlck + 10) / 10)
+                Ecrit = True
             enemy_attack(taction, Ecrit, target, tlck, EtP, tdef, tatt, tlife, tmhlt, tmgc, tspl)
             player_refresh()
+            PtE = int( patt * (1 + random.random())- (tdef + tartempdef))
+            if PtE < 0:
+                PtE = 0
+            if random.randint(0, 100) < player.Luck:
+                if PtE == 0:
+                    PtE = 1
+                PtE = PtE * ((player.Luck + 10) / 10)
+                Pcrit = True
             player_attack(des, Pcrit, PtE, target, tgt)
 
             if tlife < 1:
@@ -551,34 +567,31 @@ def inventory_get():
 
     debug(getmet(selected, "all"))
 
-    if getmet(selected, "all") == ['stats']:
+    if getmet(selected, "all") == ['stats']: #STATS
         statistics()
-    elif getnam(selected) == mstring:
+    elif getnam(selected) == mstring: #MONEY
         pprint(Coin, getdes(selected))
-    elif getmet(selected, "all") == []:
-        print(getdes(selected))
-    elif getmet(selected, "all") == ["i"]:
+    elif getmet(selected, "all") == ["i"]: #NOTHING
         #Is it an average item?
         easygui.buttonbox(image=getpic(selected), msg=getdes(selected), choices=("Back", "Discard"))
-    elif searchmet("e", selected) == True:
+    elif searchmet("e", selected) == True: #EQUIPPED ITEM
         #Is it an equipped item?
         IgI = easygui.buttonbox(image=getpic(selected), msg=getdes(selected), choices=("Back", "Un Equip"))
         if IgI == "Un Equip":
             player_unEquip(getmet(selected, 1))
-    elif searchmet("c", selected) == True:
+    elif searchmet("c", selected) == True: #EQUIPABLE
         #Is it an eqipable item?
         IgI = easygui.buttonbox(image=getpic(selected), msg=getdes(selected), choices=("Back", "Equip", "Discard"))
         if IgI == "Equip":
             player_equip(selected)
-    elif searchmet("u", selected):
-
+    elif searchmet("u", selected): #USABLE
         if searchmet("book", selected) == True:
             verb = "Read"
         if searchmet("map", selected) == True:
             verb = "Read"
-
         IgI = easygui.buttonbox(image = getpic(selected), msg = getdes(selected), choices =("Back", verb, "Discard"))
-
+    else:
+        IgI = easygui.buttonbox(image=getpic(selected), msg=getdes(selected), choices=("Back", "Discard"))
     if IgI == "Discard":
         inventory_remove(selected)
     if IgI == verb:
@@ -940,14 +953,15 @@ def weaponselect(weapon, wdamage, pic):
     nmax = len(weapon) - 1
     num = 0
     while True:
-        string = weapon[num] + ": Does " + str(wdamage[num]) + " Damage."
+        string = weapon[num] + ": Does " + str(wdamage[num]) +  " Damage."
         out = easygui.buttonbox(msg=string, title="Choose Your Weapon:", choices=("<---", "SELECT", "--->"), image=pic[num])
         if out == "<---":
             num -= 1
             if num < 0:
                 num = nmax
         if out == "SELECT":
-            return wdamage[num]
+            debug(type(wdamage[num]))
+            return int(wdamage[num])
         if out == "--->":
             num += 1
             if num > nmax:
