@@ -360,7 +360,7 @@ def player_attack(des, Pcrit, PtE, target, tgt):
 
     if des == "Retreat":
         world.Places[world.Location][0][lfind(world.Places[world.Location][0], tgt)][3]["hlt"] = tlife
-        print(target + " Watches you as you scamper away...")
+        print(target + " watches you as you scamper away...")
         return "Retreat"
 
     if des == "Change Weapon":
