@@ -1717,7 +1717,7 @@ def fileopenbox(msg=None
     localRoot.destroy()
 
     if not f: return None
-    return os.path.normpath(f)
+    return os.path.relpath(os.path.normpath(f))
 
 
 #-------------------------------------------------------------------
