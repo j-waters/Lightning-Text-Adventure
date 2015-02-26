@@ -102,9 +102,9 @@ def player_defence():
 
 def player_speed():
     try:
-        return player.Speed + int(getmet(player.Boot, 2))
+        return int(player.Speed + int(getmet(player.Boot, 2)))
     except:
-        return player.Speed
+        return int(player.Speed)
 
 def player_unEquip(item):
     #Unequips an item from the player
