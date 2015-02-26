@@ -3,7 +3,7 @@ NPC META DATA: "npc" dic: "name":, "att":, "def":, "hlt":, "mhlt":, "rnk":, "aln
 ITEM META DATA:
 
     shirt, <defence>, c, i
-    boot, <defence>, c, i
+    boot, <defence>, <speed> c, i
     helm, <defence>, c, i
     book, <knowledge/book name>, i, u
     map, <map name>, i, u
