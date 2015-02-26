@@ -100,6 +100,12 @@ def player_defence():
 
     return int(TheOut)
 
+def player_speed():
+    try:
+        return player.Speed + int(getmet(player.Boot, 2))
+    except:
+        return player.Speed
+
 def player_unEquip(item):
     #Unequips an item from the player
     debug("Un Equip")
@@ -530,7 +536,7 @@ def inventory_get():
         if not player.Boot == "":
             estring4 = player.Boot[0]
             estring4d = player.Boot[1]
-            estring4m = ["e", "boot", player.Boot[2][1]]
+            estring4m = ["e", "boot", player.Boot[2][1], player.Boot[2][2]]
             estring4p = player.Boot[3]
 
         if player.Boot == "":
@@ -644,8 +650,8 @@ def world_refresh():
 #####
 
 def getmet(item, metno):
-    #Gets the metadata from a tuple (item)
-    #finds the correct metadata by number (metno)
+    #Gets the data from a tuple (item)
+    #finds the correct data by number (metno)
     TheOut = None
 
     if type(item) == tuple:
