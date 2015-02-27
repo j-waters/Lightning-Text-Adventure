@@ -173,16 +173,16 @@ def battle(tgt):
     global tlife
 
     debug("ATTACKING")
-    tatt = int(tgt[3]["att"])
-    tdef = int(tgt[3]["def"])
-    tlife = int(tgt[3]["hlt"])
-    tmhlt = int(tgt[3]["mhlt"])
-    trnk = int(tgt[3]["rnk"])
-    taln = tgt[3]["aln"]
-    tspd = int(tgt[3]["spd"])
-    tlck = int(tgt[3]["lck"])
-    tmgc = int(tgt[3]["mgc"])
-    tspl = tgt[3]["spl"]
+    tatt = int(tgt[4]["att"])
+    tdef = int(tgt[4]["def"])
+    tlife = int(tgt[4]["hlt"])
+    tmhlt = int(tgt[4]["mhlt"])
+    trnk = int(tgt[4]["rnk"])
+    taln = tgt[4]["aln"]
+    tspd = int(tgt[4]["spd"])
+    tlck = int(tgt[4]["lck"])
+    tmgc = int(tgt[4]["mgc"])
+    tspl = tgt[4]["spl"]
     target = getnam(tgt)
 
     weapons = []
@@ -365,7 +365,7 @@ def player_attack(des, Pcrit, PtE, target, tgt):
             print("You have no spells")
 
     if des == "Retreat":
-        world.Places[world.Location][0][lfind(world.Places[world.Location][0], tgt)][3]["hlt"] = tlife
+        world.Places[world.Location][0][lfind(world.Places[world.Location][0], tgt)][4]["hlt"] = tlife
         print(target + " watches you as you scamper away...")
         return "Retreat"
 
@@ -642,7 +642,7 @@ def turns():
 def world_refresh():
     for i in world.Places[world.Location][0]:
         if getmet(i, 0) == "npc":
-            if i[3]["hlt"] < 1:
+            if i[4]["hlt"] < 1:
                 world.Places[world.Location][0].remove(i)
 
 #####
