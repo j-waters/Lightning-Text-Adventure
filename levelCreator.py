@@ -1,6 +1,8 @@
 import easygui as eg
 from functools import reduce
 
+Spells = ["heal"]
+
 def conversationTree(tree={}):
     cur = tree
     branch = []
@@ -221,7 +223,35 @@ def editRoom():
                     pic = pic.replace("\\Pics\\", "")
                     print(pic)
                     curRoom[0].append((nm, ds, [s, dm, "i"], pic))
-
+                if s == "money":
+                    e = eg.multenterbox(msg="Enter data:", fields=["Item Name:", "Amount:"], values=["A Pouch Of Money"])
+                    nm = e[0]
+                    am = e[1]
+                    if am.isnumeric() == False:
+                        eg.msgbox(msg="The amount field must only contain numbers, and no decimals. Consider editing this in the future.")
+                    ds = eg.enterbox(msg="Enter an item description:", default="A small pouch of money containing" + str(dm)+" coins")
+                    pic = eg.fileopenbox(msg="Choose A Picture. Must be in a folder named \"Pics\" within the games root directory:", default="/Pics/*")
+                    pic = pic.replace("\\Pics\\", "")
+                    curRoom[0].append((nm, ds, [s, am, "i"], pic))
+                if s == "npc":
+                    e = eg.multenterbox(msg="Enter data:", fields=["NPC General Name (not real name):", "Description", "Real name:", "Attack:", "Defence:", "Health:", "Max health:", "Rank:", "Speed:", "Luck:", "Magic Strength:"])
+                    nm = e[0]
+                    ds = e[1]
+                    rn = e[2]
+                    at = e[3]
+                    df = e[4]
+                    hl = e[5]
+                    mh = e[6]
+                    rk = e[7]
+                    sd = e[8]
+                    lk = e[9]
+                    ms = e[10]
+                    sp = eg.multchoicebox(msg="Select Spells:", choices=Spells)
+                    al = eg.buttonbox(msg="Alignment: G(ood) or E(vil)", choices=["G", "E"])
+                    pic = eg.fileopenbox(msg="Choose A Picture. Must be in a folder named \"Pics\" within the games root directory:", default="/Pics/*")
+                    pic = pic.replace("\\Pics\\", "")
+                    curRoom[0].append((nm, ds, ["npc"], pic, {"name":rn, "att":at, "def":df, "hlt":hl, "mhlt":mh, "rnk":rk, "aln":al, "spd":sd, "lck":lk, "mgc":ms, "spl":sp}))
+                    eg.msgbox(msg="To add a conversation tree, edit this NPC later.")
 
 
 begin()
