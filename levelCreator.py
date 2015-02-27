@@ -187,18 +187,40 @@ def editRoom():
             if s == ["Add Another..."]:
                 ch = ["shirt", "helm", "boot", "book", "map", "weapon", "money", "npc", "item"]
                 s = eg.choicebox(msg="Select The Item Type:", choices=ch)
-                if s == "shirt" or "helm" or "boot":
+                if s == "shirt" or "helm":
                     e = eg.multenterbox(msg="Enter data:", fields=["Item Name:", "Defence:"])
                     nm = e[0]
                     df = e[1]
                     if df.isnumeric() == False:
                         eg.msgbox(msg="The defence field must only contain numbers (or decimals). Consider editing this in the future.")
                     ds = eg.enterbox(msg="Enter an item description:", default=str(df)+" Defence")
-                    pic = eg.fileopenbox(msg="Choose A Picture:", default="/Pics/*")
-                    pic = pic.split("\\")[1]
+                    pic = eg.fileopenbox(msg="Choose A Picture. Must be in a folder named \"Pics\" within the games root directory:", default="/Pics/*")
+                    pic = pic.replace("\\Pics\\", "")
                     print(pic)
                     curRoom[0].append((nm, ds, [s, df, "c", "i"], pic))
-
+                if s == "boot":
+                    e = eg.multenterbox(msg="Enter data:", fields=["Item Name:", "Defence:", "Speed:"])
+                    nm = e[0]
+                    df = e[1]
+                    sd = e[2]
+                    if df.isnumeric() == False or sd.isnumeric() == False:
+                        eg.msgbox(msg="The defence and speed fields must only contain numbers (or decimals). Consider editing this in the future.")
+                    ds = eg.enterbox(msg="Enter an item description:", default=str(df)+" Defence, " + str(sd) + " Speed")
+                    pic = eg.fileopenbox(msg="Choose A Picture. Must be in a folder named \"Pics\" within the games root directory:", default="/Pics/*")
+                    pic = pic.replace("\\Pics\\", "")
+                    print(pic)
+                    curRoom[0].append((nm, ds, [s, df, sd, "c", "i"], pic))
+                if s == "weapon":
+                    e = eg.multenterbox(msg="Enter data:", fields=["Item Name:", "Damage:"])
+                    nm = e[0]
+                    dm = e[1]
+                    if dm.isnumeric() == False:
+                        eg.msgbox(msg="The damage field must only contain numbers (or decimals). Consider editing this in the future.")
+                    ds = eg.enterbox(msg="Enter an item description:", default=str(dm)+" Damage")
+                    pic = eg.fileopenbox(msg="Choose A Picture. Must be in a folder named \"Pics\" within the games root directory:", default="/Pics/*")
+                    pic = pic.replace("\\Pics\\", "")
+                    print(pic)
+                    curRoom[0].append((nm, ds, [s, dm, "i"], pic))
 
 
 
