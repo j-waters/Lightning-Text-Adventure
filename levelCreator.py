@@ -105,9 +105,59 @@ def OldConversationTree(tree={}):
         print(tree)
 
 
-def conversationTree(npc):
-    if not len(npc) == 6:
-        npc.append({})
+def ConversationTree(tree):
+    cur = tree
+    branch = []
+    while True:
+        ch = []
+        root = ""
+        for key, value in cur:
+            ch.append(key + ": " + str(value))
+        if branch == []:
+            root = "Top Level"
+        else:
+            for i in branch:
+                root = root + "> " + i
+        ch.append("Add A Branch...")
+        s = eg.choicebox(msg=root, choices=ch)
+        if s == "Add A Branch...":
+            s = eg.buttonbox(msg="Select type:", choices=["Statement", "Action", "Option"])
+            if s == "Statement":
+                sta = [""]
+                num = 0
+                while True:
+                    maxnum = len(sta) - 1
+                    ch = []
+                    if num > 0:
+                        ch.append("<---")
+                    ch.append("Edit")
+                    ch.append("Delete")
+                    ch.append("Back Up")
+                    if num < maxnum:
+                        ch.append("--->")
+                    if num == maxnum:
+                        ch.append("Add String ->")
+
+                    s = eg.buttonbox(msg="String " + str(num + 1) + " of " + str(len(sta)) + ":\n" + str(sta[num]), choices = ch)
+                    if s == "<---":
+                        num -= 1
+                    if s == "--->":
+                        num += 1
+                    if s == "Add String ->":
+                        sta.append("")
+                        maxnum = len(sta[num]) - 1
+                        num +=1
+                    if s == "Edit":
+                        e = eg.enterbox(msg="Edit the string:", default=sta[num])
+                        sta[num] = e
+                    if s == "Back Up":
+                        break
+                    if s == "Delete":
+                        sta.pop(num)
+                    if num > maxnum:
+                        num = 0
+
+
 
 # TODO: Redo all of this stuff to make it work with cur (almost done)
 def printTree(tree, depth = 0):
@@ -285,7 +335,10 @@ def editRoom():
                     if c == "Stats":
                         e = eg.multenterbox(msg="Enter data:", fields=["NPC General Name (not real name):", "Description", "Real name:", "Attack:", "Defence:", "Health:", "Max health:", "Rank:", "Speed:", "Luck:", "Magic Strength:"], values=[s[4]["name"], s[1], s[4]["att"], s[4]["def"], s[4]["hlt"], s[4]["mhlt"], s[4]["rnk"], s[4]["aln"], s[4]["spd"], s[4]["lck"], s[4]["mgc"], s[4]["spl"]])
                     if c == "Conversation":
-                        conversationTree(s)
+                        if len(s) == 6:
+                            ConversationTree(s[5])
+                        else:
+                            ConversationTree({})
                 else:
                     e = eg.multenterbox(msg="Enter data:", fields=["NPC General Name (not real name):", "Description", "Real name:", "Attack:", "Defence:", "Health:", "Max health:", "Rank:", "Speed:", "Luck:", "Magic Strength:"])
                 nm = e[0]
@@ -318,5 +371,6 @@ def editRoom():
 
 
 
-begin()
+#begin()
+ConversationTree({})
 print(places)
