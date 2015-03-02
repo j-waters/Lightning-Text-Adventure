@@ -3,7 +3,7 @@ from functools import reduce
 
 Spells = ["heal"]
 
-def conversationTree(tree={}):
+def OldConversationTree(tree={}):
     cur = tree
     branch = []
     while True:
@@ -105,6 +105,9 @@ def conversationTree(tree={}):
         print(tree)
 
 
+def conversationTree(npc):
+    if not len(npc) == 6:
+        npc.append({})
 
 # TODO: Redo all of this stuff to make it work with cur (almost done)
 def printTree(tree, depth = 0):
@@ -275,9 +278,14 @@ def editRoom():
                 if exists:
                     curRoom[0].remove(s)
             if t == "npc":
+                c = eg.buttonbox(msg="Edit NPC's stats or conversation tree?", choices=["Stats", "Conversation"])
                 print("yes npc")
                 if exists:
-                    e = eg.multenterbox(msg="Enter data:", fields=["NPC General Name (not real name):", "Description", "Real name:", "Attack:", "Defence:", "Health:", "Max health:", "Rank:", "Speed:", "Luck:", "Magic Strength:"], values=[s[4]["name"], s[1], s[4]["att"], s[4]["def"], s[4]["hlt"], s[4]["mhlt"], s[4]["rnk"], s[4]["aln"], s[4]["spd"], s[4]["lck"], s[4]["mgc"], s[4]["spl"]])
+                    c = eg.buttonbox(msg="Edit NPC's stats or conversation tree?", choices=["Stats", "Conversation"])
+                    if c == "Stats":
+                        e = eg.multenterbox(msg="Enter data:", fields=["NPC General Name (not real name):", "Description", "Real name:", "Attack:", "Defence:", "Health:", "Max health:", "Rank:", "Speed:", "Luck:", "Magic Strength:"], values=[s[4]["name"], s[1], s[4]["att"], s[4]["def"], s[4]["hlt"], s[4]["mhlt"], s[4]["rnk"], s[4]["aln"], s[4]["spd"], s[4]["lck"], s[4]["mgc"], s[4]["spl"]])
+                    if c == "Conversation":
+                        conversationTree(s)
                 else:
                     e = eg.multenterbox(msg="Enter data:", fields=["NPC General Name (not real name):", "Description", "Real name:", "Attack:", "Defence:", "Health:", "Max health:", "Rank:", "Speed:", "Luck:", "Magic Strength:"])
                 nm = e[0]
