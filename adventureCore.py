@@ -990,7 +990,7 @@ def weaponselect(weapon, wdamage, pic):
 
 def talk(person):
     world.Turn += 1
-    dic = person[4]
+    dic = person[5]
     printTree(dic)
     #rdm = random.randint(1, len(dic))
     otn = []
