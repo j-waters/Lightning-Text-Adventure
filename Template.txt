@@ -42,3 +42,11 @@ TALKING:
         "T" : "#Sentence/statement#"
         "O1" : etc... }
 }
+
+
+    Rewards:
+    ("give", <Item>)
+    ("quest", <quest name>)
+
+    Conditionals:
+    ("var", "<variable name>", <value>)
