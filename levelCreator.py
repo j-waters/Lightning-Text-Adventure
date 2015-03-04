@@ -105,8 +105,10 @@ def OldConversationTree(tree={}):
         print(tree)
 
 
-def ConversationTree(tree):
+def ConversationTree(tree={}):
     branch = []
+    if tree == {}:
+        tree = {"Conversation":{}, "Idle":{}}
     while True:
         if branch == []:
             cur = tree
@@ -118,10 +120,14 @@ def ConversationTree(tree):
             ch.append(key + ": " + str(value))
         if branch == []:
             root = "Top Level"
+            ch.clear()
+            ch.append("Conversation Tree")
+            ch.append("Random Idle Comments")
         else:
+            ch.append("Add An Item...")
             for i in branch:
                 root = root + "> " + i
-        ch.append("Add An Item...")
+
         s = eg.choicebox(msg=root, choices=ch)
         if s == "Add An Item...":
             ch = ["Statement", "Action", "Option"]
@@ -178,7 +184,20 @@ def ConversationTree(tree):
         else:
             if s == None:
                 reduce(lambda a, b: a[b], branch, tree).update(cur)
-                branch.pop(len(branch) - 1)
+                try:
+                    branch.pop(len(branch) - 1)
+                except:
+                    yn = eg.ynbox(msg="Do you want to finish editing?")
+                    if yn == "Yes":
+                        eg.codebox(msg="Finished Conversation Tree:", text=tree)
+                    else:
+                        branch = []
+            elif s == "Conversation Tree":
+                branch.append("Conversation")
+                cur = cur["Conversation"]
+            elif s == "Random Idle Comments":
+                branch.append("Idle")
+                cur = cur["Idle"]
             elif list(s.split(":")[0])[0] == "O":
                 branch.append(s.split(":")[0])
                 cur = cur[s.split(":")[0]]
@@ -224,9 +243,11 @@ def ConversationTree(tree):
         print("TREE:")
         print(tree)
 
+#TODO: Add rewards
+#TODO: Add conditionals
 
 
-# TODO: Redo all of this stuff to make it work with cur (almost done)
+
 def printTree(tree, depth = 0):
     if tree == None or len(tree) == 0:
         print ("\t" * depth + "-")
@@ -439,5 +460,5 @@ def editRoom():
 
 
 #begin()
-ConversationTree({})
+ConversationTree()
 print(places)
