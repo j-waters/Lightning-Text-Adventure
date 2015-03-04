@@ -106,22 +106,28 @@ def OldConversationTree(tree={}):
 
 
 def ConversationTree(tree):
-    cur = tree
     branch = []
     while True:
+        if branch == []:
+            cur = tree
         ch = []
         root = ""
-        for key, value in cur:
+        print("CUR:")
+        print (cur)
+        for key, value in cur.items():
             ch.append(key + ": " + str(value))
         if branch == []:
             root = "Top Level"
         else:
             for i in branch:
                 root = root + "> " + i
-        ch.append("Add A Branch...")
+        ch.append("Add An Item...")
         s = eg.choicebox(msg=root, choices=ch)
-        if s == "Add A Branch...":
-            s = eg.buttonbox(msg="Select type:", choices=["Statement", "Action", "Option"])
+        if s == "Add An Item...":
+            ch = ["Statement", "Action", "Option"]
+            if branch != []:
+                ch.append("Button Text")
+            s = eg.buttonbox(msg="Select type:", choices=ch)
             if s == "Statement":
                 sta = [""]
                 num = 0
@@ -156,6 +162,67 @@ def ConversationTree(tree):
                         sta.pop(num)
                     if num > maxnum:
                         num = 0
+                cur["T"] = sta
+            if s == "Option":
+                knum = 1
+                while True:
+                    if "O" + str(knum) in cur:
+                        knum +=1
+                    else:
+                        break
+                cur["O" + str(knum)] = {}
+                eg.msgbox(msg="Added an extra branch")
+            if s == "Button Text":
+                cur["B"] = eg.enterbox(msg="Enter the text that will show on this branch's button:")
+
+        else:
+            if s == None:
+                reduce(lambda a, b: a[b], branch, tree).update(cur)
+                branch.pop(len(branch) - 1)
+            elif list(s.split(":")[0])[0] == "O":
+                branch.append(s.split(":")[0])
+                cur = cur[s.split(":")[0]]
+            elif list(s.split(":")[0])[0] == "T":
+                sta = cur["T"]
+                num = 0
+                while True:
+                    maxnum = len(sta) - 1
+                    ch = []
+                    if num > 0:
+                        ch.append("<---")
+                    ch.append("Edit")
+                    ch.append("Delete")
+                    ch.append("Back Up")
+                    if num < maxnum:
+                        ch.append("--->")
+                    if num == maxnum:
+                        ch.append("Add String ->")
+
+                    s = eg.buttonbox(msg="String " + str(num + 1) + " of " + str(len(sta)) + ":\n" + str(sta[num]), choices = ch)
+                    if s == "<---":
+                        num -= 1
+                    if s == "--->":
+                        num += 1
+                    if s == "Add String ->":
+                        sta.append("")
+                        maxnum = len(sta[num]) - 1
+                        num +=1
+                    if s == "Edit":
+                        e = eg.enterbox(msg="Edit the string:", default=sta[num])
+                        sta[num] = e
+                    if s == "Back Up":
+                        break
+                    if s == "Delete":
+                        sta.pop(num)
+                    if num > maxnum:
+                        num = 0
+                cur["T"] = sta
+
+
+
+
+        print("TREE:")
+        print(tree)
 
 
 
