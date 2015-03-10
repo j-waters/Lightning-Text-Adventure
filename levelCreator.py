@@ -112,12 +112,16 @@ def ConversationTree(tree={}):
     while True:
         if branch == []:
             cur = tree
+        else:
+            cur = reduce(lambda a, b: a[b], branch, tree)
         ch = []
         root = ""
         print("CUR:")
         print (cur)
-        for key, value in cur.items():
-            ch.append(key + ": " + str(value))
+        for key in cur:
+            print(cur)
+            print(key)
+            ch.append(key + ": " + str(cur[key]))
         if branch == []:
             root = "Top Level"
             ch.clear()
@@ -129,15 +133,17 @@ def ConversationTree(tree={}):
                 root = root + "> " + i
 
         s = eg.choicebox(msg=root, choices=ch)
-        if s == "Add An Item...":
-            ch = ["Statement", "Action", "Option"]
-            if branch != []:
+        if s == "Add An Item...": #Adding an item - statement, action or option
+            ckeys = [key for key, value in cur.items()]
+            ch = ["Statement", "Action", "Option", "Reward", "Conditional"]
+            if not branch == ['Conversation'] or branch == ['Idle'] or "B" in ckeys :
                 ch.append("Button Text")
+
             s = eg.buttonbox(msg="Select type:", choices=ch)
             if s == "Statement":
                 sta = [""]
                 num = 0
-                while True:
+                while True: #Statement loop
                     maxnum = len(sta) - 1
                     ch = []
                     if num > 0:
@@ -183,9 +189,10 @@ def ConversationTree(tree={}):
 
         else:
             if s == None:
-                reduce(lambda a, b: a[b], branch, tree).update(cur)
                 try:
+                    reduce(lambda a, b: a[b], branch, tree).update(cur)
                     branch.pop(len(branch) - 1)
+                    cur = {}
                 except:
                     yn = eg.ynbox(msg="Do you want to finish editing?")
                     if yn == "Yes":
