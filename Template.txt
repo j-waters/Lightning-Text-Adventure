@@ -44,9 +44,10 @@ TALKING:
 }
 
 
-    Rewards:
+    Actions:
     ("give", <Item>)
     ("quest", <quest name>)
+    ("battle", <npc>)
 
     Conditionals:
     ("var", "<variable name>", <value>)
