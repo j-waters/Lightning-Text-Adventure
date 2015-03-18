@@ -3,108 +3,6 @@ from functools import reduce
 
 Spells = ["heal"]
 
-def OldConversationTree(tree={}):
-    cur = tree
-    branch = []
-    while True:
-        if cur == tree:
-            print("CUR == TREE")
-        if cur == {}:
-            o = "Edit"
-
-        if not cur == {}:
-            print("cur not {}")
-            ops = []
-            for key in cur:
-                print("For " + str(key))
-                ops.append(key + ": " + str(cur[key]))
-            print("OPS: " + str(ops))
-            c = eg.choicebox(msg="Select Branch To Edit:", choices=ops)
-            if c == None:
-                if cur == tree:
-                    ex = eg.buttonbox(msg="Exit?", choices=("Yes", "No"))
-                    if ex == "Yes":
-                        eg.codebox(msg="Completed Code:", text=tree)
-                        return tree
-                    else:
-                        o = "Back To Top"
-                else:
-                    o = "Back To Top"
-            else:
-                o = eg.buttonbox(msg="Edit, end, or continue down branch?", choices=("Back To Top", "Continue", "Edit", "End"))
-                branch.append(c.split(":")[0])
-                cur = cur[c.split(":")[0]]
-
-
-        if o == "Edit":
-            if not cur == tree:
-                curmsg = str(cur)
-            if cur == tree:
-                curmsg = "Top Level"
-            c = eg.multenterbox(msg=curmsg, fields=["Text String", "Reward", "Option1", "Option2", "Option3", "Option4"])
-            if not c == None:
-                cur["T"] = c[0]
-                del c[0]
-                if not c[0] == "":
-                    cur["R"] = c[0]
-                del c[0]
-                num = 0
-                print("C: " + str(c))
-                if not c == ['', '', '', '']:
-                    for i in c:
-                        if not i == "":
-                            num +=1
-                            cur["O" + str(num)] = {"B" : i}
-                else:
-                    if not cur["T"] == "":
-                        text = []
-                        text.append(cur["T"])
-                        cur["O1"] = {"B" : "..."}
-                        while True:
-                            s = eg.enterbox(msg="Continue Writing:")
-                            if not s == None:
-                                text.append(s)
-                            if s == None:
-                                cur["T"] = text
-                                break
-
-        if o == "End":
-            route = []
-            curtree = tree
-            while True:
-                end = eg.buttonbox(msg="Goto branch, or end conversation?", choices=("End", "GoTo"))
-                if end == "GoTo":
-                    ops = []
-                    for key in curtree:
-                        ops.append(key + ": " + str(curtree[key]))
-                    c = eg.choicebox(msg="Select Branch To Go To:", choices=ops)
-                    route.append(c.split(":")[0])
-                    o = eg.buttonbox(msg="Select or Continue?", choices=("Select", "Continue"))
-                    if o == "Select":
-                        cur["E"] = route
-                        break
-                    if o == "Continue":
-                        curtree = curtree[c]
-                if end == "End":
-                    cur["E"] = "END"
-        if o == "Continue":
-            pass
-
-        if o == "Back To Top":
-            cur = tree
-            branch = []
-
-
-        print("TREE: " + str(tree))
-        print("CUR: " + str(cur))
-        print("BRANCH: " + str(branch))
-        print("reduced tree: " + str(reduce(lambda a, b: a[b], branch, tree)))
-        reduce(lambda a, b: a[b], branch, tree).update(cur)
-        eg.codebox(msg="Current Tree:", title="Tree Maker", text=str(tree))
-        printTree(tree)
-        print(tree)
-
-
 def ConversationTree(tree={}):
     branch = []
     if tree == {}:
@@ -131,7 +29,7 @@ def ConversationTree(tree={}):
             ch.append("Add An Item...")
             for i in branch:
                 root = root + "> " + i
-
+        a = ""
         s = eg.choicebox(msg=root, choices=ch)
         if s == "Add An Item...": #Adding an item - statement, action or option
             ckeys = [key for key in cur.items()]
@@ -142,6 +40,7 @@ def ConversationTree(tree={}):
                 ch.append("Statement")
 
             a = eg.buttonbox(msg="Select type:", choices=ch)
+            exists = False
 
         else:
             if s == None:
@@ -168,67 +67,90 @@ def ConversationTree(tree={}):
                 a = "Statement"
                 exists = True
                 item = cur["T"]
+            elif list(s.split(":")[0])[0] == "A":
+                a = "Action"
+                exists = True
+                item = cur[s.split(":")[0]]
+                number = list(s.split(":")[0])[1]
+
+        if a == "Statement":
+            if exists:
+                sta = item
             else:
-                a = None
-                exists = False
+                sta = [""]
+            num = 0
+            while True: #Statement loop
+                maxnum = len(sta) - 1
+                ch = []
+                if num > 0:
+                    ch.append("<---")
+                ch.append("Edit")
+                ch.append("Delete")
+                ch.append("Back Up")
+                if num < maxnum:
+                    ch.append("--->")
+                if num == maxnum:
+                    ch.append("Add String ->")
 
-            if a == "Statement":
-                if exists:
-                    sta = item
+                s = eg.buttonbox(msg="String " + str(num + 1) + " of " + str(len(sta)) + ":\n" + str(sta[num]), choices = ch)
+                if s == "<---":
+                    num -= 1
+                if s == "--->":
+                    num += 1
+                if s == "Add String ->":
+                    sta.append("")
+                    maxnum = len(sta[num]) - 1
+                    num +=1
+                if s == "Edit":
+                    e = eg.enterbox(msg="Edit the string:", default=sta[num])
+                    sta[num] = e
+                if s == "Back Up":
+                    break
+                if s == "Delete":
+                    sta.pop(num)
+                if num > maxnum:
+                    num = 0
+            cur["T"] = sta
+        elif a == "Option":
+            knum = 1
+            while True:
+                if "O" + str(knum) in cur:
+                    knum +=1
                 else:
-                    sta = [""]
-                num = 0
-                while True: #Statement loop
-                    maxnum = len(sta) - 1
-                    ch = []
-                    if num > 0:
-                        ch.append("<---")
-                    ch.append("Edit")
-                    ch.append("Delete")
-                    ch.append("Back Up")
-                    if num < maxnum:
-                        ch.append("--->")
-                    if num == maxnum:
-                        ch.append("Add String ->")
-
-                    s = eg.buttonbox(msg="String " + str(num + 1) + " of " + str(len(sta)) + ":\n" + str(sta[num]), choices = ch)
-                    if s == "<---":
-                        num -= 1
-                    if s == "--->":
-                        num += 1
-                    if s == "Add String ->":
-                        sta.append("")
-                        maxnum = len(sta[num]) - 1
-                        num +=1
-                    if s == "Edit":
-                        e = eg.enterbox(msg="Edit the string:", default=sta[num])
-                        sta[num] = e
-                    if s == "Back Up":
-                        break
-                    if s == "Delete":
-                        sta.pop(num)
-                    if num > maxnum:
-                        num = 0
-                cur["T"] = sta
-            elif a == "Option":
+                    break
+            cur["O" + str(knum)] = {}
+            eg.msgbox(msg="Added an extra branch")
+            if s == "Button Text":
+                cur["B"] = eg.enterbox(msg="Enter the text that will show on this branch's button:")
+        elif a == "Action":
+            print("Action")
+            if not exists:
+                item = ""
                 knum = 1
                 while True:
                     if "O" + str(knum) in cur:
                         knum +=1
                     else:
                         break
-                cur["O" + str(knum)] = {}
-                eg.msgbox(msg="Added an extra branch")
-                if s == "Button Text":
-                    cur["B"] = eg.enterbox(msg="Enter the text that will show on this branch's button:")
-            elif a == "Action":
+            if exists:
+                knum = number
+            if not exists:
                 ch = ["Give Item", "Give Quest", "End Quest", "Battle"]
-                s = eg.choicebox(msg="Choose An Action:", choices=ch)
-                if s == "Give Item":
+            if exists:
+                    if item[0] == "G":
+                        s = "Give Item"
+            if exists:
+                ch.append("Delete Action")
+            s = eg.choicebox(msg="Choose An Action:", choices=ch)
+            if s == "Delete Action":
+                cur.pop("A" + str(knum))
+            if s == "Give Item":
+                if exists:
+                    t = item[1][2][0]
+                else:
                     ch = ["shirt", "helm", "boot", "book", "map", "weapon", "money", "npc", "item"]
                     t = eg.choicebox(msg="Select The Item Type:", choices=ch)
-                    exists = False
-                    cur["A"] = "G" + addItem(t, exists, s) #TODO something about s
+                cur["A" + str(knum)] = ("G", addItem(t, exists, item))
 
 
 
@@ -339,7 +261,7 @@ def editRoom():
             if exists:
                 curRoom[0].remove(s)
 
-def addItem(t, exists, s):
+def addItem(t, exists, s=""):
     if t == "shirt" or t == "helm":
         print("shirt / helm")
         if exists:
@@ -402,7 +324,7 @@ def addItem(t, exists, s):
         if exists:
             ds = eg.enterbox(msg="Enter an item description:", default=s[1])
         else:
-            ds = eg.enterbox(msg="Enter an item description:", default="A small pouch of money containing" + str(dm)+" coins")
+            ds = eg.enterbox(msg="Enter an item description:", default="A small pouch of money containing " + str(am)+" coins")
         pic = eg.fileopenbox(msg="Choose A Picture. Must be in a folder named \"Pics\" within the games root directory:", default="/Pics/*")
         if not pic == None:
             pic = pic.replace("\\Pics\\", "")
