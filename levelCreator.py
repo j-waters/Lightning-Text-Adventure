@@ -124,11 +124,12 @@ def ConversationTree(tree={}):
                 cur["B"] = eg.enterbox(msg="Enter the text that will show on this branch's button:")
         elif a == "Action":
             print("Action")
+            print(exists)
             if not exists:
                 item = ""
                 knum = 1
                 while True:
-                    if "O" + str(knum) in cur:
+                    if "A" + str(knum) in cur:
                         knum +=1
                     else:
                         break
