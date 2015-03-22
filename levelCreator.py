@@ -72,6 +72,8 @@ def ConversationTree(tree={}):
                 exists = True
                 item = cur[s.split(":")[0]]
                 number = list(s.split(":")[0])[1]
+            print("split:")
+            print(list(s.split(":")[0])[0])
 
         if a == "Statement":
             if exists:
@@ -135,23 +137,25 @@ def ConversationTree(tree={}):
                         break
             if exists:
                 knum = number
-            if not exists:
-                ch = ["Give Item", "Give Quest", "End Quest", "Battle"]
+            ch.clear()
+            ch = ["Give Item", "Give Quest", "End Quest", "Battle"]
             if exists:
-                    if item[0] == "G":
-                        s = "Give Item"
-            if exists:
-                ch.append("Delete Action")
+                ch.append("DELETE ACTION")
             s = eg.choicebox(msg="Choose An Action:", choices=ch)
             if s == "Delete Action":
                 cur.pop("A" + str(knum))
             if s == "Give Item":
-                if exists:
+                print("give item")
+                if exists and item[0] == "G":
                     t = item[1][2][0]
-                else:
-                    ch = ["shirt", "helm", "boot", "book", "map", "weapon", "money", "npc", "item"]
-                    t = eg.choicebox(msg="Select The Item Type:", choices=ch)
-                cur["A" + str(knum)] = ("G", addItem(t, exists, item))
+
+                ch = ["shirt", "helm", "boot", "book", "map", "weapon", "money", "npc", "item"]
+                t = eg.choicebox(msg="Select The Item Type:", choices=ch)
+                if exists:
+                    addingItem = addItem(t, exists, item[1])
+                if not exists:
+                    addingItem = addItem(t, exists, "")
+                cur["A" + str(knum)] = ("G", addingItem)
 
 
 
@@ -263,6 +267,7 @@ def editRoom():
                 curRoom[0].remove(s)
 
 def addItem(t, exists, s=""):
+    print(s)
     if t == "shirt" or t == "helm":
         print("shirt / helm")
         if exists:
