@@ -792,7 +792,11 @@ def view(items, string="You Can See:"):
         if searchmet("i", TheOut) == True:
             choice = easygui.buttonbox(image=getpic(TheOut), msg=getdes(TheOut), choices=("Take", "Back"))
         else:
-            choice = easygui.buttonbox(image=getpic(TheOut), msg=getdes(TheOut), choices=("Back"))
+            try:
+                choice = easygui.buttonbox(image=getpic(TheOut), msg=getdes(TheOut), choices=("Back"))
+            except:
+                easygui.buttonbox(msg="Oh dear. " + getnam(TheOut) + " doesn't seem to exist.", choices=("Back"))
+                debug("ITEM ERROR")
 
         if choice == "Take":
             if inventory_add(TheOut) == True:
