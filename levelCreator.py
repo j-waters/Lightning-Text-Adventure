@@ -29,6 +29,8 @@ def ConversationTree(tree={}):
             ch.append("Add An Item...")
             for i in branch:
                 root = root + "> " + i
+            if ch > 1:
+                ch.append("Delete An Item")
         a = ""
         s = eg.choicebox(msg=root, choices=ch)
         if s == "Add An Item...": #Adding an item - statement, action or option
@@ -41,7 +43,12 @@ def ConversationTree(tree={}):
 
             a = eg.buttonbox(msg="Select type:", choices=ch)
             exists = False
-
+        elif s == "Delete An Item":
+            ch.remove("Add An Item...")
+            ch.remove("Delete An Item")
+            s = eg.choicebox(msg="Select An Item To Delete:", choices=ch)
+            if not s == None:
+                reduce(lambda a, b: a[b], branch, tree).pop(s.split(":")[0])
         else:
             if s == None:
                 try:
@@ -139,11 +146,9 @@ def ConversationTree(tree={}):
                 knum = number
             ch.clear()
             ch = ["Give Item", "Give Quest", "End Quest", "Battle"]
-            if exists:
-                ch.append("DELETE ACTION")
+
             s = eg.choicebox(msg="Choose An Action:", choices=ch)
-            if s == "Delete Action":
-                cur.pop("A" + str(knum))
+
             if s == "Give Item":
                 print("give item")
                 if exists and item[0] == "G":
@@ -156,9 +161,6 @@ def ConversationTree(tree={}):
                 if not exists:
                     addingItem = addItem(t, exists, "")
                 cur["A" + str(knum)] = ("G", addingItem)
-
-
-
 
         print("TREE:")
         print(tree)
@@ -286,7 +288,8 @@ def addItem(t, exists, s=""):
         if not pic == None:
             pic = pic.replace("\\Pics\\", "")
         print(pic)
-        return(nm, ds, [s, df, "c", "i"], pic)
+        print(nm, ds, [t, df, "c", "i"], pic)
+        return(nm, ds, [t, df, "c", "i"], pic)
 
     if t == "boot":
         e = eg.multenterbox(msg="Enter data:", fields=["Item Name:", "Defence:", "Speed:"])
@@ -303,7 +306,7 @@ def addItem(t, exists, s=""):
         if not pic == None:
             pic = pic.replace("\\Pics\\", "")
         print(pic)
-        return(nm, ds, [s, df, sd, "c", "i"], pic)
+        return(nm, ds, [t, df, sd, "c", "i"], pic)
 
     if t == "weapon":
         e = eg.multenterbox(msg="Enter data:", fields=["Item Name:", "Damage:"])
@@ -319,7 +322,7 @@ def addItem(t, exists, s=""):
         if not pic == None:
             pic = pic.replace("\\Pics\\", "")
         print(pic)
-        return(nm, ds, [s, dm, "i"], pic)
+        return(nm, ds, [t, dm, "i"], pic)
 
     if t == "money":
         e = eg.multenterbox(msg="Enter data:", fields=["Item Name:", "Amount:"], values=["A Pouch Of Money"])
@@ -334,7 +337,7 @@ def addItem(t, exists, s=""):
         pic = eg.fileopenbox(msg="Choose A Picture. Must be in a folder named \"Pics\" within the games root directory:", default="/Pics/*")
         if not pic == None:
             pic = pic.replace("\\Pics\\", "")
-        return(nm, ds, [s, am, "i"], pic)
+        return(nm, ds, [t, am, "i"], pic)
 
     if t == "npc":
         c = eg.buttonbox(msg="Edit NPC's stats or conversation tree?", choices=["Stats", "Conversation"])
