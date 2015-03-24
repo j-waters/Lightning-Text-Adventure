@@ -145,7 +145,8 @@ def ConversationTree(tree={}):
             if exists:
                 knum = number
             ch.clear()
-            ch = ["Give Item", "Give Quest", "End Quest", "Battle"]
+            ch = ["Give Item", "Give Quest", "End Quest", "Battle", "Set Variable"]
+            #TODO: These other actions
 
             s = eg.choicebox(msg="Choose An Action:", choices=ch)
 
@@ -160,7 +161,22 @@ def ConversationTree(tree={}):
                     addingItem = addItem(t, exists, item[1])
                 if not exists:
                     addingItem = addItem(t, exists, "")
-                cur["A" + str(knum)] = ("G", addingItem)
+                cur["A" + str(knum)] = ("give", addingItem)
+            if s == "Set Variable":
+                var = eg.multenterbox(msg="Change or create a variable:", fields=[""], values)
+        elif a == "Conditional":
+            if not exists:
+                item = ""
+                knum = 1
+                while True:
+                    if "C" + str(knum) in cur:
+                        knum +=1
+                    else:
+                        break
+            if exists:
+                knum = number
+
+
 
         print("TREE:")
         print(tree)
