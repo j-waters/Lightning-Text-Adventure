@@ -5,6 +5,9 @@ Location = ""
 Turn = 0
 TurnString = ""
 Places = {}
+Quests = {}
+CurQuests = []
+Variables = {}
 
 def save():
     f = open('Saves/World.save', 'w')
@@ -13,7 +16,10 @@ def save():
     'Location':Location,
     'Turn':Turn,
     'TurnString':TurnString,
-    'Places':Places
+    'Places':Places,
+    'Quests':Quests,
+    'CurQuests':CurQuests,
+    'Variables':Variables
     }
 
     for key in save.keys():
