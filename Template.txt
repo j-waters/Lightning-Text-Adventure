@@ -35,7 +35,10 @@ TALKING:
     "T" : "#Sentence/statement#",
     "O1" : {
         "B" : "#Button name#",
-        "T" : "#Sentence/statement#"
+        "T" : "#Sentence/statement#",
+        "A1" : "#Action#",
+        "C1" : "#Conditional#",
+        "E" : "#GoTo Point#",
         "O1" : etc... }
     "O2" : {
         "B" : "#Button name#",
