@@ -645,6 +645,9 @@ def world_refresh():
             if i[3]["hlt"] < 1:
                 world.Places[world.Location][0].remove(i)
 
+def var():
+    return world.Variables
+
 #####
 #END WORLD
 #####
