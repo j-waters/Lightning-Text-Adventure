@@ -11,6 +11,7 @@ from lightCore import * #@UnusedWildImport
 import player
 import world
 import inventory
+import Classes
 #General Modules
 #import time #@UnusedImport
 #import random #@UnusedImport
