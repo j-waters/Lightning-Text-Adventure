@@ -11,7 +11,7 @@ from lightCore import * #@UnusedWildImport
 import player
 import world
 import inventory
-import Classes
+from Classes import *
 #General Modules
 #import time #@UnusedImport
 #import random #@UnusedImport
@@ -87,15 +87,15 @@ def player_defence():
     #Calculates the defence of a player
     TheOut = 0
     try:
-        TheOut += int(getmet(player.Helm, 1))
+        TheOut += int(player.Helmet.defence)
     except:
         TheOut += 0
     try:
-        TheOut += int(getmet(player.Shirt, 1))
+        TheOut += int(player.Shirt.defence)
     except:
         TheOut += 0
     try:
-        TheOut += int(getmet(player.Boot, 1))
+        TheOut += int(player.Boots.defence)
     except:
         TheOut += 0
 
@@ -103,46 +103,45 @@ def player_defence():
 
 def player_speed():
     try:
-        return int(player.Speed + int(getmet(player.Boot, 2)))
+        return int(player.Speed + int(getmet(player.Boots, 2))) #TODO: Add together weight, enchants
     except:
         return int(player.Speed)
 
 def player_unEquip(item):
     #Unequips an item from the player
     debug("Un Equip")
-    debug(item)
 
-    if item == "helm":
-        inventory_add(player.Helm)
-        player.Helm = ""
+    if item.type == "Helmet":
+        inventory_add(player.Helmet)
+        player.Helmet = None
 
-    if item == "shirt":
+    if item.type == "Shirt":
         inventory_add(player.Shirt)
         player.Shirt = ""
 
-    if item == "boot":
-        inventory_add(player.Boot)
-        player.Boot = ""
+    if item.type == "Boots":
+        inventory_add(player.Boots)
+        player.Boots = None
 
 def player_equip(item):
     #Equips an item to the player
     debug("equiping:")
     debug(item)
-    debug(getmet(item, 0))
+    debug(item.type)
 
-    if getmet(item, 0) == "helm":
-        if player.Helm == "":
-            player.Helm = item
+    if item.type == "Helmet":
+        if player.Helmet == None:
+            player.Helmet = item
             inventory_remove(item)
 
         else:
             inventory_remove(item)
-            inventory_add(player.Helm)
-            player.Helm = item
+            inventory_add(player.Helmet)
+            player.Helmet = item
         return
 
-    if getmet(item, 0) == "shirt":
-        if player.Shirt == "":
+    if item.type == "Shirt":
+        if player.Shirt == None:
             player.Shirt = item
             inventory_remove(item)
 
@@ -152,65 +151,53 @@ def player_equip(item):
             player.Shirt = item
         return
 
-    if getmet(item, 0) == "boot":
-        if player.Boot == "":
-            player.Boot = item
+    if item.type == "Boots":
+        if player.Boots == None:
+            player.Boots = item
 
             inventory_remove(item)
 
         else:
             inventory_remove(item)
-            inventory_add(player.Boot)
-            player.boot = item
+            inventory_add(player.Boots)
+            player.Boots = item
         return
 
     else:
-        print("Cannot equip a " + str(item))
+        print("Cannot equip a " + str(item.name))
 
-def battle(tgt):
+def battle(t):
     #Player attacks 'tgt'
     world.Turn += 1
 
     global tlife
 
     debug("ATTACKING")
-    tatt = int(tgt[3]["att"])
-    tdef = int(tgt[3]["def"])
-    tlife = int(tgt[3]["hlt"])
-    tmhlt = int(tgt[3]["mhlt"])
-    trnk = int(tgt[3]["rnk"])
-    taln = tgt[3]["aln"]
-    tspd = int(tgt[3]["spd"])
-    tlck = int(tgt[3]["lck"])
-    tmgc = int(tgt[3]["mgc"])
-    tspl = tgt[3]["spl"]
-    target = getnam(tgt)
+    target = t.name
 
     weapons = []
     wdamage = []
     wpics = []
 
     for i in inventory.Contents:
-        spl = getmet(i, 0)
-        if spl == "weapon":
-            weapons.append(getnam(i))
-            wdamage.append(int(getmet(i, 1)) + player.Strength)
+        spl = i.type
+        if spl == "Weapon":
+            weapons.append(i.name)
+            wdamage.append(int(i.attack) + player.Strength)
             wpics.append(getpic(i))
-    weapons.append("Your Fists")
-    wdamage.append(player.Strength)
-    wpics.append("Pics/Fist01.png")
+    weapons.append(Weapon("Your Fists", "", "", player.Strength, 0, "", "Images/Fist01.png"))
 
     #pprint(Fight_Symbol, player.Name + " (" + str(player.Health) + ", " + str(player_defence()) + ")" + " Attacks " + target + " (" + str(tlife) + ", " + str(tdef) + ")" + "!")
-    pprint(Fight_Symbol, player.Name + " (Level " + str(player.Xpl) + ")" + " Attacks " + str(target) + " (Level " + str(trnk) + ")" + "! Choose your weapon!")
+    pprint(Fight_Symbol, player.Name + " (Level " + str(player.Xpl) + ")" + " Attacks " + str(target) + " (Level " + t.rank + ")" + "! Choose your weapon!")
     #att_weapon = easygui.choicebox(msg="Chose your weapon", choices=(weapons))
     patt = weaponselect(weapons, wdamage, wpics)
     patt = int(patt + int(player.Strength / 2))
 
     #Calculate personality
-    total = tatt + tdef + tmgc
-    mgcp = int((tmgc / total) * 100)
-    attp = int((tatt / total) * 100) + mgcp
-    defp = int((tdef / total) * 100) + attp
+    total = t.attack + t.defence + t.magic
+    mgcp = int((t.magic / total) * 100)
+    attp = int((t.attack / total) * 100) + mgcp
+    defp = int((t.defence / total) * 100) + attp
 
     global tempdef
     global tartempdef
@@ -220,12 +207,12 @@ def battle(tgt):
 
     while True:
         debug("PATT " + str(patt))
-        debug("TDEF " + str(tdef))
+        debug("TDEF " + str(t.defence))
         debug("PDEF " + str(player_defence() + tempdef))
         tlife = int(tlife)
         Pcrit = False
         Ecrit = False
-        if tspd + random.randint(-2, 2) > player.Speed + random.randint(-2, 2):
+        if t.speed + random.randint(-2, 2) > player.Speed + random.randint(-2, 2):
             order = "target"
         else:
             order = "player"
@@ -250,7 +237,7 @@ def battle(tgt):
 
         if order == "player":
             tempdef = 0
-            PtE = int( patt * (1 + random.random())- (tdef + tartempdef))
+            PtE = int( patt * (1 + random.random())- (t.defence + tartempdef))
             if PtE < 0:
                 PtE = 0
             if random.randint(0, 100) < player.Luck:
@@ -258,59 +245,59 @@ def battle(tgt):
                     PtE = 1
                 PtE = PtE * ((player.Luck + 10) / 10)
                 Pcrit = True
-            if player_attack(des, Pcrit, PtE, target, tgt) == "Retreat":
+            if player_attack(des, Pcrit, PtE, target, t) == "Retreat":
                 return "retreat"
             debug("tempdef" + str(tempdef))
 
             if tlife < 1:
                 print("You defeat " + target + ".")
-                pxp = int((int(trnk) + 1) * (random.randint(1, 3) + random.random()))
+                pxp = int((int(t.rank) + 1) * (random.randint(1, 3) + random.random()))
                 print("you gain " + str(pxp) + " XP!")
-                pka = int(int(trnk) * (random.randint(1, 2) + random.random()))
+                pka = int(int(t.rank) * (random.randint(1, 2) + random.random()))
                 player_Xpa(pka)
-                if taln == "G":
+                if t.alignment == "G":
                     print(target + " was good. " + "You lose " + str(pka) + " karma")
                     debug("Pre karma: " + str(player.Karma))
                     player.Karma -= pka
                     debug("Post karma: " + str(player.Karma))
-                if taln == "E":
+                if t.alignment == "E":
                     print(target + "was evil. " + "You gain " + str(pka) + " karma")
                     player.Karma += pka
-                world.Places[world.Location][0].remove(tgt)
+                world.Places[world.Location][0].remove(t)
                 return "win"
             tartempdef = 0
-            EtP = int( int (tatt) * (1 + random.random()) - (player_defence() + tempdef))
+            EtP = int( int (t.attack) * (1 + random.random()) - (player_defence() + tempdef))
             debug("ETP " + str(EtP))
             debug("ETP without tempdef " + str(EtP + tempdef))
 
             if EtP < 0:
                 EtP = 0
-            if random.randint(0, 100) < tlck:
+            if random.randint(0, 100) < t.luck:
                 if EtP == 0:
                     EtP = 1
-                EtP = EtP * ((tlck + 10) / 10)
+                EtP = EtP * ((t.luck + 10) / 10)
                 Ecrit = True
 
-            enemy_attack(taction, Ecrit, target, tlck, EtP, tdef, tatt, tlife, tmhlt, tmgc, tspl)
+            enemy_attack(taction, Ecrit, target, t.luck, EtP, t.defence, t.attack, tlife, t.maxhealth, t.magic, t.spells)
             player_refresh()
 
         if order == "target":
             tartempdef = 0
-            EtP = int( int (tatt) * (1 + random.random()) - (player_defence() + tempdef))
+            EtP = int( int (t.attack) * (1 + random.random()) - (player_defence() + tempdef))
             debug("ETP " + str(EtP))
             debug("ETP without tempdef " + str(EtP + tempdef))
             if EtP < 0:
                 EtP = 0
-            if random.randint(0, 100) < tlck:
+            if random.randint(0, 100) < t.luck:
                 if EtP == 0:
                     EtP = 1
-                EtP = EtP * ((tlck + 10) / 10)
+                EtP = EtP * ((t.luck+ 10) / 10)
                 Ecrit = True
-            enemy_attack(taction, Ecrit, target, tlck, EtP, tdef, tatt, tlife, tmhlt, tmgc, tspl)
+            enemy_attack(taction, Ecrit, target, t.luck, EtP, t.defence, t.attack, tlife, t.maxhealth, t.magic, t.spells)
 
             player_refresh()
             tempdef = 0
-            PtE = int( patt * (1 + random.random())- (tdef + tartempdef))
+            PtE = int( patt * (1 + random.random())- (t.defence + tartempdef))
 
             if PtE < 0:
                 PtE = 0
@@ -319,25 +306,25 @@ def battle(tgt):
                     PtE = 1
                 PtE = PtE * ((player.Luck + 10) / 10)
                 Pcrit = True
-            if player_attack(des, Pcrit, PtE, target, tgt) == "Retreat":
+            if player_attack(des, Pcrit, PtE, target, t) == "Retreat":
                 return "retreat"
             debug("tempdef" + str(tempdef))
 
             if tlife < 1:
                 print("You defeat " + target + ".")
-                pxp = int((int(trnk) + 1) * (random.randint(1, 3) + random.random()))
+                pxp = int((int(t.rank) + 1) * (random.randint(1, 3) + random.random()))
                 print("you gain " + str(pxp) + " XP!")
-                pka = int(int(trnk) * (random.randint(1, 2) + random.random()))
+                pka = int(int(t.rank) * (random.randint(1, 2) + random.random()))
                 player_Xpa(pka)
-                if taln == "G":
+                if t.alignment == "G":
                     print(target + " was good. " + "You lose " + str(pka) + " karma")
                     debug("Pre karma: " + str(player.Karma))
                     player.Karma -= pka
                     debug("Post karma: " + str(player.Karma))
-                if taln == "E":
+                if t.alignment == "E":
                     print(target + "was evil. " + "You gain " + str(pka) + " karma")
                     player.Karma += pka
-                world.Places[world.Location][0].remove(tgt)
+                world.Places[world.Location][0].remove(t)
                 return "win"
 
 def player_attack(des, Pcrit, PtE, target, tgt):
@@ -375,10 +362,10 @@ def player_attack(des, Pcrit, PtE, target, tgt):
         wdamage = []
         wpics = []
         for i in range(0, len(inventory.Contents)):
-            spl = getmet(inventory.Contents[i], 0)
+            spl = inventory.Contents[i].type
             if spl == "weapon":
-                weapons.append(getnam(inventory.Contents[i]))
-                wdamage.append(getmet(inventory.Contents[i], 1))
+                weapons.append(inventory.Contents[i].name)
+                wdamage.append(inventory.Contents[i].name)
                 wpics.append(getpic(inventory.Contents[i]))
         weapons.append("Your Fists")
         wdamage.append(player.Strength)
@@ -455,7 +442,7 @@ def inventory_add(item):
         debug(inventory.Size)
         pprint(Full_Bag, "You can't fit anything else into a bag that can only hold " + str(inventory.Size) + " items!")
 
-        INV_A_DC = easygui.choicebox(msg="What to drop: (cancel to not drop anything)", choices=(getnam(inventory.Contents)))
+        INV_A_DC = easygui.choicebox(msg="What to drop: (cancel to not drop anything)", choices=(getnam(inventory.Contents))) #TODO: re make getnam
         if not INV_A_DC == None:
             INV_A_DC = find_tup(INV_A_DC, inventory.Contents)
             inventory_remove(INV_A_DC)
@@ -473,9 +460,9 @@ def inventory_get():
     debug("CONTENTS:\n" + str(inventory.Contents))
     ##Finding Money##
     for i in range(0, len(inventory.Contents)):
-        spl = getmet(inventory.Contents[i], 0)
+        spl = inventory.Contents[i].type
         if spl == "money":
-            amt = getmet(inventory.Contents[i], 1)
+            amt = inventory.Contents[i].amount
             amti = int(amt)
             type(amti)
             inventory.Money += amti
@@ -498,13 +485,13 @@ def inventory_get():
 
     estring1 = "You Have Equipped: "
     try:
-        if not player.Helm == "":
-            estring2 = player.Helm[0]
-            estring2d = player.Helm[1]
-            estring2m = ["e", "helm", player.Helm[2][1]]
-            estring2p = player.Helm[3]
+        if not player.Helmet == "":
+            estring2 = player.Helmet[0]
+            estring2d = player.Helmet[1]
+            estring2m = ["e", "helm", player.Helmet[2][1]]
+            estring2p = player.Helmet[3]
 
-        if player.Helm == "":
+        if player.Helmet == "":
             estring2 = "No helm"
             estring2d = "Your not wearing a helmet"
             estring2m = []
@@ -653,64 +640,9 @@ def var():
 #END WORLD
 #####
 
-def getmet(item, metno):
-    #Gets the data from a tuple (item)
-    #finds the correct data by number (metno)
-    TheOut = None
-
-    if type(item) == tuple:
-        if metno == "all":
-            TheOut = item[2]
-            return TheOut
-
-        TheOut = item[2][metno]
-
-    if type(item) == list:
-        debug("GETMET HAS DONE A LIST")
-        Error()
-        if metno == "all":
-            TheOut = item[0][2]
-            return TheOut
-        TheOut = item[0][2][metno]
-
-    return TheOut
-
-def getdes(item):
-    #Gets the description from a tuple (item)
-    TheOut = item[1]
-    return TheOut
-
 def getpic(item):
-    #Gets the image from a tuple (item)
-    debug(item)
-    if type(item) == tuple:
-        TheOut = item[3]
-        TheOut = "Pics/" + TheOut
+        TheOut = "Pics/" + item.image()
         return TheOut
-    if type(item) == str:
-        TheOut = "Pics/" + TheOut
-        return TheOut
-
-def getnam(item):
-    #Gets the name from a tuple (item)
-    if type(item) == tuple:
-        TheOut = item[0]
-        return TheOut
-    if type(item) == list:
-        TheOut = t(item, 0)
-        return TheOut
-
-def searchmet(string, item):
-    #string = what we want to find
-    #item = tuple/string we want to search
-    if type(item) == tuple:
-        item = getmet(item, "all")
-
-    for i in item:
-        if i == string:
-            return True
-
-    return False
 
 def input(string):  # @ReservedAssignment
     #Creates an enter box with a string, and the time as the title
