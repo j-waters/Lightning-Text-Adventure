@@ -1,4 +1,4 @@
-from lightcore import *
+from lightCore import *
 
 
 class Item():
@@ -7,9 +7,22 @@ class Item():
         self.weight = weight
         self.cost = cost
 
-class Equiped(): #TODO: finish
+class Equipped():
 
-    def __init__(self, name, description, defence, weight, cost, image, enchantments=[]):
+    def __init__(self, item, itype=None):
+        if item == None:
+            self.image = None
+            self.defence = 0
+            self.description = "You're not wearing any " + itype
+            self.name = "No extra " + itype
+            self.type = itype
+        else:
+            self.item = item
+            self.image = self.item.image
+            self.defence = self.item.defence
+            self.description = self.item.description
+            self.name = "You Have Equiped: " + self.item.name
+            self.type = "Equiped " + self.item.type
 
 
 class Shirt(Item):
@@ -61,9 +74,9 @@ class Money(Item):
 
 class Book(Item):
 
-    def __init__(self, name, nameish, description, knowlege, weight, cost, image, book):
+    def __init__(self, name, nameish, description, knowlege, weight, cost, image, contents):
         self.knowlege = knowlege
-        self.book = book
+        self.contents = contents
         Item.__init__(self, name, nameish, description, weight, cost, image)
         self.type = "Book"
 
