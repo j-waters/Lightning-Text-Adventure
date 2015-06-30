@@ -7,6 +7,7 @@ MaxHealth = 0
 Helmet = None
 Shirt = None
 Boots = None
+Leggins = None
 Knowledge = []
 Karma = 0
 Xp = 0
