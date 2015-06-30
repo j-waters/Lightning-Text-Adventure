@@ -483,64 +483,10 @@ def inventory_get():
 
     ##adding equipped items to inventory##
 
-    estring1 = "You Have Equipped: "
-    try:
-        if not player.Helmet == "":
-            estring2 = player.Helmet[0]
-            estring2d = player.Helmet[1]
-            estring2m = ["e", "helm", player.Helmet[2][1]]
-            estring2p = player.Helmet[3]
-
-        if player.Helmet == "":
-            estring2 = "No helm"
-            estring2d = "Your not wearing a helmet"
-            estring2m = []
-            estring2p = ""
-    except:
-        estring2 = "No helm"
-        estring2d = "Your not wearing a helmet"
-        estring2m = []
-        estring2p = ""
-
-    try:
-        if not player.Shirt == "":
-            estring3 = player.Shirt[0]
-            estring3d = player.Shirt[1]
-            estring3m = ["e", "shirt", player.Shirt[2][1]]
-            estring3p = player.Shirt[3]
-
-        if player.Shirt == "":
-            estring3 = "No Extra Shirt"
-            estring3d = "Your not wearing any extra shirt"
-            estring3m = []
-            estring3p = ""
-    except:
-        estring3 = "No Extra Shirt"
-        estring3d = "Your not wearing an extra shirt"
-        estring3m = []
-        estring3p = ""
-
-    try:
-        if not player.Boot == "":
-            estring4 = player.Boot[0]
-            estring4d = player.Boot[1]
-            estring4m = ["e", "boot", player.Boot[2][1], player.Boot[2][2]]
-            estring4p = player.Boot[3]
-
-        if player.Boot == "":
-            estring4 = "No Extra boots"
-            estring4d = "Your not wearing any boots"
-            estring4m = []
-            estring4p = ""
-    except:
-        estring4 = "No Extra boot"
-        estring4d = "Your not wearing any boots"
-        estring4m = []
-        estring4p = ""
-
-    inventory.Contents.append((estring1 + estring2,estring2d, estring2m, estring2p))
-    inventory.Contents.append((estring1 + estring3,estring3d, estring3m, estring3p))
-    inventory.Contents.append((estring1 + estring4,estring4d, estring4m, estring4p))
+    inventory.Contents.append(Equipped(player.Boots))
+    inventory.Contents.append(Equipped(player.Shirt))
+    inventory.Contents.append(Equipped(player.Leggins))
+    inventory.Contents.append(Equipped(player.Helmet))
 
     ##adding player stats##
     pstring = "Your Statistics"
@@ -556,9 +502,10 @@ def inventory_get():
 
     inventory.Contents.remove((mstring, mstringd, mstringm))
     inventory.Contents.remove((pstring, pstringd, pstringm))
-    inventory.Contents.remove((estring1 + estring2,estring2d, estring2m, estring2p))
-    inventory.Contents.remove((estring1 + estring3,estring3d, estring3m, estring3p))
-    inventory.Contents.remove((estring1 + estring4,estring4d, estring4m, estring4p))
+    inventory.Contents.remove(Equipped(player.Boots))
+    inventory.Contents.remove(Equipped(player.Shirt))
+    inventory.Contents.remove(Equipped(player.Leggins))
+    inventory.Contents.remove(Equipped(player.Helmet))
 
     debug("\n selected:")
     debug(selected)
@@ -629,8 +576,8 @@ def turns():
 
 def world_refresh():
     for i in world.Places[world.Location][0]:
-        if getmet(i, 0) == "npc":
-            if i[3]["hlt"] < 1:
+        if i.type == "Person":
+            if i.health < 1:
                 world.Places[world.Location][0].remove(i)
 
 def var():
@@ -669,14 +616,14 @@ def move(choices):
     #Shows a choicebox with places that the player can move to
     #returns the selection
 
-    choices = [i for i in choices if searchmet("place", i) == True]
+    choices = [i for i in choices if i.type == "Place"]
 
     TheOut = easygui.choicebox(msg="Move To:", choices=(t(choices, 0)))
 
     TheOut = find_tup(TheOut, choices)
 
-    debug(getmet(TheOut, 1))
-    world.Location = getmet(TheOut, 1)
+    debug(TheOut.Location)
+    world.Location = TheOut.Location
     newPlace()
 
     return TheOut
@@ -726,12 +673,12 @@ def view(items, string="You Can See:"):
         TheOut = find_tup(TheOut, items)
 
         if searchmet("i", TheOut) == True:
-            choice = easygui.buttonbox(image=getpic(TheOut), msg=getdes(TheOut), choices=("Take", "Back"))
+            choice = easygui.buttonbox(image=getpic(TheOut), msg=TheOut.description, choices=("Take", "Back"))
         else:
             try:
-                choice = easygui.buttonbox(image=getpic(TheOut), msg=getdes(TheOut), choices=("Back"))
+                choice = easygui.buttonbox(image=getpic(TheOut), msg=TheOut.name, choices=("Back"))
             except:
-                easygui.buttonbox(msg="Oh dear. " + getnam(TheOut) + " doesn't seem to exist.", choices=("Back"))
+                easygui.buttonbox(msg="Oh dear. " + TheOut.name + " doesn't seem to exist.", choices=("Back"))
                 debug("ITEM ERROR")
 
         if choice == "Take":
@@ -766,18 +713,18 @@ def take(choices, mmax=0, string="You Can Take:"):
 
 def read(item):
     world.Turn += 1
-    book = getmet(item, 1)
+    book = item.contents
     book = "Books/" + book
     importVar(book)
-    if getmet(item, 0) == "book":
-        print("Knowledge Acquired! " + getmet(item, 1) + "!")
-        player.Knowledge.append(getmet(item, 1))
+    if item.type == "Book":
+        print("Knowledge Acquired! " + item.knowlege + "!")
+        player.Knowledge.append(item.knowlege)
 
 def player_picture():
-    pic1 = "Pics/Player_1.png"
-    pic2 = "Pics/Player_2.png"
-    pic3 = "Pics/Player_3.png"
-    pic4 = "Pics/Player_4.png"
+    pic1 = "Images/Player_1.png"
+    pic2 = "Images/Player_2.png"
+    pic3 = "Images/Player_3.png"
+    pic4 = "Images/Player_4.png"
 
     picno = 1
 
@@ -837,7 +784,7 @@ def choices(things):
     while True:
         chs = ["Look Around", "Move Somewhere", "View Inventory"]
         for i in things:
-            if getmet(i, 0) == "npc":
+            if i.type == "npc":
                 chs.append("Interact With Something")
                 break
 
@@ -851,12 +798,12 @@ def choices(things):
         if des == "Interact With Something":
             soth = []
             for i in things:
-                if getmet(i, 0) == "npc":
+                if i.type == "Person":
                     soth.append(i)
             something = easygui.choicebox(msg="You can interact with...", title=turns(), choices=t(soth, 0))
             something = find_tup(something, things)
-            if getmet(something, 0) == "npc":
-                des = easygui.buttonbox(msg="Interact With " + getnam(something), title=turns(), choices=("Talk", "Attack"))
+            if something.type == "Person":
+                des = easygui.buttonbox(msg="Interact With " + something.name, title=turns(), choices=("Talk", "Attack"))
                 if des == "Talk":
                     talk(something)
                 if des == "Attack":
@@ -868,6 +815,7 @@ def choices(things):
             exit()
 
 def newPlace():
+    print(world.Places)
     l = world.Places[world.Location]
     for i in l[1]:
         print(i)
@@ -883,7 +831,7 @@ def selector(things, pictures, string, metno, title):
     names = []
     nmax = len(things)
     for i in range(0, len(things)):
-        item = getnam(things[i])
+        item = things[i].name
         met = getmet(things[i], metno)
         line = string
         line.replace("%m", met)
