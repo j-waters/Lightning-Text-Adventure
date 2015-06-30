@@ -85,7 +85,6 @@ def get_save(filename):
             try:
                 line = line.split(' = ',1)
                 result[line[0]] = ast.literal_eval(line[1].strip())
-
             except:
                 pass
     return result
