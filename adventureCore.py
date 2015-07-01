@@ -10,7 +10,6 @@
 from lightCore import * #@UnusedWildImport
 import player
 import world
-import inventory
 from Classes import *
 #General Modules
 #import time #@UnusedImport
@@ -102,10 +101,7 @@ def player_defence():
     return int(TheOut)
 
 def player_speed():
-    try:
-        return int(player.Speed + int(getmet(player.Boots, 2))) #TODO: Add together weight, enchants
-    except:
-        return int(player.Speed)
+    return player.Speed #TODO: Add together weights
 
 def player_unEquip(item):
     #Unequips an item from the player
@@ -179,7 +175,7 @@ def battle(t):
     wdamage = []
     wpics = []
 
-    for i in inventory.Contents:
+    for i in player.InvContents:
         spl = i.type
         if spl == "Weapon":
             weapons.append(i.name)
@@ -361,12 +357,12 @@ def player_attack(des, Pcrit, PtE, target, tgt):
         weapons = []
         wdamage = []
         wpics = []
-        for i in range(0, len(inventory.Contents)):
-            spl = inventory.Contents[i].type
+        for i in range(0, len(player.InvContents)):
+            spl = player.InvContents[i].type
             if spl == "weapon":
-                weapons.append(inventory.Contents[i].name)
-                wdamage.append(inventory.Contents[i].name)
-                wpics.append(getpic(inventory.Contents[i]))
+                weapons.append(player.InvContents[i].name)
+                wdamage.append(player.InvContents[i].name)
+                wpics.append(getpic(player.InvContents[i]))
         weapons.append("Your Fists")
         wdamage.append(player.Strength)
         wpics.append("Pics/Fist01.png")
@@ -438,18 +434,18 @@ def inventory_add(item):
 
     debug("ADD TO INVENTORY:")
     #This bit will have problems with lists of items due to the 1
-    if 1 + len(inventory.Contents) > inventory.Size:
-        debug(inventory.Size)
-        pprint(Full_Bag, "You can't fit anything else into a bag that can only hold " + str(inventory.Size) + " items!")
+    if 1 + len(player.InvContents) > player.InvSize:
+        debug(player.InvSize)
+        pprint(Full_Bag, "You can't fit anything else into a bag that can only hold " + str(player.InvSize) + " items!")
 
-        INV_A_DC = easygui.choicebox(msg="What to drop: (cancel to not drop anything)", choices=(getnam(inventory.Contents))) #TODO: re make getnam
+        INV_A_DC = easygui.choicebox(msg="What to drop: (cancel to not drop anything)", choices=(getnam(player.InvContents))) #TODO: re make getnam
         if not INV_A_DC == None:
-            INV_A_DC = find_tup(INV_A_DC, inventory.Contents)
+            INV_A_DC = find_tup(INV_A_DC, player.InvContents)
             inventory_remove(INV_A_DC)
         if INV_A_DC == None:
             return False
 
-    inventory.Contents.append(item)
+    player.InvContents.append(item)
     return True
 
 
@@ -457,55 +453,55 @@ def inventory_add(item):
 
 def inventory_get():
     debug("INVENTORY")
-    debug("CONTENTS:\n" + str(inventory.Contents))
+    debug("CONTENTS:\n" + str(player.InvContents))
     ##Finding Money##
-    for i in range(0, len(inventory.Contents)):
-        spl = inventory.Contents[i].type
+    for i in range(0, len(player.InvContents)):
+        spl = player.InvContents[i].type
         if spl == "money":
-            amt = inventory.Contents[i].amount
+            amt = player.InvContents[i].amount
             amti = int(amt)
             type(amti)
-            inventory.Money += amti
-            del inventory.Contents[i]
+            player.Money += amti
+            del player.InvContents[i]
             break
 
-    if inventory.Money % 10 == 0:
-        inventory.Money = 0
+    if player.Money % 10 == 0:
+        player.Money = 0
 
     ##adding money string to inventory###
 
-    mstring = "You Have: " + str(inventory.Money) + " Gold"
+    mstring = "You Have: " + str(player.Money) + " Gold"
     mstringd = "Your small bag of money full of coins that are known as 'gold' by the comoners"
     mstringm = []
-    inventory.Contents.append((mstring, mstringd, mstringm))
+    player.InvContents.append((mstring, mstringd, mstringm))
 
     ##done money##
 
     ##adding equipped items to inventory##
 
-    inventory.Contents.append(Equipped(player.Boots))
-    inventory.Contents.append(Equipped(player.Shirt))
-    inventory.Contents.append(Equipped(player.Leggins))
-    inventory.Contents.append(Equipped(player.Helmet))
+    player.InvContents.append(Equipped(player.Boots))
+    player.InvContents.append(Equipped(player.Shirt))
+    player.InvContents.append(Equipped(player.Leggins))
+    player.InvContents.append(Equipped(player.Helmet))
 
     ##adding player stats##
     pstring = "Your Statistics"
     pstringd = "Ooops"
     pstringm = ["stats"]
-    inventory.Contents.append((pstring, pstringd, pstringm))
+    player.InvContents.append((pstring, pstringd, pstringm))
 
     ##showing inventory##
 
-    selected = easygui.choicebox(msg = "Your Inventory:", choices=(getnam(inventory.Contents)))
+    selected = easygui.choicebox(msg = "Your Inventory:", choices=(getnam(player.InvContents)))
 
-    selected = find_tup(selected, inventory.Contents)
+    selected = find_tup(selected, player.InvContents)
 
-    inventory.Contents.remove((mstring, mstringd, mstringm))
-    inventory.Contents.remove((pstring, pstringd, pstringm))
-    inventory.Contents.remove(Equipped(player.Boots))
-    inventory.Contents.remove(Equipped(player.Shirt))
-    inventory.Contents.remove(Equipped(player.Leggins))
-    inventory.Contents.remove(Equipped(player.Helmet))
+    player.InvContents.remove((mstring, mstringd, mstringm))
+    player.InvContents.remove((pstring, pstringd, pstringm))
+    player.InvContents.remove(Equipped(player.Boots))
+    player.InvContents.remove(Equipped(player.Shirt))
+    player.InvContents.remove(Equipped(player.Leggins))
+    player.InvContents.remove(Equipped(player.Helmet))
 
     debug("\n selected:")
     debug(selected)
@@ -561,7 +557,7 @@ def inventory_get():
 
 def inventory_remove(item):
     world.Places[world.Location][0].append(item)
-    inventory.Contents.remove(item)
+    player.InvContents.remove(item)
 
 #####
 #END INVENTORY
@@ -575,10 +571,10 @@ def turns():
     return world.TurnString + str(world.Turn)
 
 def world_refresh():
-    for i in world.Places[world.Location][0]:
+    for i in world.Places[world.Location]:
         if i.type == "Person":
             if i.health < 1:
-                world.Places[world.Location][0].remove(i)
+                world.Places[world.Location].remove(i)
 
 def var():
     return world.Variables
@@ -586,6 +582,15 @@ def var():
 #####
 #END WORLD
 #####
+
+def getnam(lis):
+    debug(lis)
+    debug(lis[0])
+    debug(lis[0].__dict__)
+    TheOut = []
+    for i in lis:
+        TheOut.append(i.name)
+    return TheOut
 
 def getpic(item):
         TheOut = "Pics/" + item.image()
@@ -665,7 +670,7 @@ def view(items, string="You Can See:"):
         TheOut = ""
         str(TheOut)
 
-        TheOut = easygui.choicebox(msg=string, choices=(t(items, 0)), title=turns())
+        TheOut = easygui.choicebox(msg=string, choices=(getnam(items)), title=turns())
 
         if TheOut == None:
             return
@@ -815,11 +820,8 @@ def choices(things):
             exit()
 
 def newPlace():
-    print(world.Places)
     l = world.Places[world.Location]
-    for i in l[1]:
-        print(i)
-    choices(l[0])
+    choices(l)
 
 
 
