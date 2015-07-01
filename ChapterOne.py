@@ -7,11 +7,10 @@
 from lightCore import *  # @UnusedWildImport
 from adventureCore import *  # @UnusedWildImport
 #Import Variable Modules
-import player, world, inventory  # @Reimport
+import player, world  # @Reimport
 
 
 def firstLoad():
-    inventory.load()
     if player.load() == False:
         debug("#Player#")
         create_character()
