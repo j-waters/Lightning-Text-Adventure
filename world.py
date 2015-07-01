@@ -1,5 +1,7 @@
 from lightCore import get_save
 import os.path
+import pickle
+from Classes import *
 
 Location = ""
 Turn = 0
@@ -11,31 +13,19 @@ Variables = {}
 
 def save():
     f = open('Saves/World.save', 'w')
-
-    save = {
-    'Location':Location,
-    'Turn':Turn,
-    'TurnString':TurnString,
-    'Places':Places,
-    'Quests':Quests,
-    'CurQuests':CurQuests,
-    'Variables':Variables
-    }
-
-    for key in save.keys():
-        if type(save[key]) == str:
-            item = key + " = '" + save[key] + "'\n"
-        else:
-            item = key + " = " + str(save[key]) + "\n"
-        f.write(item)
-    f.close
+    pickle.dump(globals(), f)
 
 def load():
     if os.path.isfile('Saves/World.save'):
-        globals().update(get_save('Saves/World.save'))
+        f = open('Saves/World.save', 'r')
+        pickle.load(f)
         return True
     else:
         globals().update(get_save('Saves/DEFAULT_World.save'))
+        for key in Places:
+            for ino in range(0, len(Places)):
+                exec('test=12')
+                exec("Places['" + key +"'][" + str(ino) + "]" + " = " + Places[key][ino])
         #save() #TEMPORARY
         return False
 
