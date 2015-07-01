@@ -89,8 +89,6 @@ def get_save(filename):
                 pass
     return result
 
-def save(globals, filename):
-    pass
 
 def printTree(tree, depth = 0):
     if tree == None or len(tree) == 0:
