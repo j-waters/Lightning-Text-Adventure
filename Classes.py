@@ -1,11 +1,15 @@
 from lightCore import *
 
 
-class Item():
+class Item:
 
     def __init__(self, name, nameish, description, weight, cost, image):
         self.weight = weight
         self.cost = cost
+        self.name = name
+        self.nameish = nameish
+        self.description = description
+        self.image = image
 
 class Equipped():
 
@@ -62,6 +66,7 @@ class Weapon(Item):
     def __init__(self, name, nameish, description, damage, weight, cost, image, enchantments=[]):
         self.damage = damage
         Item.__init__(self, name, nameish, description, weight, cost, image)
+        debug(self.__dict__)
         self.enchantments = enchantments
         self.type = "Weapon"
 
