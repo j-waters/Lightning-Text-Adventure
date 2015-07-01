@@ -66,7 +66,6 @@ class Weapon(Item):
     def __init__(self, name, nameish, description, damage, weight, cost, image, enchantments=[]):
         self.damage = damage
         Item.__init__(self, name, nameish, description, weight, cost, image)
-        debug(self.__dict__)
         self.enchantments = enchantments
         self.type = "Weapon"
 
