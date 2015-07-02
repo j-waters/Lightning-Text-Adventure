@@ -20,7 +20,7 @@ class Equipped():
             self.defence = 0
             self.description = "You're not wearing any " + itype
             self.name = "No extra " + itype
-            self.type = itype
+            self.type = "UnEquiped " + itype
         else:
             self.item = item
             self.image = self.item.image
