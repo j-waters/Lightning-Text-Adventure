@@ -36,9 +36,9 @@ def pprint(pic, string):
 #####
 #Pictures
 #####
-Full_Bag = "Pics/Bag Full.png"
-Fight_Symbol = "Pics/Fight.png"
-Coin = "Pics/BronzeCoin.png"
+Full_Bag = "Images/Bag Full.png"
+Fight_Symbol = "Images/Fight.png"
+Coin = "Images/BronzeCoin.png"
 
 #####
 #PLAYER
@@ -430,9 +430,18 @@ def target_magicCast(name, tlife, tmlife, tmgc, tspl):
 #INVENTORY
 #####
 
+class oblist(list):
+    def obremove(self, name):
+        for i in self:
+            debug(i.name)
+            if i.name == name:
+                debug("same")
+                self.remove(i)
+
 def inventory_add(item):
 
     debug("ADD TO INVENTORY:")
+    debug(player.InvContents)
     #This bit will have problems with lists of items due to the 1
     if 1 + len(player.InvContents) > player.InvSize:
         debug(player.InvSize)
@@ -454,6 +463,7 @@ def inventory_add(item):
 def inventory_get():
     debug("INVENTORY")
     debug("CONTENTS:\n" + str(player.InvContents))
+    player.InvContents = oblist(player.InvContents)
     ##Finding Money##
     for i in range(0, len(player.InvContents)):
         spl = player.InvContents[i].type
@@ -490,12 +500,12 @@ def inventory_get():
 
     selected = find_tup(selected, player.InvContents)
 
-    player.InvContents.remove(InventoryString("You Have: " + str(player.Money) + " Gold", "Money", "Your small bag of money full of coins that are known as 'gold' by the comoners"))
-    player.InvContents.remove(InventoryString("Your Statistics", "Stats"))
-    player.InvContents.remove(Equipped(player.Boots))
-    player.InvContents.remove(Equipped(player.Shirt))
-    player.InvContents.remove(Equipped(player.Leggins))
-    player.InvContents.remove(Equipped(player.Helmet))
+    player.InvContents.obremove("You Have: " + str(player.Money))
+    player.InvContents.obremove("Your Statistics")
+    player.InvContents.obremove("You Have Equiped: " + "Boots")
+    player.InvContents.obremove("You Have Equiped: " + "Shirt")
+    player.InvContents.obremove("You Have Equiped: " + "Leggins")
+    player.InvContents.obremove("You Have Equiped: " + "Helmet")
 
     debug("\n selected:")
     debug(selected)
@@ -512,8 +522,13 @@ def inventory_get():
 
     if selected.type == "Stats": #STATS
         statistics()
+
     elif selected.type == "Money": #MONEY
         pprint(Coin, selected.description)
+
+    elif selected.type.split(" ")[0] == "UnEquiped": #EQUIPPED ITEM
+        #Is it an equipped item?
+        IgI = easygui.buttonbox(msg=selected.description, choices=(["Back"]))
 
     elif selected.type.split(" ")[0] == "Equiped": #EQUIPPED ITEM
         #Is it an equipped item?
