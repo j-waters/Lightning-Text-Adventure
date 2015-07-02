@@ -27,9 +27,9 @@ InvContents = []
 InvSize = 0
 Money = 0
 
+
 def save():
     f = open('Saves/Player.save', 'w')
-
     pickle.dump(globals(), f)
 
 def load():
