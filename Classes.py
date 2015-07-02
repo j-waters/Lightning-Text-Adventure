@@ -10,6 +10,7 @@ class Item:
         self.nameish = nameish
         self.description = description
         self.image = image
+        self.cat = "Item"
 
 class Equipped():
 
@@ -27,6 +28,15 @@ class Equipped():
             self.description = self.item.description
             self.name = "You Have Equiped: " + self.item.name
             self.type = "Equiped " + self.item.type
+
+class InventoryString():
+
+    def __init__(self, name, type, description=""):
+        self.name = name
+        self.type = type
+        self.description = description
+        self.cat = "Empty"
+
 
 
 class Shirt(Item):
