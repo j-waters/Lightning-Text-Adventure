@@ -469,26 +469,20 @@ def inventory_get():
         player.Money = 0
 
     ##adding money string to inventory###
-
-    mstring = "You Have: " + str(player.Money) + " Gold"
-    mstringd = "Your small bag of money full of coins that are known as 'gold' by the comoners"
-    mstringm = []
-    player.InvContents.append((mstring, mstringd, mstringm))
+    player.InvContents.append(InventoryString("You Have: " + str(player.Money) + " Gold", "Money", "Your small bag of money full of coins that are known as 'gold' by the comoners"))
 
     ##done money##
 
     ##adding equipped items to inventory##
 
-    player.InvContents.append(Equipped(player.Boots))
-    player.InvContents.append(Equipped(player.Shirt))
-    player.InvContents.append(Equipped(player.Leggins))
-    player.InvContents.append(Equipped(player.Helmet))
+    player.InvContents.append(Equipped(player.Boots, "Boots"))
+    player.InvContents.append(Equipped(player.Shirt, "Shirt"))
+    player.InvContents.append(Equipped(player.Leggins, "Leggins"))
+    player.InvContents.append(Equipped(player.Helmet, "Helmet"))
 
     ##adding player stats##
-    pstring = "Your Statistics"
-    pstringd = "Ooops"
-    pstringm = ["stats"]
-    player.InvContents.append((pstring, pstringd, pstringm))
+
+    player.InvContents.append(InventoryString("Your Statistics", "Stats"))
 
     ##showing inventory##
 
@@ -496,8 +490,8 @@ def inventory_get():
 
     selected = find_tup(selected, player.InvContents)
 
-    player.InvContents.remove((mstring, mstringd, mstringm))
-    player.InvContents.remove((pstring, pstringd, pstringm))
+    player.InvContents.remove(InventoryString("You Have: " + str(player.Money) + " Gold", "Money", "Your small bag of money full of coins that are known as 'gold' by the comoners"))
+    player.InvContents.remove(InventoryString("Your Statistics", "Stats"))
     player.InvContents.remove(Equipped(player.Boots))
     player.InvContents.remove(Equipped(player.Shirt))
     player.InvContents.remove(Equipped(player.Leggins))
@@ -515,26 +509,25 @@ def inventory_get():
     if type(selected) == list:
         selected = selected[0]
 
-    debug(getmet(selected, "all"))
 
-    if getmet(selected, "all") == ['stats']: #STATS
+    if selected.type == "Stats": #STATS
         statistics()
-    elif getnam(selected) == mstring: #MONEY
-        pprint(Coin, getdes(selected))
-    elif getmet(selected, "all") == ["i"]: #NOTHING
-        #Is it an average item?
-        easygui.buttonbox(image=getpic(selected), msg=getdes(selected), choices=("Back", "Discard"))
-    elif searchmet("e", selected) == True: #EQUIPPED ITEM
+    elif selected.type == "Money": #MONEY
+        pprint(Coin, selected.description)
+
+    elif selected.type.split(" ")[0] == "Equiped": #EQUIPPED ITEM
         #Is it an equipped item?
-        IgI = easygui.buttonbox(image=getpic(selected), msg=getdes(selected), choices=("Back", "Un Equip"))
+        IgI = easygui.buttonbox(image=getpic(selected), msg=selected.description, choices=("Back", "Un Equip"))
         if IgI == "Un Equip":
-            player_unEquip(getmet(selected, 1))
-    elif searchmet("c", selected) == True: #EQUIPABLE
+            player_unEquip(selected.item)
+
+    elif selected.type in ["Shirt", "Helmet", "Leggins", "Boots"]: #EQUIPABLE
         #Is it an eqipable item?
-        IgI = easygui.buttonbox(image=getpic(selected), msg=getdes(selected), choices=("Back", "Equip", "Discard"))
+        IgI = easygui.buttonbox(image=getpic(selected), msg=selected.description, choices=("Back", "Equip", "Discard"))
         if IgI == "Equip":
             player_equip(selected)
-    elif searchmet("u", selected): #USABLE
+
+    """elif searchmet("u", selected): #USABLE
         if searchmet("book", selected) == True:
             verb = "Read"
         if searchmet("map", selected) == True:
@@ -548,7 +541,7 @@ def inventory_get():
         if getmet(selected, 0) == "book":
             read(selected)
         if getmet(selected, 0) == "map":
-            read(selected)
+            read(selected)"""
         #other items
 
 
@@ -583,6 +576,9 @@ def var():
 #END WORLD
 #####
 
+def removeob(name, list):
+    return [item for item in list if item.name != name]
+
 def getnam(lis):
     debug(lis)
     debug(lis[0])
@@ -593,8 +589,11 @@ def getnam(lis):
     return TheOut
 
 def getpic(item):
-        TheOut = "Pics/" + item.image()
+    try:
+        TheOut = "Images/" + item.image
         return TheOut
+    except:
+        return None
 
 def input(string):  # @ReservedAssignment
     #Creates an enter box with a string, and the time as the title
@@ -645,7 +644,7 @@ def find_tup(item, lis):
 
             for t in range(0, len(lis)):
 
-                if lis[t][0] == item[i]:
+                if lis[t].name == item[i]:
 
                     TheOut.append(lis[t])
                     break
@@ -656,7 +655,7 @@ def find_tup(item, lis):
 
         for t in range(0, len(lis)):
 
-            if lis[t][0] == item:
+            if lis[t].name == item:
 
                 TheOut = lis[t]
 
@@ -669,6 +668,8 @@ def view(items, string="You Can See:"):
     while True:
         TheOut = ""
         str(TheOut)
+        if len(items) == 0:
+            items.append(InventoryString("Nothing Here", "None", "There is nothing to be seen here"))
 
         TheOut = easygui.choicebox(msg=string, choices=(getnam(items)), title=turns())
 
@@ -677,18 +678,20 @@ def view(items, string="You Can See:"):
 
         TheOut = find_tup(TheOut, items)
 
-        if searchmet("i", TheOut) == True:
+        if TheOut.cat == "Item":
             choice = easygui.buttonbox(image=getpic(TheOut), msg=TheOut.description, choices=("Take", "Back"))
+        elif TheOut.cat == "Empty":
+            choice = easygui.buttonbox(msg=TheOut.description, choices=["Back"])
         else:
             try:
-                choice = easygui.buttonbox(image=getpic(TheOut), msg=TheOut.name, choices=("Back"))
+                choice = easygui.buttonbox(image=getpic(TheOut), msg=TheOut.description, choices=("Back"))
             except:
                 easygui.buttonbox(msg="Oh dear. " + TheOut.name + " doesn't seem to exist.", choices=("Back"))
                 debug("ITEM ERROR")
 
         if choice == "Take":
             if inventory_add(TheOut) == True:
-                world.Places[world.Location][0].remove(TheOut)
+                world.Places[world.Location].remove(TheOut)
                 world.Turn += 1
                 return "Take"
         else:
