@@ -438,7 +438,7 @@ class oblist(list):
                 debug("same")
                 self.remove(i)
 
-def inventory_add(item):
+def inventory_add(item): #TODO multiple of a single item
 
     debug("ADD TO INVENTORY:")
     debug(player.InvContents)
@@ -541,6 +541,13 @@ def inventory_get():
         IgI = easygui.buttonbox(image=getpic(selected), msg=selected.description, choices=("Back", "Equip", "Discard"))
         if IgI == "Equip":
             player_equip(selected)
+        if IgI == "Discard":
+            inventory_remove(selected)
+
+    elif selected.cat == "Item":
+        IgI = easygui.buttonbox(image=getpic(selected), msg=selected.description, choices=("Back", "Discard"))
+        if IgI == "Discard":
+            inventory_remove(selected)
 
     """elif searchmet("u", selected): #USABLE
         if searchmet("book", selected) == True:
@@ -564,8 +571,8 @@ def inventory_get():
     return
 
 def inventory_remove(item):
-    world.Places[world.Location][0].append(item)
-    player.InvContents.remove(item)
+    world.Places[world.Location].append(item)
+    player.InvContents.obremove(item.name)
 
 #####
 #END INVENTORY
