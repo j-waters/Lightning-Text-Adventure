@@ -172,21 +172,17 @@ def battle(t):
     target = t.name
 
     weapons = []
-    wdamage = []
-    wpics = []
 
     for i in player.InvContents:
         spl = i.type
         if spl == "Weapon":
-            weapons.append(i.name)
-            wdamage.append(int(i.attack) + player.Strength)
-            wpics.append(getpic(i))
+            weapons.append(i)
     weapons.append(Weapon("Your Fists", "", "", player.Strength, 0, "", "Images/Fist01.png"))
 
     #pprint(Fight_Symbol, player.Name + " (" + str(player.Health) + ", " + str(player_defence()) + ")" + " Attacks " + target + " (" + str(tlife) + ", " + str(tdef) + ")" + "!")
-    pprint(Fight_Symbol, player.Name + " (Level " + str(player.Xpl) + ")" + " Attacks " + str(target) + " (Level " + t.rank + ")" + "! Choose your weapon!")
+    pprint(Fight_Symbol, player.Name + " (Level " + str(player.Xpl) + ")" + " Attacks " + str(target) + " (Level " + str(t.level) + ")" + "! Choose your weapon!")
     #att_weapon = easygui.choicebox(msg="Chose your weapon", choices=(weapons))
-    patt = weaponselect(weapons, wdamage, wpics)
+    patt = weaponselect(weapons)
     patt = int(patt + int(player.Strength / 2))
 
     #Calculate personality
@@ -205,7 +201,7 @@ def battle(t):
         debug("PATT " + str(patt))
         debug("TDEF " + str(t.defence))
         debug("PDEF " + str(player_defence() + tempdef))
-        tlife = int(tlife)
+        tlife = int(t.health)
         Pcrit = False
         Ecrit = False
         if t.speed + random.randint(-2, 2) > player.Speed + random.randint(-2, 2):
@@ -241,15 +237,15 @@ def battle(t):
                     PtE = 1
                 PtE = PtE * ((player.Luck + 10) / 10)
                 Pcrit = True
-            if player_attack(des, Pcrit, PtE, target, t) == "Retreat":
+            if player_attack(des, Pcrit, PtE, target, t, tartempdef) == "Retreat":
                 return "retreat"
             debug("tempdef" + str(tempdef))
 
             if tlife < 1:
                 print("You defeat " + target + ".")
-                pxp = int((int(t.rank) + 1) * (random.randint(1, 3) + random.random()))
+                pxp = int((int(t.level) + 1) * (random.randint(1, 3) + random.random()))
                 print("you gain " + str(pxp) + " XP!")
-                pka = int(int(t.rank) * (random.randint(1, 2) + random.random()))
+                pka = int(int(t.level) * (random.randint(1, 2) + random.random()))
                 player_Xpa(pka)
                 if t.alignment == "G":
                     print(target + " was good. " + "You lose " + str(pka) + " karma")
@@ -274,7 +270,7 @@ def battle(t):
                 EtP = EtP * ((t.luck + 10) / 10)
                 Ecrit = True
 
-            enemy_attack(taction, Ecrit, target, t.luck, EtP, t.defence, t.attack, tlife, t.maxhealth, t.magic, t.spells)
+            enemy_attack(taction, Ecrit, target, t.luck, EtP, t.defence, t.attack, tlife, t.maxhealth, t.magic, t.spells, tempdef)
             player_refresh()
 
         if order == "target":
@@ -289,7 +285,7 @@ def battle(t):
                     EtP = 1
                 EtP = EtP * ((t.luck+ 10) / 10)
                 Ecrit = True
-            enemy_attack(taction, Ecrit, target, t.luck, EtP, t.defence, t.attack, tlife, t.maxhealth, t.magic, t.spells)
+            enemy_attack(taction, Ecrit, target, t.luck, EtP, t.defence, t.attack, tlife, t.maxhealth, t.magic, t.spells, tempdef)
 
             player_refresh()
             tempdef = 0
@@ -302,15 +298,15 @@ def battle(t):
                     PtE = 1
                 PtE = PtE * ((player.Luck + 10) / 10)
                 Pcrit = True
-            if player_attack(des, Pcrit, PtE, target, t) == "Retreat":
+            if player_attack(des, Pcrit, PtE, target, t, tartempdef) == "Retreat":
                 return "retreat"
             debug("tempdef" + str(tempdef))
 
             if tlife < 1:
                 print("You defeat " + target + ".")
-                pxp = int((int(t.rank) + 1) * (random.randint(1, 3) + random.random()))
+                pxp = int((int(t.level) + 1) * (random.randint(1, 3) + random.random()))
                 print("you gain " + str(pxp) + " XP!")
-                pka = int(int(t.rank) * (random.randint(1, 2) + random.random()))
+                pka = int(int(t.level) * (random.randint(1, 2) + random.random()))
                 player_Xpa(pka)
                 if t.alignment == "G":
                     print(target + " was good. " + "You lose " + str(pka) + " karma")
@@ -323,15 +319,18 @@ def battle(t):
                 world.Places[world.Location][0].remove(t)
                 return "win"
 
-def player_attack(des, Pcrit, PtE, target, tgt):
+def player_attack(des, Pcrit, PtE, target, tgt, tartempdef):
     global tempdef
-    global tlife
+    tempstr = ""
+    if tartempdef > 0:
+        tempstr = " (" + str(tartempdef) + " extra defence)"
+
     if des == "Attack":
         print(player.Name + " Attacks!")
         if Pcrit == True:
             print("Critical Hit! x" + str(((player.Luck + 10) / 10)))
-        print(player.Name + " Deals " + str(PtE) + " Damage To " + target)
-        tlife -= PtE
+        print(player.Name + " Deals " + str(PtE) + " Damage To " + target + tempstr)
+        tgt.health -= PtE #TODO update target health
         print(target + " Is Now On " + str(tlife) + " Health.")
 
     if des == "Defend":
@@ -372,14 +371,19 @@ def player_attack(des, Pcrit, PtE, target, tgt):
 
 
 
-def enemy_attack(taction, Ecrit, target, tlck, EtP, tdef, tatt, tlife, tmhlt, tmgc, tspl):
+def enemy_attack(taction, Ecrit, target, tlck, EtP, tdef, tatt, tlife, tmhlt, tmgc, tspl, tempdef):
     global tartempdef
+
+    tempstr = ""
+    if tempdef > 0:
+        tempstr = " (" + str(tempdef) + " extra defence)"
+
     if taction == "Attack":
         print(target + " Attacks!")
         if Ecrit == True:
             print("Critical Hit! x" + str(((tlck + 10) / 10)))
 
-        print(target + " Deals " + str(EtP) + " Damage To " + player.Name)
+        print(target + " Deals " + str(EtP) + " Damage To " + player.Name + tempstr)
         player.Health -= EtP
         print(player.Name + " Is Now On " + str(int(player.Health)) + " Health.")
 
@@ -431,10 +435,16 @@ def target_magicCast(name, tlife, tmlife, tmgc, tspl):
 #####
 
 class oblist(list):
-    def obremove(self, name):
+    def onremove(self, name):
         for i in self:
             debug(i.name)
             if i.name == name:
+                debug("same")
+                self.remove(i)
+    def otremove(self, type):
+        for i in self:
+            debug(i.type)
+            if i.type == type:
                 debug("same")
                 self.remove(i)
 
@@ -462,24 +472,23 @@ def inventory_add(item): #TODO multiple of a single item
 
 def inventory_get():
     debug("INVENTORY")
-    debug("CONTENTS:\n" + str(player.InvContents))
     player.InvContents = oblist(player.InvContents)
     ##Finding Money##
     for i in range(0, len(player.InvContents)):
         spl = player.InvContents[i].type
-        if spl == "money":
+        if spl == "Money":
+            debug(player.Money)
             amt = player.InvContents[i].amount
             amti = int(amt)
             type(amti)
             player.Money += amti
             del player.InvContents[i]
+            debug(player.Money)
             break
 
-    if player.Money % 10 == 0:
-        player.Money = 0
 
     ##adding money string to inventory###
-    player.InvContents.append(InventoryString("You Have: " + str(player.Money) + " Gold", "Money", "Your small bag of money full of coins that are known as 'gold' by the comoners"))
+    player.InvContents.append(InventoryString("You Have: " + str(player.Money) + " Gold", "MoneyStr", "Your small bag of money full of coins that are known as 'gold' by the comoners"))
 
     ##done money##
 
@@ -500,12 +509,17 @@ def inventory_get():
 
     selected = find_tup(selected, player.InvContents)
 
-    player.InvContents.obremove("You Have: " + str(player.Money))
-    player.InvContents.obremove("Your Statistics")
-    player.InvContents.obremove("You Have Equiped: " + "Boots")
-    player.InvContents.obremove("You Have Equiped: " + "Shirt")
-    player.InvContents.obremove("You Have Equiped: " + "Leggins")
-    player.InvContents.obremove("You Have Equiped: " + "Helmet")
+    player.InvContents.otremove("MoneyStr")
+    player.InvContents.onremove("Your Statistics")
+    player.InvContents.otremove("Equiped " + "Boots")
+    player.InvContents.otremove("Equiped " + "Shirt")
+    player.InvContents.otremove("Equiped " + "Leggins")
+    player.InvContents.otremove("Equiped " + "Helmet")
+
+    player.InvContents.otremove("UnEquiped " + "Boots")
+    player.InvContents.otremove("UnEquiped " + "Shirt")
+    player.InvContents.otremove("UnEquiped " + "Leggins")
+    player.InvContents.otremove("UnEquiped " + "Helmet")
 
     debug("\n selected:")
     debug(selected)
@@ -523,7 +537,7 @@ def inventory_get():
     if selected.type == "Stats": #STATS
         statistics()
 
-    elif selected.type == "Money": #MONEY
+    elif selected.type == "MoneyStr": #MONEY
         pprint(Coin, selected.description)
 
     elif selected.type.split(" ")[0] == "UnEquiped": #EQUIPPED ITEM
@@ -572,7 +586,7 @@ def inventory_get():
 
 def inventory_remove(item):
     world.Places[world.Location].append(item)
-    player.InvContents.obremove(item.name)
+    player.InvContents.onremove(item.name)
 
 #####
 #END INVENTORY
@@ -587,6 +601,7 @@ def turns():
 
 def world_refresh():
     for i in world.Places[world.Location]:
+        debug(i)
         if i.type == "Person":
             if i.health < 1:
                 world.Places[world.Location].remove(i)
@@ -814,7 +829,7 @@ def choices(things):
     while True:
         chs = ["Look Around", "Move Somewhere", "View Inventory"]
         for i in things:
-            if i.type == "npc":
+            if i.type == "Person":
                 chs.append("Interact With Something")
                 break
 
@@ -830,7 +845,7 @@ def choices(things):
             for i in things:
                 if i.type == "Person":
                     soth.append(i)
-            something = easygui.choicebox(msg="You can interact with...", title=turns(), choices=t(soth, 0))
+            something = easygui.choicebox(msg="You can interact with...", title=turns(), choices=getnam(soth))
             something = find_tup(something, things)
             if something.type == "Person":
                 des = easygui.buttonbox(msg="Interact With " + something.name, title=turns(), choices=("Talk", "Attack"))
@@ -885,19 +900,18 @@ def selector(things, pictures, string, metno, title):
             if num > nmax:
                 num = 0
 
-def weaponselect(weapon, wdamage, pic):
-    nmax = len(weapon) - 1
+def weaponselect(weapons):
+    nmax = len(weapons) - 1
     num = 0
     while True:
-        string = weapon[num] + ": Does " + str(wdamage[num]) +  " Damage."
-        out = easygui.buttonbox(msg=string, title="Choose Your Weapon:", choices=("<---", "SELECT", "--->"), image=pic[num])
+        string = str(weapons[num].name) + ": Does " + str(weapons[num].damage) +  " Damage."
+        out = easygui.buttonbox(msg=string, title="Choose Your Weapon:", choices=("<---", "SELECT", "--->"), image=weapons[num].image)
         if out == "<---":
             num -= 1
             if num < 0:
                 num = nmax
         if out == "SELECT":
-            debug(type(wdamage[num]))
-            return int(wdamage[num])
+            return int(weapons[num].damage)
         if out == "--->":
             num += 1
             if num > nmax:
