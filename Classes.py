@@ -103,24 +103,24 @@ class Map(Item):
 
 class NPC():
 
-    def __init__(self, name, description, attack, defense, health, maxhealth, level, alignment, speed, luck, mana, maxmana, spells=[], inventory=[]):
+    def __init__(self, name, description, attack, defence, health, maxhealth, level, alignment, speed, luck, magic, spells=[], inventory=[]):
         self.name = name
         self.attack = attack
-        self.defense = defense
+        self.defence = defence
         self.health = health
         self.maxhealth = maxhealth
         self.level = level
         self.alignment = alignment
         self.speed = speed
         self.luck = luck
-        self.mana = mana
-        self.maxmana = maxmana
+        self.magic = magic
         self.spells = spells
         self.inventory = inventory
+        self.cat = "NPC"
 
 class Person(NPC):
 
-    def __init__(self, name, description,  attack, defense, health, maxhealth, level, alignment, speed, luck, magic, spells=[], inventory=[], conversation=[]):
+    def __init__(self, name, description,  attack, defence, health, maxhealth, level, alignment, speed, luck, magic, spells=[], inventory=[], conversation=[]):
         self.conversation = conversation
-        NPC.__init__(self, name, description,  attack, defense, health, maxhealth, level, alignment, speed, luck, magic, spells, inventory)
+        NPC.__init__(self, name, description,  attack, defence, health, maxhealth, level, alignment, speed, luck, magic, spells, inventory)
         self.type = "Person"
