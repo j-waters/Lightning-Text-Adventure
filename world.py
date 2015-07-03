@@ -23,7 +23,7 @@ def load():
     else:
         globals().update(get_save('Saves/DEFAULT_World.save'))
         for key in Places:
-            for ino in range(0, len(Places)):
+            for ino in range(0, len(Places[key])):
                 exec('test=12')
                 exec("Places['" + key +"'][" + str(ino) + "]" + " = " + Places[key][ino])
         #save() #TEMPORARY
