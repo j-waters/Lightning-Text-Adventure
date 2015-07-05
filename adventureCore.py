@@ -239,6 +239,7 @@ def battle(t):
                 Pcrit = True
             if player_attack(des, Pcrit, PtE, target, t, tartempdef) == "Retreat":
                 return "retreat"
+            t.health = tlife
             debug("tempdef" + str(tempdef))
 
             if tlife < 1:
@@ -255,7 +256,7 @@ def battle(t):
                 if t.alignment == "E":
                     print(target + "was evil. " + "You gain " + str(pka) + " karma")
                     player.Karma += pka
-                world.Places[world.Location][0].remove(t)
+                world.Places[world.Location].remove(t)
                 return "win"
             tartempdef = 0
             EtP = int( int (t.attack) * (1 + random.random()) - (player_defence() + tempdef))
@@ -300,6 +301,8 @@ def battle(t):
                 Pcrit = True
             if player_attack(des, Pcrit, PtE, target, t, tartempdef) == "Retreat":
                 return "retreat"
+
+            t.health = tlife
             debug("tempdef" + str(tempdef))
 
             if tlife < 1:
@@ -308,12 +311,12 @@ def battle(t):
                 print("you gain " + str(pxp) + " XP!")
                 pka = int(int(t.level) * (random.randint(1, 2) + random.random()))
                 player_Xpa(pka)
-                if t.alignment == "G":
+                if t.alignment == "Good":
                     print(target + " was good. " + "You lose " + str(pka) + " karma")
                     debug("Pre karma: " + str(player.Karma))
                     player.Karma -= pka
                     debug("Post karma: " + str(player.Karma))
-                if t.alignment == "E":
+                if t.alignment == "Evil":
                     print(target + "was evil. " + "You gain " + str(pka) + " karma")
                     player.Karma += pka
                 world.Places[world.Location][0].remove(t)
@@ -321,6 +324,8 @@ def battle(t):
 
 def player_attack(des, Pcrit, PtE, target, tgt, tartempdef):
     global tempdef
+    global tlife
+    debug(tlife)
     tempstr = ""
     if tartempdef > 0:
         tempstr = " (" + str(tartempdef) + " extra defence)"
@@ -330,7 +335,7 @@ def player_attack(des, Pcrit, PtE, target, tgt, tartempdef):
         if Pcrit == True:
             print("Critical Hit! x" + str(((player.Luck + 10) / 10)))
         print(player.Name + " Deals " + str(PtE) + " Damage To " + target + tempstr)
-        tgt.health -= PtE #TODO update target health
+        tlife -= PtE #TODO update target health
         print(target + " Is Now On " + str(tlife) + " Health.")
 
     if des == "Defend":
@@ -367,7 +372,6 @@ def player_attack(des, Pcrit, PtE, target, tgt, tartempdef):
         wpics.append("Pics/Fist01.png")
         patt = weaponselect(weapons, wdamage, wpics)
         patt = int(patt + player.Strength)
-
 
 
 
@@ -509,17 +513,17 @@ def inventory_get():
 
     selected = find_tup(selected, player.InvContents)
 
-    player.InvContents.otremove("MoneyStr")
-    player.InvContents.onremove("Your Statistics")
-    player.InvContents.otremove("Equiped " + "Boots")
-    player.InvContents.otremove("Equiped " + "Shirt")
-    player.InvContents.otremove("Equiped " + "Leggins")
-    player.InvContents.otremove("Equiped " + "Helmet")
+    player.InvContents.otremove("MoneyStr")  # @UndefinedVariable
+    player.InvContents.onremove("Your Statistics") # @UndefinedVariable
+    player.InvContents.otremove("Equiped " + "Boots") # @UndefinedVariable
+    player.InvContents.otremove("Equiped " + "Shirt") # @UndefinedVariable
+    player.InvContents.otremove("Equiped " + "Leggins") # @UndefinedVariable
+    player.InvContents.otremove("Equiped " + "Helmet") # @UndefinedVariable
 
-    player.InvContents.otremove("UnEquiped " + "Boots")
-    player.InvContents.otremove("UnEquiped " + "Shirt")
-    player.InvContents.otremove("UnEquiped " + "Leggins")
-    player.InvContents.otremove("UnEquiped " + "Helmet")
+    player.InvContents.otremove("UnEquiped " + "Boots") # @UndefinedVariable
+    player.InvContents.otremove("UnEquiped " + "Shirt") # @UndefinedVariable
+    player.InvContents.otremove("UnEquiped " + "Leggins") # @UndefinedVariable
+    player.InvContents.otremove("UnEquiped " + "Helmet") # @UndefinedVariable
 
     debug("\n selected:")
     debug(selected)
@@ -586,7 +590,7 @@ def inventory_get():
 
 def inventory_remove(item):
     world.Places[world.Location].append(item)
-    player.InvContents.onremove(item.name)
+    player.InvContents.onremove(item.name) # @UndefinedVariable
 
 #####
 #END INVENTORY
@@ -740,7 +744,7 @@ def take(choices, mmax=0, string="You Can Take:"):
     #Returns the item
     debug("TAKING")
 
-    choices = [i for i in choices if searchmet("i", i) == "T"]
+    choices = [i for i in choices if i.cat == "Item"]
 
     TheOut = easygui.multchoicebox(msg=string, choices=(t(choices, 0)))
     debug(TheOut)
@@ -866,7 +870,7 @@ def newPlace():
 
 
 
-def selector(things, pictures, string, metno, title):
+def selector(things, pictures, string, attribute, title):
     #insert %m in string to replace that with output from metno
     #insert %t in string to replace that with thing name
     items = []
@@ -874,7 +878,7 @@ def selector(things, pictures, string, metno, title):
     nmax = len(things)
     for i in range(0, len(things)):
         item = things[i].name
-        met = getmet(things[i], metno)
+        met = exec(things[i] + "." + attribute)
         line = string
         line.replace("%m", met)
         line.replace("%t", item)
