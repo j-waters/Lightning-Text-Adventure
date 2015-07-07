@@ -208,7 +208,7 @@ def begin():
     name = eg.enterbox(msg="Type the first place name:")
     if name == None:
         name = ""
-    places[name] = [[],[]]
+    places[name] = []
     viewRoot()
 
 def viewRoot():
@@ -225,7 +225,7 @@ def editRoom():
         s = eg.buttonbox(msg="Editing Room", choices=["Edit Items", "Edit Story"])
         if s == None:
             return
-        if s == "Edit Story":
+        """if s == "Edit Story":
             if curRoom[1] == []:
                 curRoom[1].append("")
             num = 0
@@ -260,9 +260,9 @@ def editRoom():
                     curRoom[1].pop(num)
                 if num > maxnum:
                     num = 0
-            curRoom[1].remove("")
+            curRoom[1].remove("")"""
         if s == "Edit Items":
-            items = curRoom[0]
+            items = curRoom
             items.append(["Add Another..."])
             items.append(("a shirt", "A nice shirt", ["shirt", 5, "i"]))
             s = eg.choicebox(msg="Select An Item:", choices=[x[0] for x in items])
