@@ -2,6 +2,5 @@ Location = "TN1_R1"
 Turn = 0
 TurnString = "The Legend Of Aiopa Chapter One, Turn "
 Places = {"TN1_R1": ['Weapon("Sword", "Swords", "A standard shortsword", "3", "1", "10", "Rdagger.png")', 'Money("Some Coins", "", "A small pouch of money", 5, "1", "1", "")', 'Person("Bob", "An Old Man",  3, 2, 10, 10, 1, "Good", 1, 5, 1)']}
-Quests = {}
-CurQuests = []
+LocationData = {}
 Variables = {}
